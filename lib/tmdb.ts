@@ -32,7 +32,7 @@ const options = {
   method: "GET",
   headers: {
     accept: "application/json",
-    Authorization: `Bearer ${process.env.NUXT_TMDB_API_KEY}`,
+    Authorization: `Bearer ${process.env.NEXT_TMDB_API_KEY}`,
   },
 };
 
