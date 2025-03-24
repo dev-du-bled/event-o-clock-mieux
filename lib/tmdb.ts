@@ -1,5 +1,3 @@
-"use server";
-
 const BASE_URL = "https://api.themoviedb.org/3";
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p";
 
@@ -70,6 +68,7 @@ export function getImageUrl(
   path: string | null,
   size: string = "original"
 ): string {
+  // Update return type to Promise<string>
   if (!path) {
     return "/placeholder-movie.jpg";
   }
