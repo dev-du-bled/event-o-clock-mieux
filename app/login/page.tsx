@@ -48,7 +48,7 @@ export default function Login() {
           router.push("/");
         },
         onError(ctx) {
-          setError(ctx.error.message || "Erreur lors de connexion");
+          setError(ctx.error.message || "Erreur lors de la connexion");
           setLoading(false);
         },
       },

@@ -8,7 +8,6 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/context/auth-context";
 import { User, Camera, Film, Ticket, RefreshCw } from "lucide-react";
 import { updateUserProfile } from "@/lib/db/users";
 import { uploadProfileImage } from "@/lib/storage";
@@ -23,6 +22,7 @@ import { getMovieDetails, type Movie } from "@/lib/tmdb";
 import Link from "next/link";
 import { Alert, Table } from "flowbite-react";
 import Image from "next/image";
+import { authClient } from "@/lib/auth/auth-client";
 
 /**
  * @brief User profile management component
@@ -36,16 +36,16 @@ import Image from "next/image";
  * @returns React component for user profile page
  */
 export default function Profile() {
-  const { user, userProfile } = useAuth();
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
+
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [displayName, setDisplayName] = useState(
-    userProfile?.displayName || "",
-  );
+  const [displayName, setDisplayName] = useState(user?.name || "");
   const [imagePreview, setImagePreview] = useState<string | null>(
-    userProfile?.photoURL || null,
+    user?.image || null,
   );
   const [newImage, setNewImage] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -59,14 +59,14 @@ export default function Profile() {
   const [showtime, setShowtime] = useState("");
 
   // Show cinema management for admin users
-  const showCinemaManagement = userProfile?.role === "admin";
+  const showCinemaManagement = user?.role === "admin";
 
   useEffect(() => {
     async function loadBookings() {
       if (!user) return;
 
       try {
-        const userBookings = await getUserBookings(user.uid);
+        const userBookings = await getUserBookings(user.id); // TODO: issue here cause db has no relation
 
         // Fetch movie details for each booking
         const bookingsWithMovies = await Promise.all(
@@ -133,13 +133,13 @@ export default function Profile() {
     setError("");
 
     try {
-      let photoURL = userProfile?.photoURL;
+      let photoURL = user.image || "";
 
       if (newImage) {
-        photoURL = await uploadProfileImage(newImage, user.uid);
+        photoURL = await uploadProfileImage(newImage, user.id);
       }
 
-      await updateUserProfile(user.uid, {
+      await updateUserProfile(user.id, {
         displayName,
         photoURL,
       });
