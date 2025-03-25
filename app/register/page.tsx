@@ -73,15 +73,17 @@ export default function Register() {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
-        password
+        password,
       );
       await sendEmailVerification(userCredential.user);
       setVerificationEmailSent(true);
-    } catch (err: any) {
-      if (err.code === "auth/email-already-in-use") {
-        setError("Cet email est déjà utilisé");
-      } else {
-        setError("Une erreur est survenue lors de l'inscription");
+    } catch (err) {
+      if (err instanceof Error && "code" in err) {
+        if (err.code === "auth/email-already-in-use") {
+          setError("Cet email est déjà utilisé");
+        } else {
+          setError("Une erreur est survenue lors de l'inscription");
+        }
       }
       setLoading(false);
     }

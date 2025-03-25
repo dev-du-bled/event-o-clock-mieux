@@ -42,10 +42,10 @@ export default function Profile() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [displayName, setDisplayName] = useState(
-    userProfile?.displayName || ""
+    userProfile?.displayName || "",
   );
   const [imagePreview, setImagePreview] = useState<string | null>(
-    userProfile?.photoURL || null
+    userProfile?.photoURL || null,
   );
   const [newImage, setNewImage] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -77,18 +77,18 @@ export default function Profile() {
             } catch (error) {
               console.error(
                 `Erreur lors de la récupération du film ${booking.movieId}:`,
-                error
+                error,
               );
               return booking;
             }
-          })
+          }),
         );
 
         setBookings(bookingsWithMovies);
       } catch (error) {
         console.error(
           "Erreur lors de la récupération des réservations:",
-          error
+          error,
         );
       } finally {
         setLoadingBookings(false);
@@ -197,7 +197,7 @@ export default function Profile() {
     } catch (err) {
       console.error("Erreur lors de la réinitialisation des salles:", err);
       setError(
-        "Une erreur est survenue lors de la réinitialisation des salles"
+        "Une erreur est survenue lors de la réinitialisation des salles",
       );
     } finally {
       setResettingRooms(false);
@@ -356,15 +356,15 @@ export default function Profile() {
                             booking.status === "confirmed"
                               ? "bg-green-100 text-green-800"
                               : booking.status === "pending"
-                              ? "bg-yellow-100 text-yellow-800"
-                              : "bg-red-100 text-red-800"
+                                ? "bg-yellow-100 text-yellow-800"
+                                : "bg-red-100 text-red-800"
                           }`}
                         >
                           {booking.status === "confirmed"
                             ? "Confirmée"
                             : booking.status === "pending"
-                            ? "En attente"
-                            : "Annulée"}
+                              ? "En attente"
+                              : "Annulée"}
                         </span>
                       </Table.Cell>
                     </Table.Row>

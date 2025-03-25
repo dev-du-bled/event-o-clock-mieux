@@ -47,7 +47,7 @@ export default function Favorites() {
         const favoriteIds = await getUserFavorites(user.uid);
         const allEvents = await getAllEvents();
         const favoriteEvents = allEvents.filter((event) =>
-          favoriteIds.includes(event.id!)
+          favoriteIds.includes(event.id!),
         );
         setEvents(favoriteEvents);
       } catch (err) {

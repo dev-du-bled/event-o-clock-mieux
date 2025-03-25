@@ -56,7 +56,7 @@ export interface CinemaRoom {
  * @returns The ID of the newly created cinema room.
  */
 export async function createCinemaRoom(
-  roomData: Omit<CinemaRoom, "id">
+  roomData: Omit<CinemaRoom, "id">,
 ): Promise<string> {
   try {
     const roomRef = await addDoc(collection(db, "cinema_rooms"), {
@@ -97,7 +97,7 @@ export async function getCinemaRooms(): Promise<CinemaRoom[]> {
  */
 export async function updateCinemaRoom(
   roomId: string,
-  data: Partial<Omit<CinemaRoom, "id">>
+  data: Partial<Omit<CinemaRoom, "id">>,
 ): Promise<void> {
   try {
     const roomRef = doc(db, "cinema_rooms", roomId);
@@ -121,7 +121,7 @@ export async function updateCinemaRoom(
 export async function assignMovieToRoom(
   roomId: string,
   movieId: number,
-  showtime: string
+  showtime: string,
 ): Promise<void> {
   try {
     const roomRef = doc(db, "cinema_rooms", roomId);
@@ -153,7 +153,7 @@ export async function resetCinemaRooms(): Promise<void> {
           row: String.fromCharCode(65 + rowIndex),
           number: seatIndex + 1,
           isAvailable: true,
-        }))
+        })),
       ).flat();
 
       await updateDoc(doc(db, "cinema_rooms", roomDoc.id), {
@@ -193,7 +193,7 @@ export interface Booking {
  * @returns The ID of the newly created booking.
  */
 export async function createBooking(
-  bookingData: Omit<Booking, "id" | "createdAt">
+  bookingData: Omit<Booking, "id" | "createdAt">,
 ): Promise<string> {
   try {
     const bookingRef = await addDoc(collection(db, "bookings"), {
@@ -207,7 +207,7 @@ export async function createBooking(
     const updatedSeats = room.seats.map((seat) => ({
       ...seat,
       isAvailable: !bookingData.seats.some(
-        (bookedSeat) => bookedSeat.seatId === seat.id
+        (bookedSeat) => bookedSeat.seatId === seat.id,
       ),
     }));
 

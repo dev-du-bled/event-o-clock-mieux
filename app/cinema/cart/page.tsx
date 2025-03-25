@@ -65,8 +65,8 @@ export default function CinemaCart() {
     try {
       const response = await fetch(
         `https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(
-          query
-        )}&limit=5`
+          query,
+        )}&limit=5`,
       );
       const data = await response.json();
       setAddressSuggestions(data.features || []);
@@ -129,13 +129,16 @@ export default function CinemaCart() {
         throw new Error("Veuillez remplir tous les champs de paiement");
       }
 
-      const bookingsByRoom = cartItems.reduce((acc, item) => {
-        if (!acc[item.roomId]) {
-          acc[item.roomId] = [];
-        }
-        acc[item.roomId].push(item);
-        return acc;
-      }, {} as Record<string, typeof cartItems>);
+      const bookingsByRoom = cartItems.reduce(
+        (acc, item) => {
+          if (!acc[item.roomId]) {
+            acc[item.roomId] = [];
+          }
+          acc[item.roomId].push(item);
+          return acc;
+        },
+        {} as Record<string, typeof cartItems>,
+      );
 
       // create booking for each room
       for (const [roomId, items] of Object.entries(bookingsByRoom)) {

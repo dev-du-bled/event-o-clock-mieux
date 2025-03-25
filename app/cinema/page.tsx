@@ -82,7 +82,7 @@ export default function Cinema() {
     }[]
   >([]);
   const [ticketType, setTicketType] = useState<"child" | "adult" | "student">(
-    "adult"
+    "adult",
   );
 
   useEffect(() => {
@@ -122,12 +122,12 @@ export default function Cinema() {
     if (!selectedRoom?.currentMovie) return;
 
     const existingSeatIndex = selectedSeats.findIndex(
-      (item) => item.seatId === seatId
+      (item) => item.seatId === seatId,
     );
 
     if (existingSeatIndex !== -1) {
       setSelectedSeats((prev) =>
-        prev.filter((_, index) => index !== existingSeatIndex)
+        prev.filter((_, index) => index !== existingSeatIndex),
       );
     } else {
       const price = DEFAULT_PRICES[ticketType];
@@ -169,7 +169,7 @@ export default function Cinema() {
 
   const renderSeatMap = (room: CinemaRoom) => {
     const rows = Array.from({ length: ROOM_CONFIG.rows }, (_, rowIndex) =>
-      String.fromCharCode(65 + rowIndex)
+      String.fromCharCode(65 + rowIndex),
     );
 
     return (
@@ -209,7 +209,7 @@ export default function Cinema() {
                 const seatId = `${row}${index + 1}`;
                 const seat = room.seats.find((s) => s.id === seatId);
                 const isSelected = selectedSeats.some(
-                  (item) => item.seatId === seatId
+                  (item) => item.seatId === seatId,
                 );
                 const isAvailable = seat?.isAvailable ?? true;
 
@@ -321,7 +321,7 @@ export default function Cinema() {
                         src={getImageUrl(
                           movies.find((m) => m.id === room.currentMovie?.id)
                             ?.poster_path ?? null,
-                          "w500"
+                          "w500",
                         )}
                         alt={
                           movies.find((m) => m.id === room.currentMovie?.id)
@@ -349,7 +349,7 @@ export default function Cinema() {
                             {Math.min(
                               DEFAULT_PRICES.child,
                               DEFAULT_PRICES.student,
-                              DEFAULT_PRICES.adult
+                              DEFAULT_PRICES.adult,
                             ).toFixed(2)}{" "}
                             €
                           </span>

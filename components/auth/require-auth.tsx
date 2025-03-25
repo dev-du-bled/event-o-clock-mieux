@@ -1,23 +1,26 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useAuth } from '@/context/auth-context';
+import Link from "next/link";
+import { useAuth } from "@/context/auth-context";
 
 interface RequireAuthProps {
-  children: React.ReactNode; 
+  children: React.ReactNode;
   message?: string;
 }
 
 /**
  * A component that ensures the user is authenticated before accessing its children.
- * 
+ *
  * If the user is not authenticated, it displays a message and a link to the login page.
  * Otherwise, it renders the child components.
- * 
+ *
  * @param children - The components to render if the user is authenticated.
  * @param message - Optional custom message to show when the user is not authenticated.
  */
-export function RequireAuth({ children, message = "Vous devez être connecté pour accéder à cette page" }: RequireAuthProps) {
+export function RequireAuth({
+  children,
+  message = "Vous devez être connecté pour accéder à cette page",
+}: RequireAuthProps) {
   const { user } = useAuth();
 
   if (!user) {

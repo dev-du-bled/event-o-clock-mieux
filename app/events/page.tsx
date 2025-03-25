@@ -8,12 +8,26 @@
 
 import React, { useEffect, useState, Suspense } from "react";
 import { getAllEvents, type Event } from "@/lib/db/events";
-import { Calendar, MapPin, Clock, Search, Phone, Globe, Info, Repeat, Heart } from "lucide-react";
+import {
+  Calendar,
+  MapPin,
+  Clock,
+  Search,
+  Phone,
+  Globe,
+  Info,
+  Repeat,
+  Heart,
+} from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Modal, Carousel } from "flowbite-react";
 import { useAuth } from "@/context/auth-context";
-import { addToFavorites, removeFromFavorites, isEventFavorite } from "@/lib/db/favorites";
+import {
+  addToFavorites,
+  removeFromFavorites,
+  isEventFavorite,
+} from "@/lib/db/favorites";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 
@@ -162,27 +176,40 @@ export default function Events() {
     setShowSuggestions(false);
   };
 
-  const categories = Array.from(new Set(events.flatMap((event) => event.categories))).sort();
+  const categories = Array.from(
+    new Set(events.flatMap((event) => event.categories)),
+  ).sort();
 
   const filteredEvents = events.filter((event) => {
     const matchesSearch =
       event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       event.description.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesLocation = !location || event.location.toLowerCase().includes(location.toLowerCase());
+    const matchesLocation =
+      !location ||
+      event.location.toLowerCase().includes(location.toLowerCase());
 
-    const matchesCategory = !selectedCategory || event.categories.includes(selectedCategory);
+    const matchesCategory =
+      !selectedCategory || event.categories.includes(selectedCategory);
 
     const matchesPriceRange =
-      (event.price >= priceRange[0] && event.price <= priceRange[1]) || (event.price === 0 && priceRange[0] === 0);
+      (event.price >= priceRange[0] && event.price <= priceRange[1]) ||
+      (event.price === 0 && priceRange[0] === 0);
 
     const eventStartDate = new Date(event.startDate);
     const eventEndDate = new Date(event.endDate);
 
     const matchesDateRange =
-      (!startDate || eventStartDate >= new Date(startDate)) && (!endDate || eventEndDate <= new Date(endDate));
+      (!startDate || eventStartDate >= new Date(startDate)) &&
+      (!endDate || eventEndDate <= new Date(endDate));
 
-    return matchesSearch && matchesLocation && matchesCategory && matchesPriceRange && matchesDateRange;
+    return (
+      matchesSearch &&
+      matchesLocation &&
+      matchesCategory &&
+      matchesPriceRange &&
+      matchesDateRange
+    );
   });
 
   const formatEventDate = (event: Event) => {
@@ -211,7 +238,9 @@ export default function Events() {
     }
 
     try {
-      const startDate = format(new Date(event.startDate), "PPP", { locale: fr });
+      const startDate = format(new Date(event.startDate), "PPP", {
+        locale: fr,
+      });
       const endDate = format(new Date(event.endDate), "PPP", { locale: fr });
 
       if (startDate === endDate) {
@@ -229,7 +258,10 @@ export default function Events() {
     }
 
     try {
-      const startTime = format(new Date(`2000-01-01T${event.startTime}`), "HH:mm");
+      const startTime = format(
+        new Date(`2000-01-01T${event.startTime}`),
+        "HH:mm",
+      );
       const endTime = format(new Date(`2000-01-01T${event.endTime}`), "HH:mm");
       return `${startTime} - ${endTime}`;
     } catch {
@@ -248,7 +280,11 @@ export default function Events() {
 
     return (
       <div className="relative w-full h-full">
-        <Image src={src} alt={alt} className="absolute inset-0 w-full h-full object-cover" />
+        <Image
+          src={src}
+          alt={alt}
+          className="absolute inset-0 w-full h-full object-cover"
+        />
       </div>
     );
   };
@@ -256,7 +292,10 @@ export default function Events() {
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <Suspense>
-        <SearchParamsHandler setSearchTerm={setSearchTerm} setLocation={setLocation} />
+        <SearchParamsHandler
+          setSearchTerm={setSearchTerm}
+          setLocation={setLocation}
+        />
       </Suspense>
 
       <div className="container mx-auto px-4">
@@ -294,7 +333,9 @@ export default function Events() {
                       onClick={() => handleCitySelect(feature.properties.city)}
                     >
                       {feature.properties.city}
-                      <span className="text-sm text-gray-500 ml-2">({feature.properties.postcode})</span>
+                      <span className="text-sm text-gray-500 ml-2">
+                        ({feature.properties.postcode})
+                      </span>
                     </button>
                   ))}
                 </div>
@@ -320,7 +361,9 @@ export default function Events() {
                     type="number"
                     className="w-20 p-2 border rounded-md"
                     value={priceRange[0]}
-                    onChange={(e) => setPriceRange([+e.target.value, priceRange[1]])}
+                    onChange={(e) =>
+                      setPriceRange([+e.target.value, priceRange[1]])
+                    }
                     placeholder="Min"
                   />
                   <span>à</span>
@@ -328,7 +371,9 @@ export default function Events() {
                     type="number"
                     className="w-20 p-2 border rounded-md"
                     value={priceRange[1]}
-                    onChange={(e) => setPriceRange([priceRange[0], +e.target.value])}
+                    onChange={(e) =>
+                      setPriceRange([priceRange[0], +e.target.value])
+                    }
                     placeholder="Max"
                   />
                 </div>
@@ -364,8 +409,12 @@ export default function Events() {
           <div className="bg-red-50 text-red-800 p-4 rounded-lg">{error}</div>
         ) : filteredEvents.length === 0 ? (
           <div className="bg-white rounded-lg shadow-lg p-6 text-center">
-            <h2 className="text-xl font-semibold mb-4">Aucun événement trouvé</h2>
-            <p className="text-gray-600">Essayez de modifier vos critères de recherche</p>
+            <h2 className="text-xl font-semibold mb-4">
+              Aucun événement trouvé
+            </h2>
+            <p className="text-gray-600">
+              Essayez de modifier vos critères de recherche
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -383,7 +432,10 @@ export default function Events() {
                     {renderEventImage(event.images?.[0], event.title)}
                     <div className="absolute top-4 left-4">
                       {event.categories.map((category, index) => (
-                        <span key={index} className="bg-primary text-white text-sm font-semibold px-3 py-1 rounded-full mr-2">
+                        <span
+                          key={index}
+                          className="bg-primary text-white text-sm font-semibold px-3 py-1 rounded-full mr-2"
+                        >
                           {category}
                         </span>
                       ))}
@@ -397,14 +449,20 @@ export default function Events() {
                     </div>
                   </div>
                   <div className="p-5">
-                    <h3 className="text-xl font-bold text-gray-900 mb-3">{event.title}</h3>
+                    <h3 className="text-xl font-bold text-gray-900 mb-3">
+                      {event.title}
+                    </h3>
                     <div className="space-y-2 text-sm text-gray-500 mb-3">
                       <div className="flex items-center">
                         <MapPin className="w-4 h-4 mr-1" />
                         <span>{event.location}</span>
                       </div>
                       <div className="flex items-center">
-                        {event.isRecurring ? <Repeat className="w-4 h-4 mr-1" /> : <Calendar className="w-4 h-4 mr-1" />}
+                        {event.isRecurring ? (
+                          <Repeat className="w-4 h-4 mr-1" />
+                        ) : (
+                          <Calendar className="w-4 h-4 mr-1" />
+                        )}
                         <span>{formatEventDate(event)}</span>
                       </div>
                       <div className="flex items-center">
@@ -439,7 +497,10 @@ export default function Events() {
                       <Carousel slideInterval={5000} className="h-full">
                         {selectedEvent.images.map((image, index) => (
                           <div key={index} className="relative h-full">
-                            {renderEventImage(image, `${selectedEvent.title} ${index + 1}`)}
+                            {renderEventImage(
+                              image,
+                              `${selectedEvent.title} ${index + 1}`,
+                            )}
                           </div>
                         ))}
                       </Carousel>
@@ -453,14 +514,19 @@ export default function Events() {
                   <div className="space-y-6">
                     <div className="flex flex-wrap gap-2">
                       {selectedEvent.categories.map((category, index) => (
-                        <span key={index} className="bg-primary text-white text-sm font-semibold px-3 py-1 rounded-full">
+                        <span
+                          key={index}
+                          className="bg-primary text-white text-sm font-semibold px-3 py-1 rounded-full"
+                        >
                           {category}
                         </span>
                       ))}
                       <span
                         className={`${selectedEvent.isPaid ? "bg-primary" : "bg-green-500"} text-white text-sm font-semibold px-3 py-1 rounded-full`}
                       >
-                        {selectedEvent.isPaid ? `${selectedEvent.price} €` : "Gratuit"}
+                        {selectedEvent.isPaid
+                          ? `${selectedEvent.price} €`
+                          : "Gratuit"}
                       </span>
                     </div>
 
@@ -484,17 +550,25 @@ export default function Events() {
                     </div>
 
                     <div>
-                      <div className="text-lg font-semibold mb-2">Description</div>
-                      <p className="text-gray-600">{selectedEvent.description}</p>
+                      <div className="text-lg font-semibold mb-2">
+                        Description
+                      </div>
+                      <p className="text-gray-600">
+                        {selectedEvent.description}
+                      </p>
                     </div>
 
-                    {(selectedEvent.organizerPhone || selectedEvent.organizerWebsite) && (
+                    {(selectedEvent.organizerPhone ||
+                      selectedEvent.organizerWebsite) && (
                       <div className="space-y-2">
                         <div className="text-lg font-semibold">Contact</div>
                         {selectedEvent.organizerPhone && (
                           <div className="flex items-center text-gray-600">
                             <Phone className="w-5 h-5 mr-2" />
-                            <a href={`tel:${selectedEvent.organizerPhone}`} className="hover:text-primary">
+                            <a
+                              href={`tel:${selectedEvent.organizerPhone}`}
+                              className="hover:text-primary"
+                            >
                               {selectedEvent.organizerPhone}
                             </a>
                           </div>
@@ -516,13 +590,21 @@ export default function Events() {
                     )}
 
                     <div className="space-y-2">
-                      <div className="text-lg font-semibold">Informations pratiques</div>
+                      <div className="text-lg font-semibold">
+                        Informations pratiques
+                      </div>
                       <div className="flex items-start text-gray-600">
                         <Info className="w-5 h-5 mr-2 mt-1 flex-shrink-0" />
                         <ul className="list-disc list-inside space-y-1">
-                          {selectedEvent.isAccessible && <li>Accessible aux personnes à mobilité réduite</li>}
-                          {selectedEvent.hasParking && <li>Parking disponible</li>}
-                          {selectedEvent.hasPublicTransport && <li>Transport en commun à proximité</li>}
+                          {selectedEvent.isAccessible && (
+                            <li>Accessible aux personnes à mobilité réduite</li>
+                          )}
+                          {selectedEvent.hasParking && (
+                            <li>Parking disponible</li>
+                          )}
+                          {selectedEvent.hasPublicTransport && (
+                            <li>Transport en commun à proximité</li>
+                          )}
                         </ul>
                       </div>
                     </div>
@@ -545,11 +627,19 @@ export default function Events() {
                       onClick={handleFavoriteClick}
                       disabled={favoriteLoading}
                       className={`px-6 py-2 rounded-lg transition-colors flex items-center ${
-                        isFavorite ? "bg-red-500 text-white hover:bg-red-600" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                        isFavorite
+                          ? "bg-red-500 text-white hover:bg-red-600"
+                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                       }`}
                     >
-                      <Heart className={`w-5 h-5 mr-2 ${isFavorite ? "fill-current" : ""}`} />
-                      {favoriteLoading ? "Chargement..." : isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
+                      <Heart
+                        className={`w-5 h-5 mr-2 ${isFavorite ? "fill-current" : ""}`}
+                      />
+                      {favoriteLoading
+                        ? "Chargement..."
+                        : isFavorite
+                          ? "Retirer des favoris"
+                          : "Ajouter aux favoris"}
                     </button>
                   )}
                 </div>

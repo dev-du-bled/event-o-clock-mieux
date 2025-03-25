@@ -1,9 +1,18 @@
-import { Modal } from 'flowbite-react';
-import { Event } from '@/lib/db/events';
-import { Calendar, MapPin, Clock, Phone, Globe, Info, Heart, Repeat } from 'lucide-react';
-import { format } from 'date-fns';
-import { fr } from 'date-fns/locale';
-import Image from 'next/image';
+import { Modal } from "flowbite-react";
+import { Event } from "@/lib/db/events";
+import {
+  Calendar,
+  MapPin,
+  Clock,
+  Phone,
+  Globe,
+  Info,
+  Heart,
+  Repeat,
+} from "lucide-react";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
+import Image from "next/image";
 
 interface EventModalProps {
   event: Event;
@@ -19,7 +28,7 @@ interface EventModalProps {
  * EventModal component displays a modal with detailed event information.
  * Includes event title, description, date, time, location, contact info,
  * and practical information, with an option to add/remove it from favorites.
- * 
+ *
  * @param event - The event object containing event details.
  * @param show - A boolean to control the visibility of the modal.
  * @param onClose - A function to close the modal.
@@ -28,65 +37,74 @@ interface EventModalProps {
  * @param favoriteLoading - A boolean flag to indicate if the favorite action is loading.
  * @param showFavoriteButton - A flag to control whether the favorite button is shown.
  */
-export function EventModal({ 
-  event, 
-  show, 
-  onClose, 
-  isFavorite, 
-  onFavoriteClick, 
+export function EventModal({
+  event,
+  show,
+  onClose,
+  isFavorite,
+  onFavoriteClick,
   favoriteLoading,
-  showFavoriteButton = true
+  showFavoriteButton = true,
 }: EventModalProps) {
   const formatEventDate = (event: Event) => {
     if (event.isRecurring) {
-      const days = event.recurringDays.map(day => {
+      const days = event.recurringDays.map((day) => {
         switch (day) {
-          case 'monday': return 'Lundi';
-          case 'tuesday': return 'Mardi';
-          case 'wednesday': return 'Mercredi';
-          case 'thursday': return 'Jeudi';
-          case 'friday': return 'Vendredi';
-          case 'saturday': return 'Samedi';
-          case 'sunday': return 'Dimanche';
-          default: return '';
+          case "monday":
+            return "Lundi";
+          case "tuesday":
+            return "Mardi";
+          case "wednesday":
+            return "Mercredi";
+          case "thursday":
+            return "Jeudi";
+          case "friday":
+            return "Vendredi";
+          case "saturday":
+            return "Samedi";
+          case "sunday":
+            return "Dimanche";
+          default:
+            return "";
         }
       });
-      return `Tous les ${days.join(', ')}`;
+      return `Tous les ${days.join(", ")}`;
     }
 
     try {
-      const startDate = format(new Date(event.startDate), 'PPP', { locale: fr });
-      const endDate = format(new Date(event.endDate), 'PPP', { locale: fr });
-      
+      const startDate = format(new Date(event.startDate), "PPP", {
+        locale: fr,
+      });
+      const endDate = format(new Date(event.endDate), "PPP", { locale: fr });
+
       if (startDate === endDate) {
         return startDate;
       }
       return `Du ${startDate} au ${endDate}`;
     } catch {
-      return 'Date non définie';
+      return "Date non définie";
     }
   };
 
   const formatEventTime = (event: Event) => {
     if (!event.startTime || !event.endTime) {
-      return 'Horaire non défini';
+      return "Horaire non défini";
     }
 
     try {
-      const startTime = format(new Date(`2000-01-01T${event.startTime}`), 'HH:mm');
-      const endTime = format(new Date(`2000-01-01T${event.endTime}`), 'HH:mm');
+      const startTime = format(
+        new Date(`2000-01-01T${event.startTime}`),
+        "HH:mm",
+      );
+      const endTime = format(new Date(`2000-01-01T${event.endTime}`), "HH:mm");
       return `${startTime} - ${endTime}`;
     } catch {
-      return 'Horaire non défini';
+      return "Horaire non défini";
     }
   };
 
   return (
-    <Modal
-      show={show}
-      onClose={onClose}
-      size="4xl"
-    >
+    <Modal show={show} onClose={onClose} size="4xl">
       <Modal.Header>
         <div className="text-2xl font-bold">{event.title}</div>
       </Modal.Header>
@@ -116,8 +134,10 @@ export function EventModal({
                   {category}
                 </span>
               ))}
-              <span className={`${event.isPaid ? 'bg-primary' : 'bg-green-500'} text-white text-sm font-semibold px-3 py-1 rounded-full`}>
-                {event.isPaid ? `${event.price} €` : 'Gratuit'}
+              <span
+                className={`${event.isPaid ? "bg-primary" : "bg-green-500"} text-white text-sm font-semibold px-3 py-1 rounded-full`}
+              >
+                {event.isPaid ? `${event.price} €` : "Gratuit"}
               </span>
             </div>
 
@@ -151,7 +171,10 @@ export function EventModal({
                 {event.organizerPhone && (
                   <div className="flex items-center text-gray-600">
                     <Phone className="w-5 h-5 mr-2" />
-                    <a href={`tel:${event.organizerPhone}`} className="hover:text-primary">
+                    <a
+                      href={`tel:${event.organizerPhone}`}
+                      className="hover:text-primary"
+                    >
                       {event.organizerPhone}
                     </a>
                   </div>
@@ -173,16 +196,16 @@ export function EventModal({
             )}
 
             <div className="space-y-2">
-              <div className="text-lg font-semibold">Informations pratiques</div>
+              <div className="text-lg font-semibold">
+                Informations pratiques
+              </div>
               <div className="flex items-start text-gray-600">
                 <Info className="w-5 h-5 mr-2 mt-1 flex-shrink-0" />
                 <ul className="list-disc list-inside space-y-1">
                   {event.isAccessible && (
                     <li>Accessible aux personnes à mobilité réduite</li>
                   )}
-                  {event.hasParking && (
-                    <li>Parking disponible</li>
-                  )}
+                  {event.hasParking && <li>Parking disponible</li>}
                   {event.hasPublicTransport && (
                     <li>Transport en commun à proximité</li>
                   )}
@@ -205,18 +228,19 @@ export function EventModal({
               onClick={onFavoriteClick}
               disabled={favoriteLoading}
               className={`px-6 py-2 rounded-lg transition-colors flex items-center ${
-                isFavorite 
-                  ? 'bg-red-500 text-white hover:bg-red-600' 
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                isFavorite
+                  ? "bg-red-500 text-white hover:bg-red-600"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
-              <Heart className={`w-5 h-5 mr-2 ${isFavorite ? 'fill-current' : ''}`} />
-              {favoriteLoading 
-                ? 'Chargement...' 
-                : isFavorite 
-                  ? 'Retirer des favoris' 
-                  : 'Ajouter aux favoris'
-              }
+              <Heart
+                className={`w-5 h-5 mr-2 ${isFavorite ? "fill-current" : ""}`}
+              />
+              {favoriteLoading
+                ? "Chargement..."
+                : isFavorite
+                  ? "Retirer des favoris"
+                  : "Ajouter aux favoris"}
             </button>
           )}
         </div>

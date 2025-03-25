@@ -1,19 +1,23 @@
-'use client';
+"use client";
 
 /**
  * @file page.tsx
  * @brief Homepage component
  * @details Displays featured events and provides search functionality
  */
-import { useState, useEffect } from 'react';
-import { getAllEvents, type Event } from '@/lib/db/events';
-import { useAuth } from '@/context/auth-context';
-import { addToFavorites, removeFromFavorites, isEventFavorite } from '@/lib/db/favorites';
-import { EventCard } from '@/components/events/event-card';
-import { EventModal } from '@/components/events/event-modal';
-import { useRouter } from 'next/navigation';
-import { Search, MapPin } from 'lucide-react';
-import Link from 'next/link';
+import { useState, useEffect } from "react";
+import { getAllEvents, type Event } from "@/lib/db/events";
+import { useAuth } from "@/context/auth-context";
+import {
+  addToFavorites,
+  removeFromFavorites,
+  isEventFavorite,
+} from "@/lib/db/favorites";
+import { EventCard } from "@/components/events/event-card";
+import { EventModal } from "@/components/events/event-modal";
+import { useRouter } from "next/navigation";
+import { Search, MapPin } from "lucide-react";
+import Link from "next/link";
 
 interface CityFeature {
   properties: {
@@ -30,7 +34,7 @@ interface CityFeature {
  *          - Location-based filtering
  *          - Favorites management
  *          - Event detail modal
- * 
+ *
  * @returns React component for homepage
  */
 export default function Home() {
@@ -42,8 +46,8 @@ export default function Home() {
   const [openModal, setOpenModal] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoriteLoading, setFavoriteLoading] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [location, setLocation] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [location, setLocation] = useState("");
   const [citySuggestions, setCitySuggestions] = useState<CityFeature[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
@@ -54,7 +58,7 @@ export default function Home() {
         const shuffled = allEvents.sort(() => 0.5 - Math.random());
         setFeaturedEvents(shuffled.slice(0, 4));
       } catch (err) {
-        console.error('Erreur lors du chargement des événements:', err);
+        console.error("Erreur lors du chargement des événements:", err);
       } finally {
         setLoading(false);
       }
@@ -70,7 +74,7 @@ export default function Home() {
           const favorite = await isEventFavorite(user.uid, selectedEvent.id);
           setIsFavorite(favorite);
         } catch (err) {
-          console.error('Erreur lors de la vérification des favoris:', err);
+          console.error("Erreur lors de la vérification des favoris:", err);
         }
       }
     }
@@ -90,7 +94,7 @@ export default function Home() {
       }
       setIsFavorite(!isFavorite);
     } catch (err) {
-      console.error('Erreur lors de la gestion des favoris:', err);
+      console.error("Erreur lors de la gestion des favoris:", err);
     } finally {
       setFavoriteLoading(false);
     }
@@ -105,13 +109,13 @@ export default function Home() {
 
     try {
       const response = await fetch(
-        `https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(query)}&type=municipality&limit=5`
+        `https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(query)}&type=municipality&limit=5`,
       );
       const data = await response.json();
       setCitySuggestions(data.features || []);
       setShowSuggestions(true);
     } catch (error) {
-      console.error('Erreur lors de la recherche de ville:', error);
+      console.error("Erreur lors de la recherche de ville:", error);
     }
   };
 
@@ -130,9 +134,9 @@ export default function Home() {
     e.preventDefault();
     // Rediriger vers la page découvrir avec les paramètres de recherche
     const searchParams = new URLSearchParams();
-    if (searchTerm) searchParams.append('search', searchTerm);
-    if (location) searchParams.append('location', location);
-    
+    if (searchTerm) searchParams.append("search", searchTerm);
+    if (location) searchParams.append("location", location);
+
     router.push(`/events?${searchParams.toString()}`);
   };
 
@@ -147,7 +151,7 @@ export default function Home() {
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
             Trouvez et participez à des événements uniques près de chez vous
           </p>
-          <form 
+          <form
             onSubmit={handleSearch}
             className="flex flex-col md:flex-row gap-4 justify-center items-center max-w-3xl mx-auto"
           >
@@ -189,7 +193,7 @@ export default function Home() {
                 </div>
               )}
             </div>
-            <button 
+            <button
               type="submit"
               className="w-full md:w-auto px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
             >
@@ -203,7 +207,7 @@ export default function Home() {
       <section className="py-16 container px-4 mx-auto">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-3xl font-bold">Événements à la une</h2>
-          <Link 
+          <Link
             href="/events"
             className="px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
           >

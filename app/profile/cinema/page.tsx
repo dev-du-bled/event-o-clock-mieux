@@ -7,7 +7,12 @@ import { Calendar, Star, Film, Clock, Check } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Card, Modal, Button } from "flowbite-react";
-import { CinemaRoom, getCinemaRooms, createCinemaRoom, assignMovieToRoom } from "@/lib/db/cinema";
+import {
+  CinemaRoom,
+  getCinemaRooms,
+  createCinemaRoom,
+  assignMovieToRoom,
+} from "@/lib/db/cinema";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -44,14 +49,19 @@ export default function CinemaManagement() {
         let roomsData = await getCinemaRooms();
 
         if (roomsData.length === 0) {
-          const seats = Array.from({ length: ROOM_CONFIG.rows }, (_, rowIndex) =>
-            Array.from({ length: ROOM_CONFIG.seatsPerRow }, (_, seatIndex) => ({
-              id: `${String.fromCharCode(65 + rowIndex)}${seatIndex + 1}`,
-              row: String.fromCharCode(65 + rowIndex),
-              number: seatIndex + 1,
-              isAvailable: true,
-              isVIP: ROOM_CONFIG.vipRows.includes(rowIndex),
-            })),
+          const seats = Array.from(
+            { length: ROOM_CONFIG.rows },
+            (_, rowIndex) =>
+              Array.from(
+                { length: ROOM_CONFIG.seatsPerRow },
+                (_, seatIndex) => ({
+                  id: `${String.fromCharCode(65 + rowIndex)}${seatIndex + 1}`,
+                  row: String.fromCharCode(65 + rowIndex),
+                  number: seatIndex + 1,
+                  isAvailable: true,
+                  isVIP: ROOM_CONFIG.vipRows.includes(rowIndex),
+                }),
+              ),
           ).flat();
 
           for (let i = 1; i <= 3; i++) {
@@ -74,13 +84,13 @@ export default function CinemaManagement() {
         //   if (isMounted) setLoading(false);
         // }
       }
-
-      loadData();
-
-      return () => {
-        isMounted = false;
-      };
     }
+
+    loadData();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const handleAssignMovie = async () => {
@@ -107,11 +117,15 @@ export default function CinemaManagement() {
   };
 
   const renderSeatMap = (room: CinemaRoom) => {
-    const rows = Array.from({ length: ROOM_CONFIG.rows }, (_, rowIndex) => String.fromCharCode(65 + rowIndex));
+    const rows = Array.from({ length: ROOM_CONFIG.rows }, (_, rowIndex) =>
+      String.fromCharCode(65 + rowIndex),
+    );
 
     return (
       <div className="space-y-4">
-        <div className="w-full h-8 bg-gray-300 rounded-lg flex items-center justify-center text-sm text-gray-600">Écran</div>
+        <div className="w-full h-8 bg-gray-300 rounded-lg flex items-center justify-center text-sm text-gray-600">
+          Écran
+        </div>
 
         {/* Seat */}
         <div className="grid gap-4">
@@ -172,7 +186,9 @@ export default function CinemaManagement() {
       <div className="min-h-screen bg-gray-50 py-12">
         <div className="container mx-auto px-4">
           <div className="bg-white rounded-lg shadow-lg p-6 text-center">
-            <h2 className="text-xl font-semibold mb-4">Vous devez être connecté pour gérer les salles</h2>
+            <h2 className="text-xl font-semibold mb-4">
+              Vous devez être connecté pour gérer les salles
+            </h2>
             <Link href="/login" className="text-primary hover:text-primary/80">
               Se connecter
             </Link>
@@ -185,7 +201,9 @@ export default function CinemaManagement() {
   return (
     <div className="min-h-screen bg-gray-50 p-4">
       <div className="container mx-auto max-w-6xl">
-        <h1 className="text-3xl font-bold mb-8">Gestion des salles de cinéma</h1>
+        <h1 className="text-3xl font-bold mb-8">
+          Gestion des salles de cinéma
+        </h1>
 
         {/* Movie Room */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -212,19 +230,33 @@ export default function CinemaManagement() {
                 </Button>
               </div>
 
-              <h5 className="text-xl font-bold tracking-tight text-gray-900 mb-4">{room.name}</h5>
+              <h5 className="text-xl font-bold tracking-tight text-gray-900 mb-4">
+                {room.name}
+              </h5>
 
               {room.currentMovie ? (
                 <div className="space-y-4">
                   {movies.find((m) => m.id === room.currentMovie?.id) && (
                     <>
                       <Image
-                        src={getImageUrl(movies.find((m) => m.id === room.currentMovie?.id)?.poster_path ?? null, "w500")}
-                        alt={movies.find((m) => m.id === room.currentMovie?.id)?.title}
+                        src={getImageUrl(
+                          movies.find((m) => m.id === room.currentMovie?.id)
+                            ?.poster_path ?? null,
+                          "w500",
+                        )}
+                        alt={
+                          movies.find((m) => m.id === room.currentMovie?.id)
+                            ?.title || ""
+                        }
                         className="rounded-lg shadow-lg w-full h-48 object-cover"
                       />
                       <div className="space-y-2">
-                        <p className="font-semibold">{movies.find((m) => m.id === room.currentMovie?.id)?.title}</p>
+                        <p className="font-semibold">
+                          {
+                            movies.find((m) => m.id === room.currentMovie?.id)
+                              ?.title
+                          }
+                        </p>
                         <div className="flex items-center text-sm text-gray-600">
                           <Clock className="w-4 h-4 mr-1" />
                           <span>{room.currentMovie.showtime}</span>
@@ -240,7 +272,9 @@ export default function CinemaManagement() {
               )}
 
               <div className="mt-4">
-                <p className="text-sm text-gray-600">Capacité: {room.capacity} places</p>
+                <p className="text-sm text-gray-600">
+                  Capacité: {room.capacity} places
+                </p>
               </div>
             </Card>
           ))}
@@ -252,7 +286,9 @@ export default function CinemaManagement() {
           <Modal.Body>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Film</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Film
+                </label>
                 <select
                   value={selectedMovie || ""}
                   onChange={(e) => setSelectedMovie(Number(e.target.value))}
@@ -268,7 +304,9 @@ export default function CinemaManagement() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Horaire</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Horaire
+                </label>
                 <input
                   type="time"
                   value={showtime}
@@ -329,22 +367,33 @@ export default function CinemaManagement() {
                   className="rounded-lg shadow-lg w-full h-64 object-cover"
                 />
                 <div className="space-y-4">
-                  <h5 className="text-xl font-bold tracking-tight text-gray-900">{movie.title}</h5>
+                  <h5 className="text-xl font-bold tracking-tight text-gray-900">
+                    {movie.title}
+                  </h5>
 
                   <div className="flex flex-wrap items-center gap-4 text-gray-700">
                     <div className="flex items-center">
                       <Calendar className="w-4 h-4 mr-1" />
-                      <span className="text-sm">{format(new Date(movie.release_date), "PPP", { locale: fr })}</span>
+                      <span className="text-sm">
+                        {format(new Date(movie.release_date), "PPP", {
+                          locale: fr,
+                        })}
+                      </span>
                     </div>
                     <div className="flex items-center">
                       <Star className="w-4 h-4 mr-1 text-yellow-400" />
-                      <span className="text-sm">{movie.vote_average.toFixed(1)}/10</span>
+                      <span className="text-sm">
+                        {movie.vote_average.toFixed(1)}/10
+                      </span>
                     </div>
                   </div>
 
                   <div className="flex flex-wrap gap-2">
                     {movie.genres.map((genre) => (
-                      <span key={genre.id} className="bg-gray-100 text-gray-800 text-xs font-medium px-2 py-1 rounded-full">
+                      <span
+                        key={genre.id}
+                        className="bg-gray-100 text-gray-800 text-xs font-medium px-2 py-1 rounded-full"
+                      >
                         {genre.name}
                       </span>
                     ))}
