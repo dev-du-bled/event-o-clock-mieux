@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 /**
  * @file page.tsx
@@ -6,24 +6,35 @@
  * @details Provides functionality to edit existing events including form handling,
  *          image management, and address validation
  */
-import React, { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/context/auth-context';
-import { Calendar, MapPin, Upload, Tag, DollarSign, Info, Clock, Accessibility, AlertCircle, Bus, Search, Repeat } from 'lucide-react';
-import { updateEvent } from '@/lib/db/events';
-import { uploadEventImage } from '@/lib/storage';
-import Link from 'next/link';
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import React, { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/router";
+import { useAuth } from "@/context/auth-context";
+import {
+  Calendar,
+  MapPin,
+  Upload,
+  Tag,
+  DollarSign,
+  Info,
+  Clock,
+  Accessibility,
+  AlertCircle,
+  Bus,
+  Search,
+  Repeat,
+} from "lucide-react";
+import { updateEvent } from "@/lib/db/events";
+import { uploadEventImage } from "@/lib/storage";
+import Link from "next/link";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import AddressFeature from "@/lib/types";
 
-
-
-
-export default function EditEvent({ params }: { params: { id: string } }) {
+export default function EditEvent() {
   const { user } = useAuth();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [images, setImages] = useState<File[]>([]);
   const [existingImages, setExistingImages] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -35,63 +46,66 @@ export default function EditEvent({ params }: { params: { id: string } }) {
   const [recurringDays, setRecurringDays] = useState<string[]>([]);
   const [initialLoad, setInitialLoad] = useState(true);
 
+  const { id } = router.query;
+  const eventID = typeof id === "string" ? id : Array.isArray(id) ? id[0] : undefined;
+
   const [formData, setFormData] = useState({
-    title: '',
-    startDate: '',
-    startTime: '',
-    endDate: '',
-    endTime: '',
-    address: '',
-    streetNumber: '',
-    street: '',
-    city: '',
-    postalCode: '',
-    description: '',
-    price: '',
-    organizerWebsite: '',
-    organizerPhone: '',
+    title: "",
+    startDate: "",
+    startTime: "",
+    endDate: "",
+    endTime: "",
+    address: "",
+    streetNumber: "",
+    street: "",
+    city: "",
+    postalCode: "",
+    description: "",
+    price: "",
+    organizerWebsite: "",
+    organizerPhone: "",
     isAccessible: false,
     hasParking: false,
-    hasPublicTransport: false
+    hasPublicTransport: false,
   });
 
   useEffect(() => {
     async function loadEvent() {
-      if (!user) return;
+      if (!user || !eventID) return;
 
       try {
-        const eventDoc = await getDoc(doc(db, 'events', params.id));
+        const eventDoc = await getDoc(doc(db, "events", eventID));
         if (!eventDoc.exists()) {
-          setError('Événement non trouvé');
+          setError("Événement non trouvé");
           return;
         }
 
         const eventData = eventDoc.data();
-        
+
         // Check if user is the creator of the event
         if (eventData.createdBy !== user.uid) {
-          setError('Vous n\'êtes pas autorisé à modifier cet événement');
+          setError("Vous n'êtes pas autorisé à modifier cet événement");
           return;
         }
 
         setFormData({
           title: eventData.title,
-          startDate: eventData.startDate || '',
-          startTime: eventData.startTime || '',
-          endDate: eventData.endDate || '',
-          endTime: eventData.endTime || '',
-          address: eventData.address || '',
-          streetNumber: eventData.streetNumber || '',
-          street: eventData.street || '',
-          city: eventData.city || '',
-          postalCode: eventData.postalCode || '',
+          startDate: eventData.startDate || "",
+          startTime: eventData.startTime || "",
+          endDate: eventData.endDate || "",
+          endTime: eventData.endTime || "",
+          address: eventData.address || "",
+          streetNumber: eventData.streetNumber || "",
+          street: eventData.street || "",
+          city: eventData.city || "",
+          postalCode: eventData.postalCode || "",
           description: eventData.description,
-          price: eventData.price?.toString() || '',
-          organizerWebsite: eventData.organizerWebsite || '',
-          organizerPhone: eventData.organizerPhone || '',
+          price: eventData.price?.toString() || "",
+          organizerWebsite: eventData.organizerWebsite || "",
+          organizerPhone: eventData.organizerPhone || "",
           isAccessible: eventData.isAccessible || false,
           hasParking: eventData.hasParking || false,
-          hasPublicTransport: eventData.hasPublicTransport || false
+          hasPublicTransport: eventData.hasPublicTransport || false,
         });
 
         setSelectedCategories(eventData.categories || []);
@@ -101,48 +115,35 @@ export default function EditEvent({ params }: { params: { id: string } }) {
         setExistingImages(eventData.images || []);
         setInitialLoad(false);
       } catch (err) {
-        console.error('Erreur lors du chargement de l\'événement:', err);
-        setError('Erreur lors du chargement de l\'événement');
+        console.error("Erreur lors du chargement de l'événement:", err);
+        setError("Erreur lors du chargement de l'événement");
       }
     }
 
     loadEvent();
-  }, [params.id, user]);
+  }, [eventID, user]);
 
-  const categories = [
-    'Concert',
-    'Festival',
-    'Conférence',
-    'Sport',
-    'Art',
-    'Gastronomie',
-    'Technologie',
-    'Bien-être',
-    'Autre'
-  ];
+  const categories = ["Concert", "Festival", "Conférence", "Sport", "Art", "Gastronomie", "Technologie", "Bien-être", "Autre"];
 
   const weekDays = [
-    { id: 'monday', label: 'Lundi' },
-    { id: 'tuesday', label: 'Mardi' },
-    { id: 'wednesday', label: 'Mercredi' },
-    { id: 'thursday', label: 'Jeudi' },
-    { id: 'friday', label: 'Vendredi' },
-    { id: 'saturday', label: 'Samedi' },
-    { id: 'sunday', label: 'Dimanche' }
+    { id: "monday", label: "Lundi" },
+    { id: "tuesday", label: "Mardi" },
+    { id: "wednesday", label: "Mercredi" },
+    { id: "thursday", label: "Jeudi" },
+    { id: "friday", label: "Vendredi" },
+    { id: "saturday", label: "Samedi" },
+    { id: "sunday", label: "Dimanche" },
   ];
 
-  /* 
-    * Debounce function to limit the number of API calls when searching for addresses
-    * @param func The function to debounce
-    * @param wait The time to wait before executing the function
-    * @returns The debounced function
-    * 
-    */
+  /*
+   * Debounce function to limit the number of API calls when searching for addresses
+   * @param func The function to debounce
+   * @param wait The time to wait before executing the function
+   * @returns The debounced function
+   *
+   */
 
-  function debounce<T extends (...args: any[]) => any>(
-    func: T,
-    wait: number
-  ): (...args: Parameters<T>) => void {
+  function debounce<T extends (...args: any[]) => any>(func: T, wait: number): (...args: Parameters<T>) => void {
     let timeout: NodeJS.Timeout;
 
     return function executedFunction(...args: Parameters<T>) {
@@ -157,10 +158,10 @@ export default function EditEvent({ params }: { params: { id: string } }) {
   }
 
   /*
-    * Search for an address using the API Adresse
-    * @param query The address query
-    * 
-    */
+   * Search for an address using the API Adresse
+   * @param query The address query
+   *
+   */
 
   const searchAddress = async (query: string) => {
     if (!query.trim()) {
@@ -170,39 +171,37 @@ export default function EditEvent({ params }: { params: { id: string } }) {
     }
 
     try {
-      const response = await fetch(
-        `https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(query)}&limit=5`
-      );
+      const response = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(query)}&limit=5`);
       const data = await response.json();
       setAddressSuggestions(data.features || []);
       setShowSuggestions(true);
     } catch (error) {
-      console.error('Erreur lors de la recherche d\'adresse:', error);
+      console.error("Erreur lors de la recherche d'adresse:", error);
     }
   };
 
   /*
-    * Handle the address change event
-    * @param e The input change event
-    * 
-    */
+   * Handle the address change event
+   * @param e The input change event
+   *
+   */
   const debouncedSearchAddress = debounce(searchAddress, 300);
 
   const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setFormData(prev => ({ ...prev, address: value }));
+    setFormData((prev) => ({ ...prev, address: value }));
     debouncedSearchAddress(value);
   };
 
   const handleAddressSelect = (feature: AddressFeature) => {
     const { label, postcode, city, housenumber, street } = feature.properties;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      streetNumber: housenumber || '',
+      streetNumber: housenumber || "",
       street: street,
-      address: `${housenumber ? housenumber + ' ' : ''}${street}`,
+      address: `${housenumber ? housenumber + " " : ""}${street}`,
       city,
-      postalCode: postcode
+      postalCode: postcode,
     }));
     setShowSuggestions(false);
   };
@@ -210,15 +209,15 @@ export default function EditEvent({ params }: { params: { id: string } }) {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const newImages = Array.from(e.target.files);
-      setImages(prev => [...prev, ...newImages].slice(0, 5));
+      setImages((prev) => [...prev, ...newImages].slice(0, 5));
     }
   };
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     if (e.dataTransfer.files) {
-      const newImages = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith('image/'));
-      setImages(prev => [...prev, ...newImages].slice(0, 5));
+      const newImages = Array.from(e.dataTransfer.files).filter((file) => file.type.startsWith("image/"));
+      setImages((prev) => [...prev, ...newImages].slice(0, 5));
     }
   };
 
@@ -229,22 +228,27 @@ export default function EditEvent({ params }: { params: { id: string } }) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) {
-      setError('Vous devez être connecté pour modifier un événement');
+      setError("Vous devez être connecté pour modifier un événement");
+      return;
+    }
+
+    if (!eventID) {
+      setError("Identifiant d'événement invalide");
       return;
     }
 
     if (selectedCategories.length === 0) {
-      setError('Veuillez sélectionner au moins une catégorie');
+      setError("Veuillez sélectionner au moins une catégorie");
       return;
     }
 
     if (isRecurring && recurringDays.length === 0) {
-      setError('Veuillez sélectionner au moins un jour de la semaine pour un événement récurrent');
+      setError("Veuillez sélectionner au moins un jour de la semaine pour un événement récurrent");
       return;
     }
 
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
       const eventData = {
@@ -259,21 +263,19 @@ export default function EditEvent({ params }: { params: { id: string } }) {
       };
 
       // Upload new images if any
-      const newImageUrls = await Promise.all(
-        images.map(image => uploadEventImage(image, params.id))
-      );
+      const newImageUrls = await Promise.all(images.map((image) => uploadEventImage(image, eventID)));
 
       // Combine existing and new images
       const allImages = [...existingImages, ...newImageUrls];
 
-      await updateEvent(params.id, { 
+      await updateEvent(eventID, {
         ...eventData,
-        images: allImages
+        images: allImages,
       });
 
-      router.push('/my-events');
+      router.push("/my-events");
     } catch (err) {
-      setError('Une erreur est survenue lors de la modification de l\'événement');
+      setError("Une erreur est survenue lors de la modification de l'événement");
       console.error(err);
     } finally {
       setLoading(false);
@@ -281,11 +283,11 @@ export default function EditEvent({ params }: { params: { id: string } }) {
   };
 
   const handleRemoveExistingImage = (index: number) => {
-    setExistingImages(prev => prev.filter((_, i) => i !== index));
+    setExistingImages((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleRemoveNewImage = (index: number) => {
-    setImages(prev => prev.filter((_, i) => i !== index));
+    setImages((prev) => prev.filter((_, i) => i !== index));
   };
 
   if (!user) {
@@ -321,28 +323,21 @@ export default function EditEvent({ params }: { params: { id: string } }) {
         <h1 className="text-3xl font-bold mb-8">Modifier l'événement</h1>
 
         <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-lg p-6 space-y-6">
-          {error && (
-            <div className="p-4 bg-red-50 text-red-800 rounded-lg">
-              {error}
-            </div>
-          )}
+          {error && <div className="p-4 bg-red-50 text-red-800 rounded-lg">{error}</div>}
 
           {/* Title */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Titre de l'événement *
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Titre de l'événement *</label>
             <input
               type="text"
               required
               value={formData.title}
-              onChange={e => setFormData({ ...formData, title: e.target.value })}
+              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
               placeholder="Ex: Concert de Jazz au Parc"
             />
           </div>
 
-        
           <div className="space-y-4">
             <label className="flex items-center space-x-2">
               <input
@@ -360,9 +355,7 @@ export default function EditEvent({ params }: { params: { id: string } }) {
             {isRecurring && (
               <div className="space-y-4 pl-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Jours de la semaine *
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Jours de la semaine *</label>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                     {weekDays.map((day) => (
                       <label key={day.id} className="flex items-center space-x-2">
@@ -373,7 +366,7 @@ export default function EditEvent({ params }: { params: { id: string } }) {
                             if (e.target.checked) {
                               setRecurringDays([...recurringDays, day.id]);
                             } else {
-                              setRecurringDays(recurringDays.filter(d => d !== day.id));
+                              setRecurringDays(recurringDays.filter((d) => d !== day.id));
                             }
                           }}
                           className="rounded border-gray-300 text-primary focus:ring-primary"
@@ -384,7 +377,6 @@ export default function EditEvent({ params }: { params: { id: string } }) {
                   </div>
                 </div>
 
-               
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -395,7 +387,7 @@ export default function EditEvent({ params }: { params: { id: string } }) {
                       type="time"
                       required
                       value={formData.startTime}
-                      onChange={e => setFormData({ ...formData, startTime: e.target.value })}
+                      onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
                       className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                     />
                   </div>
@@ -408,7 +400,7 @@ export default function EditEvent({ params }: { params: { id: string } }) {
                       type="time"
                       required
                       value={formData.endTime}
-                      onChange={e => setFormData({ ...formData, endTime: e.target.value })}
+                      onChange={(e) => setFormData({ ...formData, endTime: e.target.value })}
                       className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                     />
                   </div>
@@ -417,7 +409,6 @@ export default function EditEvent({ params }: { params: { id: string } }) {
             )}
           </div>
 
-          
           {!isRecurring && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -430,14 +421,14 @@ export default function EditEvent({ params }: { params: { id: string } }) {
                     type="date"
                     required={!isRecurring}
                     value={formData.startDate}
-                    onChange={e => setFormData({ ...formData, startDate: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
                     className="rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                   />
                   <input
                     type="time"
                     required={!isRecurring}
                     value={formData.startTime}
-                    onChange={e => setFormData({ ...formData, startTime: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
                     className="rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                   />
                 </div>
@@ -452,14 +443,14 @@ export default function EditEvent({ params }: { params: { id: string } }) {
                     type="date"
                     required={!isRecurring}
                     value={formData.endDate}
-                    onChange={e => setFormData({ ...formData, endDate: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
                     className="rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                   />
                   <input
                     type="time"
                     required={!isRecurring}
                     value={formData.endTime}
-                    onChange={e => setFormData({ ...formData, endTime: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, endTime: e.target.value })}
                     className="rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                   />
                 </div>
@@ -501,7 +492,7 @@ export default function EditEvent({ params }: { params: { id: string } }) {
               <input
                 type="text"
                 value={formData.city}
-                onChange={e => setFormData({ ...formData, city: e.target.value })}
+                onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                 className="rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                 placeholder="Ville"
                 required
@@ -509,7 +500,7 @@ export default function EditEvent({ params }: { params: { id: string } }) {
               <input
                 type="text"
                 value={formData.postalCode}
-                onChange={e => setFormData({ ...formData, postalCode: e.target.value })}
+                onChange={(e) => setFormData({ ...formData, postalCode: e.target.value })}
                 className="rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                 placeholder="Code postal"
                 required
@@ -519,13 +510,11 @@ export default function EditEvent({ params }: { params: { id: string } }) {
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Description détaillée *
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Description détaillée *</label>
             <textarea
               required
               value={formData.description}
-              onChange={e => setFormData({ ...formData, description: e.target.value })}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               rows={5}
               className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
               placeholder="Décrivez votre événement en détail..."
@@ -538,7 +527,7 @@ export default function EditEvent({ params }: { params: { id: string } }) {
               <Upload className="inline-block w-4 h-4 mr-2" />
               Images (max 5)
             </label>
-            
+
             {/* Existing images */}
             {existingImages.length > 0 && (
               <div className="mb-4">
@@ -546,11 +535,7 @@ export default function EditEvent({ params }: { params: { id: string } }) {
                 <div className="flex flex-wrap gap-2">
                   {existingImages.map((image, index) => (
                     <div key={index} className="relative">
-                      <img
-                        src={image}
-                        alt={`Image existante ${index + 1}`}
-                        className="h-20 w-20 object-cover rounded-lg"
-                      />
+                      <img src={image} alt={`Image existante ${index + 1}`} className="h-20 w-20 object-cover rounded-lg" />
                       <button
                         type="button"
                         onClick={() => handleRemoveExistingImage(index)}
@@ -570,22 +555,13 @@ export default function EditEvent({ params }: { params: { id: string } }) {
               onDragOver={handleDragOver}
               className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary transition-colors"
             >
-              <input
-                type="file"
-                multiple
-                accept="image/*"
-                onChange={handleImageChange}
-                className="hidden"
-                id="images"
-              />
+              <input type="file" multiple accept="image/*" onChange={handleImageChange} className="hidden" id="images" />
               <label htmlFor="images" className="cursor-pointer">
                 <Upload className="mx-auto h-12 w-12 text-gray-400" />
-                <p className="mt-2 text-sm text-gray-600">
-                  Cliquez pour sélectionner ou glissez-déposez vos images ici
-                </p>
+                <p className="mt-2 text-sm text-gray-600">Cliquez pour sélectionner ou glissez-déposez vos images ici</p>
               </label>
             </div>
-            
+
             {/* New images preview */}
             {images.length > 0 && (
               <div className="mt-4 flex flex-wrap gap-2">
@@ -616,21 +592,21 @@ export default function EditEvent({ params }: { params: { id: string } }) {
               Catégories *
             </label>
             <div className="flex flex-wrap gap-2">
-              {categories.map(category => (
+              {categories.map((category) => (
                 <button
                   key={category}
                   type="button"
                   onClick={() => {
                     if (selectedCategories.includes(category)) {
-                      setSelectedCategories(selectedCategories.filter(c => c !== category));
+                      setSelectedCategories(selectedCategories.filter((c) => c !== category));
                     } else {
                       setSelectedCategories([...selectedCategories, category]);
                     }
                   }}
                   className={`px-3 py-1 rounded-full text-sm ${
                     selectedCategories.includes(category)
-                      ? 'bg-primary text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      ? "bg-primary text-white"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   }`}
                 >
                   {category}
@@ -650,7 +626,7 @@ export default function EditEvent({ params }: { params: { id: string } }) {
                 <input
                   type="checkbox"
                   checked={formData.isAccessible}
-                  onChange={e => setFormData({ ...formData, isAccessible: e.target.checked })}
+                  onChange={(e) => setFormData({ ...formData, isAccessible: e.target.checked })}
                   className="rounded border-gray-300 text-primary focus:ring-primary"
                 />
                 <span className="ml-2">Accessible aux personnes à mobilité réduite</span>
@@ -659,7 +635,7 @@ export default function EditEvent({ params }: { params: { id: string } }) {
                 <input
                   type="checkbox"
                   checked={formData.hasParking}
-                  onChange={e => setFormData({ ...formData, hasParking: e.target.checked })}
+                  onChange={(e) => setFormData({ ...formData, hasParking: e.target.checked })}
                   className="rounded border-gray-300 text-primary focus:ring-primary"
                 />
                 <span className="ml-2">Parking disponible</span>
@@ -668,7 +644,7 @@ export default function EditEvent({ params }: { params: { id: string } }) {
                 <input
                   type="checkbox"
                   checked={formData.hasPublicTransport}
-                  onChange={e => setFormData({ ...formData, hasPublicTransport: e.target.checked })}
+                  onChange={(e) => setFormData({ ...formData, hasPublicTransport: e.target.checked })}
                   className="rounded border-gray-300 text-primary focus:ring-primary"
                 />
                 <span className="ml-2">Transport en commun à proximité</span>
@@ -684,21 +660,11 @@ export default function EditEvent({ params }: { params: { id: string } }) {
             </label>
             <div className="flex items-center space-x-4">
               <label className="inline-flex items-center">
-                <input
-                  type="radio"
-                  checked={!isPaid}
-                  onChange={() => setIsPaid(false)}
-                  className="form-radio text-primary"
-                />
+                <input type="radio" checked={!isPaid} onChange={() => setIsPaid(false)} className="form-radio text-primary" />
                 <span className="ml-2">Gratuit</span>
               </label>
               <label className="inline-flex items-center">
-                <input
-                  type="radio"
-                  checked={isPaid}
-                  onChange={() => setIsPaid(true)}
-                  className="form-radio text-primary"
-                />
+                <input type="radio" checked={isPaid} onChange={() => setIsPaid(true)} className="form-radio text-primary" />
                 <span className="ml-2">Payant</span>
               </label>
             </div>
@@ -706,7 +672,7 @@ export default function EditEvent({ params }: { params: { id: string } }) {
               <input
                 type="number"
                 value={formData.price}
-                onChange={e => setFormData({ ...formData, price: e.target.value })}
+                onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                 className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                 placeholder="Prix en euros"
                 step="0.01"
@@ -725,14 +691,14 @@ export default function EditEvent({ params }: { params: { id: string } }) {
               <input
                 type="url"
                 value={formData.organizerWebsite}
-                onChange={e => setFormData({ ...formData, organizerWebsite: e.target.value })}
+                onChange={(e) => setFormData({ ...formData, organizerWebsite: e.target.value })}
                 className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                 placeholder="Site web"
               />
               <input
                 type="tel"
                 value={formData.organizerPhone}
-                onChange={e => setFormData({ ...formData, organizerPhone: e.target.value })}
+                onChange={(e) => setFormData({ ...formData, organizerPhone: e.target.value })}
                 className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                 placeholder="Numéro de téléphone"
               />
@@ -751,7 +717,7 @@ export default function EditEvent({ params }: { params: { id: string } }) {
               disabled={loading}
               className="flex-1 bg-primary text-white py-2 rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Modification en cours...' : 'Enregistrer les modifications'}
+              {loading ? "Modification en cours..." : "Enregistrer les modifications"}
             </button>
           </div>
         </form>

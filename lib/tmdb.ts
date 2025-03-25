@@ -43,10 +43,7 @@ const options = {
  */
 export async function getMovieDetails(movieId: number): Promise<Movie> {
   try {
-    const response = await fetch(
-      `${BASE_URL}/movie/${movieId}?language=fr-FR`,
-      options
-    );
+    const response = await fetch(`${BASE_URL}/movie/${movieId}?language=fr-FR`, options);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -64,10 +61,7 @@ export async function getMovieDetails(movieId: number): Promise<Movie> {
  * @param size - The size of the image (defaults to 'original').
  * @returns A string URL pointing to the image file.
  */
-export function getImageUrl(
-  path: string | null,
-  size: string = "original"
-): string {
+export function getImageUrl(path: string | null, size: string = "original"): string {
   // Update return type to Promise<string>
   if (!path) {
     return "/placeholder-movie.jpg";
