@@ -6,26 +6,14 @@
  * @details Handles the creation of new events with form validation and image upload
  */
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/auth-context";
-import {
-  Calendar,
-  MapPin,
-  Upload,
-  Tag,
-  DollarSign,
-  Info,
-  Clock,
-  Accessibility,
-  AlertCircle,
-  Bus,
-  Search,
-  Repeat,
-} from "lucide-react";
+import { MapPin, Upload, Tag, DollarSign, Info, Clock, Accessibility, Repeat } from "lucide-react";
 import { createEvent, updateEvent } from "@/lib/db/events";
 import { uploadEventImage } from "@/lib/storage";
 import Link from "next/link";
+import Image from "next/image";
 import AddressFeature from "@/lib/types";
 
 export default function CreateEvent() {
@@ -88,7 +76,7 @@ export default function CreateEvent() {
       <div className="min-h-screen bg-gray-50 py-12">
         <div className="container mx-auto px-4">
           <div className="bg-white rounded-lg shadow-lg p-6 text-center">
-            <h2 className="text-xl font-semibold mb-4">Vérification d'email requise</h2>
+            <h2 className="text-xl font-semibold mb-4">Vérification d&apos;email requise</h2>
             <p className="text-gray-600 mb-4">
               Vous devez vérifier votre adresse email avant de pouvoir créer un événement. Veuillez vérifier votre boîte de
               réception et cliquer sur le lien de confirmation.
@@ -160,7 +148,7 @@ export default function CreateEvent() {
    * @param feature Selected address feature
    */
   const handleAddressSelect = (feature: AddressFeature) => {
-    const { label, postcode, city, housenumber, street } = feature.properties;
+    const { postcode, city, housenumber, street } = feature.properties;
     setFormData((prev) => ({
       ...prev,
       streetNumber: housenumber || "",
@@ -267,7 +255,7 @@ export default function CreateEvent() {
 
           {/* Title */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Titre de l'événement *</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Titre de l&apos;événement *</label>
             <input
               type="text"
               required
@@ -404,7 +392,7 @@ export default function CreateEvent() {
           <div className="space-y-4">
             <label className="block text-sm font-medium text-gray-700">
               <MapPin className="inline-block w-4 h-4 mr-2" />
-              Adresse de l'événement *
+              Adresse de l&apos;événement *
             </label>
             <div className="relative">
               <input
@@ -484,7 +472,7 @@ export default function CreateEvent() {
               <div className="mt-4 flex flex-wrap gap-2">
                 {images.map((image, index) => (
                   <div key={index} className="relative">
-                    <img
+                    <Image
                       src={URL.createObjectURL(image)}
                       alt={`Preview ${index + 1}`}
                       className="h-20 w-20 object-cover rounded-lg"

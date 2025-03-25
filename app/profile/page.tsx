@@ -1,5 +1,4 @@
-'use client';
-
+"use client";
 
 /**
  * @file page.tsx
@@ -7,17 +6,23 @@
  * @details Handles user profile editing, bookings display and admin cinema management
  */
 
-import { useState, useRef, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/context/auth-context';
-import { User, Camera, Film, Ticket, RefreshCw } from 'lucide-react';
-import { updateUserProfile } from '@/lib/db/users';
-import { uploadProfileImage } from '@/lib/storage';
-import { assignMovieToRoom, getCinemaRooms, getUserBookings, type Booking, resetCinemaRooms } from '@/lib/db/cinema';
-import { getMovieDetails, type Movie } from '@/lib/tmdb';
-import Link from 'next/link';
-import { Alert, Table } from 'flowbite-react';
-
+import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/auth-context";
+import { User, Camera, Film, Ticket, RefreshCw } from "lucide-react";
+import { updateUserProfile } from "@/lib/db/users";
+import { uploadProfileImage } from "@/lib/storage";
+import {
+  assignMovieToRoom,
+  getCinemaRooms,
+  getUserBookings,
+  type Booking,
+  resetCinemaRooms,
+} from "@/lib/db/cinema";
+import { getMovieDetails, type Movie } from "@/lib/tmdb";
+import Link from "next/link";
+import { Alert, Table } from "flowbite-react";
+import Image from "next/image";
 
 /**
  * @brief User profile management component
@@ -27,17 +32,21 @@ import { Alert, Table } from 'flowbite-react';
  *          - Booking history display
  *          - Admin cinema room management
  *          - Movie assignment to rooms (admin only)
- * 
+ *
  * @returns React component for user profile page
  */
 export default function Profile() {
   const { user, userProfile } = useAuth();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  const [displayName, setDisplayName] = useState(userProfile?.displayName || '');
-  const [imagePreview, setImagePreview] = useState<string | null>(userProfile?.photoURL || null);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [displayName, setDisplayName] = useState(
+    userProfile?.displayName || ""
+  );
+  const [imagePreview, setImagePreview] = useState<string | null>(
+    userProfile?.photoURL || null
+  );
   const [newImage, setNewImage] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [bookings, setBookings] = useState<(Booking & { movie?: Movie })[]>([]);
@@ -45,12 +54,12 @@ export default function Profile() {
   const [resettingRooms, setResettingRooms] = useState(false);
 
   // film assignment
-  const [selectedRoom, setSelectedRoom] = useState('1');
-  const [movieId, setMovieId] = useState('');
-  const [showtime, setShowtime] = useState('');
+  const [selectedRoom, setSelectedRoom] = useState("1");
+  const [movieId, setMovieId] = useState("");
+  const [showtime, setShowtime] = useState("");
 
   // Show cinema management for admin users
-  const showCinemaManagement = userProfile?.role === 'admin';
+  const showCinemaManagement = userProfile?.role === "admin";
 
   useEffect(() => {
     async function loadBookings() {
@@ -58,7 +67,7 @@ export default function Profile() {
 
       try {
         const userBookings = await getUserBookings(user.uid);
-        
+
         // Fetch movie details for each booking
         const bookingsWithMovies = await Promise.all(
           userBookings.map(async (booking) => {
@@ -66,7 +75,10 @@ export default function Profile() {
               const movie = await getMovieDetails(booking.movieId);
               return { ...booking, movie };
             } catch (error) {
-              console.error(`Erreur lors de la récupération du film ${booking.movieId}:`, error);
+              console.error(
+                `Erreur lors de la récupération du film ${booking.movieId}:`,
+                error
+              );
               return booking;
             }
           })
@@ -74,7 +86,10 @@ export default function Profile() {
 
         setBookings(bookingsWithMovies);
       } catch (error) {
-        console.error('Erreur lors de la récupération des réservations:', error);
+        console.error(
+          "Erreur lors de la récupération des réservations:",
+          error
+        );
       } finally {
         setLoadingBookings(false);
       }
@@ -88,7 +103,9 @@ export default function Profile() {
       <div className="min-h-screen bg-gray-50 py-12">
         <div className="container mx-auto px-4">
           <div className="bg-white rounded-lg shadow-lg p-6 text-center">
-            <h2 className="text-xl font-semibold mb-4">Vous devez être connecté pour accéder à votre profil</h2>
+            <h2 className="text-xl font-semibold mb-4">
+              Vous devez être connecté pour accéder à votre profil
+            </h2>
             <Link href="/login" className="text-primary hover:text-primary/80">
               Se connecter
             </Link>
@@ -113,7 +130,7 @@ export default function Profile() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
       let photoURL = userProfile?.photoURL;
@@ -124,13 +141,13 @@ export default function Profile() {
 
       await updateUserProfile(user.uid, {
         displayName,
-        photoURL
+        photoURL,
       });
 
       router.refresh();
     } catch (err) {
-      console.error('Erreur lors de la mise à jour du profil:', err);
-      setError('Une erreur est survenue lors de la mise à jour du profil');
+      console.error("Erreur lors de la mise à jour du profil:", err);
+      setError("Une erreur est survenue lors de la mise à jour du profil");
     } finally {
       setLoading(false);
     }
@@ -139,31 +156,31 @@ export default function Profile() {
   const handleMovieAssignment = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
 
     try {
       if (!movieId || !showtime) {
-        setError('Veuillez remplir tous les champs obligatoires');
+        setError("Veuillez remplir tous les champs obligatoires");
         return;
       }
 
       const rooms = await getCinemaRooms();
-      const room = rooms.find(r => r.name === `Salle ${selectedRoom}`);
+      const room = rooms.find((r) => r.name === `Salle ${selectedRoom}`);
 
       if (!room) {
-        setError('Salle non trouvée');
+        setError("Salle non trouvée");
         return;
       }
 
       await assignMovieToRoom(room.id!, parseInt(movieId), showtime);
-      setSuccess('Film assigné avec succès !');
-      
-      setMovieId('');
-      setShowtime('');
+      setSuccess("Film assigné avec succès !");
+
+      setMovieId("");
+      setShowtime("");
     } catch (err) {
-      console.error('Erreur lors de l\'assignation du film:', err);
-      setError('Une erreur est survenue lors de l\'assignation du film');
+      console.error("Erreur lors de l'assignation du film:", err);
+      setError("Une erreur est survenue lors de l'assignation du film");
     } finally {
       setLoading(false);
     }
@@ -171,15 +188,17 @@ export default function Profile() {
 
   const handleResetRooms = async () => {
     setResettingRooms(true);
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
 
     try {
       await resetCinemaRooms();
-      setSuccess('Les salles ont été réinitialisées avec succès !');
+      setSuccess("Les salles ont été réinitialisées avec succès !");
     } catch (err) {
-      console.error('Erreur lors de la réinitialisation des salles:', err);
-      setError('Une erreur est survenue lors de la réinitialisation des salles');
+      console.error("Erreur lors de la réinitialisation des salles:", err);
+      setError(
+        "Une erreur est survenue lors de la réinitialisation des salles"
+      );
     } finally {
       setResettingRooms(false);
     }
@@ -193,7 +212,9 @@ export default function Profile() {
         <div className="grid grid-cols-1 gap-8">
           {/* User profile */}
           <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-xl font-semibold mb-6">Informations personnelles</h2>
+            <h2 className="text-xl font-semibold mb-6">
+              Informations personnelles
+            </h2>
 
             {error && (
               <div className="mb-4 p-4 bg-red-50 text-red-800 rounded-lg">
@@ -204,16 +225,18 @@ export default function Profile() {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* profile picture */}
               <div className="text-center">
-                <div 
+                <div
                   onClick={handleImageClick}
                   className="relative inline-block cursor-pointer group"
                 >
                   {imagePreview ? (
                     <div className="w-32 h-32 rounded-full overflow-hidden mx-auto">
-                      <img
+                      <Image
                         src={imagePreview}
                         alt="Photo de profil"
                         className="w-full h-full object-cover"
+                        height={128}
+                        width={128}
                       />
                     </div>
                   ) : (
@@ -239,8 +262,11 @@ export default function Profile() {
 
               {/* display name */}
               <div>
-                <label htmlFor="displayName" className="block text-sm font-medium text-gray-700 mb-2">
-                  Nom d'affichage
+                <label
+                  htmlFor="displayName"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Nom d&apos;affichage
                 </label>
                 <input
                   type="text"
@@ -259,7 +285,7 @@ export default function Profile() {
                 </label>
                 <input
                   type="email"
-                  value={user.email || ''}
+                  value={user.email || ""}
                   disabled
                   className="w-full rounded-lg border border-gray-300 px-4 py-2 bg-gray-50 text-gray-500"
                 />
@@ -270,12 +296,11 @@ export default function Profile() {
                 disabled={loading}
                 className="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? 'Mise à jour...' : 'Enregistrer les modifications'}
+                {loading ? "Mise à jour..." : "Enregistrer les modifications"}
               </button>
             </form>
           </div>
 
-          
           <div className="bg-white rounded-lg shadow-lg p-6">
             <div className="flex items-center gap-2 mb-6">
               <Ticket className="w-6 h-6" />
@@ -288,7 +313,9 @@ export default function Profile() {
               </div>
             ) : bookings.length === 0 ? (
               <div className="text-center py-8">
-                <p className="text-gray-600">Vous n'avez pas encore de réservations</p>
+                <p className="text-gray-600">
+                  Vous n&apos;avez pas encore de réservations
+                </p>
                 <Link
                   href="/cinema"
                   className="inline-block mt-4 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
@@ -311,13 +338,12 @@ export default function Profile() {
                       <Table.Cell className="whitespace-nowrap font-medium text-gray-900">
                         {booking.movie?.title || `Film #${booking.movieId}`}
                       </Table.Cell>
+                      <Table.Cell>Salle {booking.roomId}</Table.Cell>
                       <Table.Cell>
-                        Salle {booking.roomId}
-                      </Table.Cell>
-                      <Table.Cell>
-                        {booking.seats.map(seat => (
+                        {booking.seats.map((seat) => (
                           <div key={seat.seatId}>
-                            {seat.seatId} ({seat.ticketType} - {seat.price.toFixed(2)} €)
+                            {seat.seatId} ({seat.ticketType} -{" "}
+                            {seat.price.toFixed(2)} €)
                           </div>
                         ))}
                       </Table.Cell>
@@ -325,15 +351,20 @@ export default function Profile() {
                         {booking.totalAmount.toFixed(2)} €
                       </Table.Cell>
                       <Table.Cell>
-                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                          booking.status === 'confirmed' 
-                            ? 'bg-green-100 text-green-800'
-                            : booking.status === 'pending'
-                            ? 'bg-yellow-100 text-yellow-800'
-                            : 'bg-red-100 text-red-800'
-                        }`}>
-                          {booking.status === 'confirmed' ? 'Confirmée' : 
-                           booking.status === 'pending' ? 'En attente' : 'Annulée'}
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                            booking.status === "confirmed"
+                              ? "bg-green-100 text-green-800"
+                              : booking.status === "pending"
+                              ? "bg-yellow-100 text-yellow-800"
+                              : "bg-red-100 text-red-800"
+                          }`}
+                        >
+                          {booking.status === "confirmed"
+                            ? "Confirmée"
+                            : booking.status === "pending"
+                            ? "En attente"
+                            : "Annulée"}
                         </span>
                       </Table.Cell>
                     </Table.Row>
@@ -356,8 +387,14 @@ export default function Profile() {
                   disabled={resettingRooms}
                   className="flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <RefreshCw className={`w-4 h-4 mr-2 ${resettingRooms ? 'animate-spin' : ''}`} />
-                  {resettingRooms ? 'Réinitialisation...' : 'Réinitialiser les salles'}
+                  <RefreshCw
+                    className={`w-4 h-4 mr-2 ${
+                      resettingRooms ? "animate-spin" : ""
+                    }`}
+                  />
+                  {resettingRooms
+                    ? "Réinitialisation..."
+                    : "Réinitialiser les salles"}
                 </button>
               </div>
 
@@ -395,7 +432,8 @@ export default function Profile() {
                     placeholder="Ex: 27205 pour Inception"
                   />
                   <p className="mt-1 text-sm text-gray-500">
-                    IDs disponibles : 27205 (Inception), 155 (The Dark Knight), 680 (Pulp Fiction)
+                    IDs disponibles : 27205 (Inception), 155 (The Dark Knight),
+                    680 (Pulp Fiction)
                   </p>
                 </div>
 
@@ -416,7 +454,7 @@ export default function Profile() {
                   disabled={loading}
                   className="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {loading ? 'Assignation...' : 'Assigner le film'}
+                  {loading ? "Assignation..." : "Assigner le film"}
                 </button>
               </form>
             </div>

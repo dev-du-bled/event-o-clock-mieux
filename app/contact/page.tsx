@@ -1,39 +1,41 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { Send, AlertCircle, CheckCircle2 } from 'lucide-react';
-import { Alert } from 'flowbite-react';
-import { submitContactForm } from '@/lib/db/contact';
+import React, { useState } from "react";
+import { Send, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Alert } from "flowbite-react";
+import { submitContactForm } from "@/lib/db/contact";
 
 export default function Contact() {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
+    setError("");
     setSuccess(false);
 
     try {
       await submitContactForm(formData);
       setSuccess(true);
       setFormData({
-        name: '',
-        email: '',
-        subject: '',
-        message: ''
+        name: "",
+        email: "",
+        subject: "",
+        message: "",
       });
     } catch (err) {
-      setError('Une erreur est survenue lors de l\'envoi du message. Veuillez réessayer.');
-      console.error('Erreur lors de l\'envoi du formulaire:', err);
+      setError(
+        "Une erreur est survenue lors de l'envoi du message. Veuillez réessayer."
+      );
+      console.error("Erreur lors de l'envoi du formulaire:", err);
     } finally {
       setLoading(false);
     }
@@ -45,7 +47,9 @@ export default function Contact() {
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold mb-4">Contactez-nous</h1>
           <p className="text-gray-600">
-            Une question ? Un problème ? N'hésitez pas à nous contacter. Notre équipe est là pour vous aider et répondra à votre message dans les plus brefs délais.
+            Une question ? Un problème ? N&apos;hésitez pas à nous contacter.
+            Notre équipe est là pour vous aider et répondra à votre message dans
+            les plus brefs délais.
           </p>
         </div>
 
@@ -63,7 +67,10 @@ export default function Contact() {
             <Alert color="success" className="mb-4">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4" />
-                <span>Votre message a été envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.</span>
+                <span>
+                  Votre message a été envoyé avec succès ! Nous vous répondrons
+                  dans les plus brefs délais.
+                </span>
               </div>
             </Alert>
           )}
@@ -71,7 +78,10 @@ export default function Contact() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Nom complet *
                 </label>
                 <input
@@ -79,14 +89,19 @@ export default function Contact() {
                   id="name"
                   required
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
                   className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                   placeholder="John Doe"
                 />
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Email *
                 </label>
                 <input
@@ -94,7 +109,9 @@ export default function Contact() {
                   id="email"
                   required
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
                   className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                   placeholder="john@exemple.com"
                 />
@@ -102,7 +119,10 @@ export default function Contact() {
             </div>
 
             <div>
-              <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="subject"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Sujet *
               </label>
               <input
@@ -110,21 +130,28 @@ export default function Contact() {
                 id="subject"
                 required
                 value={formData.subject}
-                onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, subject: e.target.value })
+                }
                 className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                 placeholder="Comment pouvons-nous vous aider ?"
               />
             </div>
 
             <div>
-              <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+              <label
+                htmlFor="message"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
                 Message *
               </label>
               <textarea
                 id="message"
                 required
                 value={formData.message}
-                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, message: e.target.value })
+                }
                 rows={6}
                 className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                 placeholder="Écrivez votre message ici..."

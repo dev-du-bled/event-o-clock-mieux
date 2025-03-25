@@ -1,16 +1,15 @@
-import './globals.css';
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import { Navbar } from '@/components/navigation/navbar';
-import { Footer } from '@/components/navigation/footer';
-import { Calendar } from 'lucide-react';
-import { AuthProvider } from '@/context/auth-context';
+import "./globals.css";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import { Navbar } from "@/components/navigation/navbar";
+import { Footer } from "@/components/navigation/footer";
+import { AuthProvider } from "@/context/auth-context";
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Event'O'Clock - Votre plateforme de gestion d'événements",
-  description: 'Découvrez et gérez des événements passionnants',
+  description: "Découvrez et gérez des événements passionnants",
 };
 
 export default function RootLayout({
@@ -23,9 +22,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <AuthProvider>
           <Navbar />
-          <div className="pt-16">
-            {children}
-          </div>
+          <div className="pt-16">{children}</div>
           <Footer />
         </AuthProvider>
       </body>

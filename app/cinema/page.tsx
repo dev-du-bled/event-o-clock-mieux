@@ -1,14 +1,15 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { getMovieDetails, getImageUrl, type Movie } from '@/lib/tmdb';
-import { Film, Clock, Check, Ticket } from 'lucide-react';
-import { Card, Modal, Button } from 'flowbite-react';
-import { CinemaRoom, getCinemaRooms } from '@/lib/db/cinema';
-import { useAuth } from '@/context/auth-context';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { useCartStore } from '@/lib/store/cart';
+import { useState, useEffect } from "react";
+import { getMovieDetails, getImageUrl, type Movie } from "@/lib/tmdb";
+import { Film, Clock, Check, Ticket } from "lucide-react";
+import { Card, Modal, Button } from "flowbite-react";
+import { CinemaRoom, getCinemaRooms } from "@/lib/db/cinema";
+import { useAuth } from "@/context/auth-context";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useCartStore } from "@/lib/store/cart";
+import Image from "next/image";
 
 /**
  * @brief Cinema room configuration
@@ -16,7 +17,7 @@ import { useCartStore } from '@/lib/store/cart';
  */
 const ROOM_CONFIG = {
   rows: 5,
-  seatsPerRow: 8
+  seatsPerRow: 8,
 };
 
 /**
@@ -26,9 +27,8 @@ const ROOM_CONFIG = {
 const DEFAULT_PRICES = {
   child: 7.5,
   adult: 12,
-  student: 9
+  student: 9,
 };
-
 
 /**
  * @brief Cinema booking component
@@ -57,13 +57,13 @@ export default function Cinema() {
    * @param setShowSeatMap Set seat map display state
    * @param setSelectedSeats Set selected seats
    * @param setTicketType Set selected ticket type
-   *  
+   *
    * @return Cinema booking component
    * @retval Component view
-   *  
+   *
    * @note This component displays a list of cinema rooms, allows the user to select seats and book tickets
    * @note The component uses the TMDb API to fetch movie details and images
-   * 
+   *
    */
   const { user } = useAuth();
   const router = useRouter();
@@ -71,15 +71,19 @@ export default function Cinema() {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [rooms, setRooms] = useState<CinemaRoom[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  // const [error, setError] = useState("");
   const [selectedRoom, setSelectedRoom] = useState<CinemaRoom | null>(null);
   const [showSeatMap, setShowSeatMap] = useState(false);
-  const [selectedSeats, setSelectedSeats] = useState<{
-    seatId: string;
-    ticketType: 'child' | 'adult' | 'student';
-    price: number;
-  }[]>([]);
-  const [ticketType, setTicketType] = useState<'child' | 'adult' | 'student'>('adult');
+  const [selectedSeats, setSelectedSeats] = useState<
+    {
+      seatId: string;
+      ticketType: "child" | "adult" | "student";
+      price: number;
+    }[]
+  >([]);
+  const [ticketType, setTicketType] = useState<"child" | "adult" | "student">(
+    "adult"
+  );
 
   useEffect(() => {
     let isMounted = true;
@@ -90,18 +94,18 @@ export default function Cinema() {
         if (isMounted) {
           setRooms(roomsData);
           const movieIds = roomsData
-            .map(room => room.currentMovie?.id)
+            .map((room) => room.currentMovie?.id)
             .filter((id): id is number => id !== undefined);
-          
+
           if (movieIds.length > 0) {
-            const moviePromises = movieIds.map(id => getMovieDetails(id));
+            const moviePromises = movieIds.map((id) => getMovieDetails(id));
             const movieData = await Promise.all(moviePromises);
             setMovies(movieData);
           }
         }
       } catch (err) {
-        console.error('Erreur lors du chargement des données:', err);
-        if (isMounted) setError('Erreur lors du chargement des informations');
+        console.error("Erreur lors du chargement des données:", err);
+        // if (isMounted) setError("Erreur lors du chargement des informations");
       } finally {
         if (isMounted) setLoading(false);
       }
@@ -117,50 +121,54 @@ export default function Cinema() {
   const handleSeatClick = (seatId: string) => {
     if (!selectedRoom?.currentMovie) return;
 
-    const existingSeatIndex = selectedSeats.findIndex(item => item.seatId === seatId);
-    
+    const existingSeatIndex = selectedSeats.findIndex(
+      (item) => item.seatId === seatId
+    );
+
     if (existingSeatIndex !== -1) {
-      setSelectedSeats(prev => prev.filter((_, index) => index !== existingSeatIndex));
+      setSelectedSeats((prev) =>
+        prev.filter((_, index) => index !== existingSeatIndex)
+      );
     } else {
       const price = DEFAULT_PRICES[ticketType];
-      setSelectedSeats(prev => [...prev, {
-        seatId,
-        ticketType,
-        price
-      }]);
+      setSelectedSeats((prev) => [
+        ...prev,
+        {
+          seatId,
+          ticketType,
+          price,
+        },
+      ]);
     }
   };
 
   const handleAddToCart = () => {
-    /*
-      * @brief Add selected seats to cart
-      * @details Adds selected seats to the cart using Zustand
-      * @note This function adds each selected seat to the cart using the addItem function from the cart store
-      * @note The function resets the selection and redirects to the cart
-      */
+    /**
+     * @brief Add selected seats to cart
+     * @details Adds selected seats to the cart using Zustand
+     * @note This function adds each selected seat to the cart using the addItem function from the cart store
+     * @note The function resets the selection and redirects to the cart
+     */
     if (selectedSeats.length === 0 || !selectedRoom?.currentMovie) return;
 
-    
-    selectedSeats.forEach(seat => {
+    selectedSeats.forEach((seat) => {
       addItem({
         roomId: selectedRoom.id!,
         movieId: selectedRoom.currentMovie!.id,
         seatId: seat.seatId,
         price: seat.price,
-        ticketType: seat.ticketType
+        ticketType: seat.ticketType,
       });
     });
 
-    
     setSelectedSeats([]);
     setShowSeatMap(false);
 
-    
-    router.push('/cinema/cart');
+    router.push("/cinema/cart");
   };
 
   const renderSeatMap = (room: CinemaRoom) => {
-    const rows = Array.from({ length: ROOM_CONFIG.rows }, (_, rowIndex) => 
+    const rows = Array.from({ length: ROOM_CONFIG.rows }, (_, rowIndex) =>
       String.fromCharCode(65 + rowIndex)
     );
 
@@ -175,24 +183,34 @@ export default function Cinema() {
         <div className="flex justify-center gap-4 mb-4">
           <select
             value={ticketType}
-            onChange={(e) => setTicketType(e.target.value as 'child' | 'adult' | 'student')}
+            onChange={(e) =>
+              setTicketType(e.target.value as "child" | "adult" | "student")
+            }
             className="rounded-lg border border-gray-300 px-4 py-2"
           >
-            <option value="child">Enfant ({DEFAULT_PRICES.child.toFixed(2)} €)</option>
-            <option value="adult">Adulte ({DEFAULT_PRICES.adult.toFixed(2)} €)</option>
-            <option value="student">Étudiant ({DEFAULT_PRICES.student.toFixed(2)} €)</option>
+            <option value="child">
+              Enfant ({DEFAULT_PRICES.child.toFixed(2)} €)
+            </option>
+            <option value="adult">
+              Adulte ({DEFAULT_PRICES.adult.toFixed(2)} €)
+            </option>
+            <option value="student">
+              Étudiant ({DEFAULT_PRICES.student.toFixed(2)} €)
+            </option>
           </select>
         </div>
 
         {/* Seat */}
         <div className="grid gap-4">
-          {rows.map(row => (
+          {rows.map((row) => (
             <div key={row} className="flex justify-center gap-2">
               <span className="w-6 text-center text-gray-500">{row}</span>
               {Array.from({ length: ROOM_CONFIG.seatsPerRow }, (_, index) => {
                 const seatId = `${row}${index + 1}`;
-                const seat = room.seats.find(s => s.id === seatId);
-                const isSelected = selectedSeats.some(item => item.seatId === seatId);
+                const seat = room.seats.find((s) => s.id === seatId);
+                const isSelected = selectedSeats.some(
+                  (item) => item.seatId === seatId
+                );
                 const isAvailable = seat?.isAvailable ?? true;
 
                 return (
@@ -201,8 +219,16 @@ export default function Cinema() {
                     onClick={() => isAvailable && handleSeatClick(seatId)}
                     disabled={!isAvailable}
                     className={`w-8 h-8 rounded-t-lg flex items-center justify-center text-sm
-                      ${isSelected ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-gray-100 hover:bg-gray-200'}
-                      ${!isAvailable ? 'bg-red-300 cursor-not-allowed' : 'cursor-pointer'}
+                      ${
+                        isSelected
+                          ? "bg-green-500 text-white hover:bg-green-600"
+                          : "bg-gray-100 hover:bg-gray-200"
+                      }
+                      ${
+                        !isAvailable
+                          ? "bg-red-300 cursor-not-allowed"
+                          : "cursor-pointer"
+                      }
                       transition-colors`}
                   >
                     {isSelected ? <Check className="w-4 h-4" /> : index + 1}
@@ -237,7 +263,9 @@ export default function Cinema() {
       <div className="min-h-screen bg-gray-50 py-12">
         <div className="container mx-auto px-4">
           <div className="bg-white rounded-lg shadow-lg p-6 text-center">
-            <h2 className="text-xl font-semibold mb-4">Vous devez être connecté pour réserver des places</h2>
+            <h2 className="text-xl font-semibold mb-4">
+              Vous devez être connecté pour réserver des places
+            </h2>
             <Link href="/login" className="text-primary hover:text-primary/80">
               Se connecter
             </Link>
@@ -266,7 +294,7 @@ export default function Cinema() {
 
         {/* Movie Room */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {rooms.map(room => (
+          {rooms.map((room) => (
             <Card key={room.id} className="relative">
               <div className="absolute top-4 right-4">
                 <Button
@@ -287,16 +315,28 @@ export default function Cinema() {
 
               {room.currentMovie ? (
                 <div className="space-y-4">
-                  {movies.find(m => m.id === room.currentMovie?.id) && (
+                  {movies.find((m) => m.id === room.currentMovie?.id) && (
                     <>
-                      <img
-                        src={getImageUrl(movies.find(m => m.id === room.currentMovie?.id)?.poster_path ?? null, 'w500')}
-                        alt={movies.find(m => m.id === room.currentMovie?.id)?.title}
+                      <Image
+                        src={getImageUrl(
+                          movies.find((m) => m.id === room.currentMovie?.id)
+                            ?.poster_path ?? null,
+                          "w500"
+                        )}
+                        alt={
+                          movies.find((m) => m.id === room.currentMovie?.id)
+                            ?.title || ""
+                        }
                         className="rounded-lg shadow-lg w-full h-48 object-cover"
+                        width={500}
+                        height={750}
                       />
                       <div className="space-y-2">
                         <p className="font-semibold">
-                          {movies.find(m => m.id === room.currentMovie?.id)?.title}
+                          {
+                            movies.find((m) => m.id === room.currentMovie?.id)
+                              ?.title
+                          }
                         </p>
                         <div className="flex items-center text-sm text-gray-600">
                           <Clock className="w-4 h-4 mr-1" />
@@ -304,11 +344,15 @@ export default function Cinema() {
                         </div>
                         <div className="flex items-center text-sm text-gray-600">
                           <Ticket className="w-4 h-4 mr-1" />
-                          <span>À partir de {Math.min(
-                            DEFAULT_PRICES.child,
-                            DEFAULT_PRICES.student,
-                            DEFAULT_PRICES.adult
-                          ).toFixed(2)} €</span>
+                          <span>
+                            À partir de{" "}
+                            {Math.min(
+                              DEFAULT_PRICES.child,
+                              DEFAULT_PRICES.student,
+                              DEFAULT_PRICES.adult
+                            ).toFixed(2)}{" "}
+                            €
+                          </span>
                         </div>
                       </div>
                     </>
@@ -338,21 +382,21 @@ export default function Cinema() {
           }}
           size="xl"
         >
-          <Modal.Header>
-            Plan des sièges - {selectedRoom?.name}
-          </Modal.Header>
-          <Modal.Body>
-            {selectedRoom && renderSeatMap(selectedRoom)}
-          </Modal.Body>
+          <Modal.Header>Plan des sièges - {selectedRoom?.name}</Modal.Header>
+          <Modal.Body>{selectedRoom && renderSeatMap(selectedRoom)}</Modal.Body>
           <Modal.Footer>
             <Button
               onClick={handleAddToCart}
               disabled={selectedSeats.length === 0}
             >
-              Ajouter au panier {selectedSeats.length > 0 && `(${selectedSeats.reduce((sum, item) => sum + item.price, 0).toFixed(2)} €)`}
+              Ajouter au panier{" "}
+              {selectedSeats.length > 0 &&
+                `(${selectedSeats
+                  .reduce((sum, item) => sum + item.price, 0)
+                  .toFixed(2)} €)`}
             </Button>
-            <Button 
-              color="gray" 
+            <Button
+              color="gray"
               onClick={() => {
                 setShowSeatMap(false);
                 setSelectedSeats([]);

@@ -9,14 +9,13 @@
 import React, { useEffect, useState, Suspense } from "react";
 import { getAllEvents, type Event } from "@/lib/db/events";
 import { Calendar, MapPin, Clock, Search, Phone, Globe, Info, Repeat, Heart } from "lucide-react";
-import Link from "next/link";
-import Image from "next/image";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Modal, Carousel } from "flowbite-react";
 import { useAuth } from "@/context/auth-context";
 import { addToFavorites, removeFromFavorites, isEventFavorite } from "@/lib/db/favorites";
 import { useSearchParams } from "next/navigation";
+import Image from "next/image";
 
 /**
  * @interface CityFeature
@@ -219,7 +218,7 @@ export default function Events() {
         return startDate;
       }
       return `Du ${startDate} au ${endDate}`;
-    } catch (err) {
+    } catch {
       return "Date non définie";
     }
   };
@@ -233,7 +232,7 @@ export default function Events() {
       const startTime = format(new Date(`2000-01-01T${event.startTime}`), "HH:mm");
       const endTime = format(new Date(`2000-01-01T${event.endTime}`), "HH:mm");
       return `${startTime} - ${endTime}`;
-    } catch (err) {
+    } catch {
       return "Horaire non défini";
     }
   };
@@ -249,7 +248,7 @@ export default function Events() {
 
     return (
       <div className="relative w-full h-full">
-        <img src={src} alt={alt} className="absolute inset-0 w-full h-full object-cover" />
+        <Image src={src} alt={alt} className="absolute inset-0 w-full h-full object-cover" />
       </div>
     );
   };

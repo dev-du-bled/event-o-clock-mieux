@@ -1,7 +1,5 @@
-'use client';
-
-import { Modal } from 'flowbite-react';
-import { Users, GraduationCap, MapPin } from 'lucide-react';
+import { Modal } from "flowbite-react";
+import { Users, GraduationCap, MapPin } from "lucide-react";
 
 interface AboutModalProps {
   show: boolean;
@@ -10,7 +8,7 @@ interface AboutModalProps {
 
 /**
  * Component for displaying an About Us modal.
- * 
+ *
  * @param show - Boolean indicating if the modal should be displayed.
  * @param onClose - Function to handle closing the modal.
  */
@@ -27,9 +25,11 @@ export function AboutModal({ show, onClose }: AboutModalProps) {
             <div>
               <h3 className="text-lg font-semibold mb-2">Notre équipe</h3>
               <p className="text-gray-600">
-                Nous sommes une équipe de 4 étudiants passionnés par linformatique et le développement web.
-                Actuellement en troisième et dernière année du BUT Informatique, nous mettons nos compétences
-                au service de ce projet pour créer une plateforme d'événements innovante et conviviale.
+                Nous sommes une équipe de 4 étudiants passionnés par
+                linformatique et le développement web. Actuellement en troisième
+                et dernière année du BUT Informatique, nous mettons nos
+                compétences au service de ce projet pour créer une plateforme
+                d&apos;événements innovante et conviviale.
               </p>
             </div>
           </div>
@@ -39,9 +39,11 @@ export function AboutModal({ show, onClose }: AboutModalProps) {
             <div>
               <h3 className="text-lg font-semibold mb-2">Notre formation</h3>
               <p className="text-gray-600">
-                Le BUT Informatique nous a permis d'acquérir une solide formation en développement logiciel,
-                gestion de projets et conception d'applications. Cette dernière année est l'occasion
-                pour nous de mettre en pratique l'ensemble de nos connaissances à travers ce projet concret.
+                Le BUT Informatique nous a permis d&apos;acquérir une solide
+                formation en développement logiciel, gestion de projets et
+                conception d&apos;applications. Cette dernière année est
+                l&apos;occasion pour nous de mettre en pratique l&apos;ensemble
+                de nos connaissances à travers ce projet concret.
               </p>
             </div>
           </div>
@@ -51,9 +53,10 @@ export function AboutModal({ show, onClose }: AboutModalProps) {
             <div>
               <h3 className="text-lg font-semibold mb-2">Notre localisation</h3>
               <p className="text-gray-600">
-                Nous étudions à l'IUT de Nevers, un établissement qui nous offre un environnement
-                propice à l'apprentissage et à l'innovation. La ville de Nevers, avec son
-                dynamisme et sa qualité de vie, est un excellent cadre pour notre formation.
+                Nous étudions à l&apos;IUT de Nevers, un établissement qui nous
+                offre un environnement propice à l&apos;apprentissage et à
+                l&apos;innovation. La ville de Nevers, avec son dynamisme et sa
+                qualité de vie, est un excellent cadre pour notre formation.
               </p>
             </div>
           </div>

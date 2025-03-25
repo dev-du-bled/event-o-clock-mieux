@@ -9,20 +9,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import { useAuth } from "@/context/auth-context";
-import {
-  Calendar,
-  MapPin,
-  Upload,
-  Tag,
-  DollarSign,
-  Info,
-  Clock,
-  Accessibility,
-  AlertCircle,
-  Bus,
-  Search,
-  Repeat,
-} from "lucide-react";
+import { MapPin, Upload, Tag, DollarSign, Info, Clock, Accessibility, Repeat } from "lucide-react";
 import { updateEvent } from "@/lib/db/events";
 import { uploadEventImage } from "@/lib/storage";
 import Link from "next/link";
@@ -84,7 +71,7 @@ export default function EditEvent() {
 
         // Check if user is the creator of the event
         if (eventData.createdBy !== user.uid) {
-          setError("Vous n'êtes pas autorisé à modifier cet événement");
+          setError("Vous n&apos;êtes pas autorisé à modifier cet événement");
           return;
         }
 
@@ -115,8 +102,8 @@ export default function EditEvent() {
         setExistingImages(eventData.images || []);
         setInitialLoad(false);
       } catch (err) {
-        console.error("Erreur lors du chargement de l'événement:", err);
-        setError("Erreur lors du chargement de l'événement");
+        console.error("Erreur lors du chargement de l&apos;événement:", err);
+        setError("Erreur lors du chargement de l&apos;événement");
       }
     }
 
@@ -176,7 +163,7 @@ export default function EditEvent() {
       setAddressSuggestions(data.features || []);
       setShowSuggestions(true);
     } catch (error) {
-      console.error("Erreur lors de la recherche d'adresse:", error);
+      console.error("Erreur lors de la recherche d&apos;adresse:", error);
     }
   };
 
@@ -233,7 +220,7 @@ export default function EditEvent() {
     }
 
     if (!eventID) {
-      setError("Identifiant d'événement invalide");
+      setError("Identifiant d&apos;événement invalide");
       return;
     }
 
@@ -275,7 +262,7 @@ export default function EditEvent() {
 
       router.push("/my-events");
     } catch (err) {
-      setError("Une erreur est survenue lors de la modification de l'événement");
+      setError("Une erreur est survenue lors de la modification de l&apos;événement");
       console.error(err);
     } finally {
       setLoading(false);
@@ -320,14 +307,14 @@ export default function EditEvent() {
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="container mx-auto px-4 max-w-3xl">
-        <h1 className="text-3xl font-bold mb-8">Modifier l'événement</h1>
+        <h1 className="text-3xl font-bold mb-8">Modifier l&apos;événement</h1>
 
         <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-lg p-6 space-y-6">
           {error && <div className="p-4 bg-red-50 text-red-800 rounded-lg">{error}</div>}
 
           {/* Title */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Titre de l'événement *</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Titre de l&apos;événement *</label>
             <input
               type="text"
               required
@@ -462,7 +449,7 @@ export default function EditEvent() {
           <div className="space-y-4">
             <label className="block text-sm font-medium text-gray-700">
               <MapPin className="inline-block w-4 h-4 mr-2" />
-              Adresse de l'événement *
+              Adresse de l&apos;événement *
             </label>
             <div className="relative">
               <input
