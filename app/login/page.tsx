@@ -12,6 +12,7 @@ import { auth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Mail, Lock, AlertCircle } from "lucide-react";
+import { authClient } from "@/lib/auth/auth-client";
 
 /**
  * @brief Login component
@@ -33,16 +34,25 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    setLoading(true);
 
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      router.push("/");
-    } catch {
-      setError("Email ou mot de passe incorrect");
-    } finally {
-      setLoading(false);
-    }
+    await authClient.signIn.email(
+      {
+        email,
+        password,
+      },
+      {
+        onRequest() {
+          setLoading(true);
+        },
+        onSuccess() {
+          router.push("/");
+        },
+        onError(ctx) {
+          setError(ctx.error.message || "Erreur lors de connexion");
+          setLoading(false);
+        },
+      },
+    );
   };
 
   return (

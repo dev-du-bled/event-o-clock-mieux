@@ -14,6 +14,8 @@ import {
 import { auth } from "@/lib/firebase";
 import Link from "next/link";
 import { Mail, Lock, AlertCircle } from "lucide-react";
+import { authClient } from "@/lib/auth/auth-client";
+import { useRouter } from "next/navigation";
 
 /**
  * @brief User registration component
@@ -27,6 +29,7 @@ import { Mail, Lock, AlertCircle } from "lucide-react";
  * @returns React component for registration page
  */
 export default function Register() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -69,24 +72,26 @@ export default function Register() {
 
     setLoading(true);
 
-    try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
+    await authClient.signUp.email(
+      {
         email,
         password,
-      );
-      await sendEmailVerification(userCredential.user);
-      setVerificationEmailSent(true);
-    } catch (err) {
-      if (err instanceof Error && "code" in err) {
-        if (err.code === "auth/email-already-in-use") {
-          setError("Cet email est déjà utilisé");
-        } else {
-          setError("Une erreur est survenue lors de l'inscription");
-        }
-      }
-      setLoading(false);
-    }
+        name: "test",
+        image: undefined,
+      },
+      {
+        onRequest() {
+          setLoading(true);
+        },
+        onSuccess() {
+          router.push("/login");
+        },
+        onError(ctx) {
+          setError(ctx.error.message || "Erreur lors de la création du compte");
+          setLoading(false);
+        },
+      },
+    );
   };
 
   if (verificationEmailSent) {
