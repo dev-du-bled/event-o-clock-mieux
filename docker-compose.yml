@@ -1,0 +1,23 @@
+services:
+  # frontend:
+  #   container_name: event_o_clock
+  #   build: .
+  #   ports:
+  #     - "3000:3000"
+  #   env_file: .env
+
+  db:
+    image: postgres:latest
+    container_name: database
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: eventuser
+      POSTGRES_PASSWORD: supersecurepassword
+      POSTGRES_DB: eventoclock
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
