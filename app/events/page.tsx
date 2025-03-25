@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 /**
  * @file page.tsx
@@ -6,18 +6,30 @@
  * @details Provides event browsing functionality with search, filtering, and favorite management
  */
 
-import React, { useEffect, useState } from 'react';
-import { getAllEvents, type Event } from '@/lib/db/events';
-import { Calendar, MapPin, Clock, Search, Phone, Globe, Info, Repeat, Heart } from 'lucide-react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { format } from 'date-fns';
-import { fr } from 'date-fns/locale';
-import { Modal, Carousel } from 'flowbite-react';
-import { useAuth } from '@/context/auth-context';
-import { addToFavorites, removeFromFavorites, isEventFavorite } from '@/lib/db/favorites';
-import { useSearchParams } from 'next/navigation';
-
+import React, { useEffect, useState } from "react";
+import { getAllEvents, type Event } from "@/lib/db/events";
+import {
+  Calendar,
+  MapPin,
+  Clock,
+  Search,
+  Phone,
+  Globe,
+  Info,
+  Repeat,
+  Heart,
+} from "lucide-react";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
+import { Modal, Carousel } from "flowbite-react";
+import { useAuth } from "@/context/auth-context";
+import {
+  addToFavorites,
+  removeFromFavorites,
+  isEventFavorite,
+} from "@/lib/db/favorites";
+import { useSearchParams } from "next/navigation";
+import Image from "next/image";
 
 /**
  * @interface CityFeature
@@ -31,7 +43,6 @@ interface CityFeature {
   };
 }
 
-
 /**
  * @brief Events listing component
  * @details Main component for displaying and filtering events. Features include:
@@ -42,33 +53,32 @@ interface CityFeature {
  *          - Location-based filtering
  *          - Favorites management
  *          - Event detail modal
- * 
+ *
  * @returns React component for events page
  */
 export default function Events() {
   const { user } = useAuth();
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [error, setError] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 100]);
-  const [startDate, setStartDate] = useState<string>('');
-  const [endDate, setEndDate] = useState<string>('');
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [openModal, setOpenModal] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoriteLoading, setFavoriteLoading] = useState(false);
-  const [location, setLocation] = useState('');
+  const [location, setLocation] = useState("");
   const [citySuggestions, setCitySuggestions] = useState<CityFeature[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    
-    const searchFromUrl = searchParams.get('search');
-    const locationFromUrl = searchParams.get('location');
-    
+    const searchFromUrl = searchParams.get("search");
+    const locationFromUrl = searchParams.get("location");
+
     if (searchFromUrl) setSearchTerm(searchFromUrl);
     if (locationFromUrl) setLocation(locationFromUrl);
   }, [searchParams]);
@@ -79,7 +89,7 @@ export default function Events() {
         const allEvents = await getAllEvents();
         setEvents(allEvents);
       } catch (err) {
-        setError('Erreur lors du chargement des événements');
+        setError("Erreur lors du chargement des événements");
         console.error(err);
       } finally {
         setLoading(false);
@@ -96,7 +106,7 @@ export default function Events() {
           const favorite = await isEventFavorite(user.uid, selectedEvent.id);
           setIsFavorite(favorite);
         } catch (err) {
-          console.error('Erreur lors de la vérification des favoris:', err);
+          console.error("Erreur lors de la vérification des favoris:", err);
         }
       }
     }
@@ -116,7 +126,7 @@ export default function Events() {
       }
       setIsFavorite(!isFavorite);
     } catch (err) {
-      console.error('Erreur lors de la gestion des favoris:', err);
+      console.error("Erreur lors de la gestion des favoris:", err);
     } finally {
       setFavoriteLoading(false);
     }
@@ -131,13 +141,15 @@ export default function Events() {
 
     try {
       const response = await fetch(
-        `https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(query)}&type=municipality&limit=5`
+        `https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(
+          query
+        )}&type=municipality&limit=5`
       );
       const data = await response.json();
       setCitySuggestions(data.features || []);
       setShowSuggestions(true);
     } catch (error) {
-      console.error('Erreur lors de la recherche de ville:', error);
+      console.error("Erreur lors de la recherche de ville:", error);
     }
   };
 
@@ -153,70 +165,95 @@ export default function Events() {
   };
 
   const categories = Array.from(
-    new Set(events.flatMap(event => event.categories))
+    new Set(events.flatMap((event) => event.categories))
   ).sort();
 
-  const filteredEvents = events.filter(event => {
-    const matchesSearch = event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          event.description.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesLocation = !location || event.location.toLowerCase().includes(location.toLowerCase());
-    
-    const matchesCategory = !selectedCategory || event.categories.includes(selectedCategory);
-  
-    const matchesPriceRange = event.price >= priceRange[0] && event.price <= priceRange[1] || (event.price === 0 && priceRange[0] === 0);
-  
+  const filteredEvents = events.filter((event) => {
+    const matchesSearch =
+      event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      event.description.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesLocation =
+      !location ||
+      event.location.toLowerCase().includes(location.toLowerCase());
+
+    const matchesCategory =
+      !selectedCategory || event.categories.includes(selectedCategory);
+
+    const matchesPriceRange =
+      (event.price >= priceRange[0] && event.price <= priceRange[1]) ||
+      (event.price === 0 && priceRange[0] === 0);
+
     const eventStartDate = new Date(event.startDate);
     const eventEndDate = new Date(event.endDate);
-    
+
     const matchesDateRange =
       (!startDate || eventStartDate >= new Date(startDate)) &&
       (!endDate || eventEndDate <= new Date(endDate));
-  
-    return matchesSearch && matchesLocation && matchesCategory && matchesPriceRange && matchesDateRange;
+
+    return (
+      matchesSearch &&
+      matchesLocation &&
+      matchesCategory &&
+      matchesPriceRange &&
+      matchesDateRange
+    );
   });
 
   const formatEventDate = (event: Event) => {
     if (event.isRecurring) {
-      const days = event.recurringDays.map(day => {
+      const days = event.recurringDays.map((day) => {
         switch (day) {
-          case 'monday': return 'Lundi';
-          case 'tuesday': return 'Mardi';
-          case 'wednesday': return 'Mercredi';
-          case 'thursday': return 'Jeudi';
-          case 'friday': return 'Vendredi';
-          case 'saturday': return 'Samedi';
-          case 'sunday': return 'Dimanche';
-          default: return '';
+          case "monday":
+            return "Lundi";
+          case "tuesday":
+            return "Mardi";
+          case "wednesday":
+            return "Mercredi";
+          case "thursday":
+            return "Jeudi";
+          case "friday":
+            return "Vendredi";
+          case "saturday":
+            return "Samedi";
+          case "sunday":
+            return "Dimanche";
+          default:
+            return "";
         }
       });
-      return `Tous les ${days.join(', ')}`;
+      return `Tous les ${days.join(", ")}`;
     }
 
     try {
-      const startDate = format(new Date(event.startDate), 'PPP', { locale: fr });
-      const endDate = format(new Date(event.endDate), 'PPP', { locale: fr });
-      
+      const startDate = format(new Date(event.startDate), "PPP", {
+        locale: fr,
+      });
+      const endDate = format(new Date(event.endDate), "PPP", { locale: fr });
+
       if (startDate === endDate) {
         return startDate;
       }
       return `Du ${startDate} au ${endDate}`;
-    } catch (err) {
-      return 'Date non définie';
+    } catch {
+      return "Date non définie";
     }
   };
 
   const formatEventTime = (event: Event) => {
     if (!event.startTime || !event.endTime) {
-      return 'Horaire non défini';
+      return "Horaire non défini";
     }
 
     try {
-      const startTime = format(new Date(`2000-01-01T${event.startTime}`), 'HH:mm');
-      const endTime = format(new Date(`2000-01-01T${event.endTime}`), 'HH:mm');
+      const startTime = format(
+        new Date(`2000-01-01T${event.startTime}`),
+        "HH:mm"
+      );
+      const endTime = format(new Date(`2000-01-01T${event.endTime}`), "HH:mm");
       return `${startTime} - ${endTime}`;
-    } catch (err) {
-      return 'Horaire non défini';
+    } catch {
+      return "Horaire non défini";
     }
   };
 
@@ -231,10 +268,12 @@ export default function Events() {
 
     return (
       <div className="relative w-full h-full">
-        <img
+        <Image
           src={src}
           alt={alt}
           className="absolute inset-0 w-full h-full object-cover"
+          height={200}
+          width={200}
         />
       </div>
     );
@@ -305,7 +344,9 @@ export default function Events() {
                     type="number"
                     className="w-20 p-2 border rounded-md"
                     value={priceRange[0]}
-                    onChange={(e) => setPriceRange([+e.target.value, priceRange[1]])}
+                    onChange={(e) =>
+                      setPriceRange([+e.target.value, priceRange[1]])
+                    }
                     placeholder="Min"
                   />
                   <span>à</span>
@@ -313,7 +354,9 @@ export default function Events() {
                     type="number"
                     className="w-20 p-2 border rounded-md"
                     value={priceRange[1]}
-                    onChange={(e) => setPriceRange([priceRange[0], +e.target.value])}
+                    onChange={(e) =>
+                      setPriceRange([priceRange[0], +e.target.value])
+                    }
                     placeholder="Max"
                   />
                 </div>
@@ -346,12 +389,12 @@ export default function Events() {
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
           </div>
         ) : error ? (
-          <div className="bg-red-50 text-red-800 p-4 rounded-lg">
-            {error}
-          </div>
+          <div className="bg-red-50 text-red-800 p-4 rounded-lg">{error}</div>
         ) : filteredEvents.length === 0 ? (
           <div className="bg-white rounded-lg shadow-lg p-6 text-center">
-            <h2 className="text-xl font-semibold mb-4">Aucun événement trouvé</h2>
+            <h2 className="text-xl font-semibold mb-4">
+              Aucun événement trouvé
+            </h2>
             <p className="text-gray-600">
               Essayez de modifier vos critères de recherche
             </p>
@@ -359,7 +402,7 @@ export default function Events() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredEvents.map((event) => (
-              <div 
+              <div
                 key={event.id}
                 onClick={() => {
                   setSelectedEvent(event);
@@ -381,8 +424,12 @@ export default function Events() {
                       ))}
                     </div>
                     <div className="absolute top-4 right-4">
-                    <span className={`${event.isPaid ? 'bg-primary' : 'bg-green-500'} text-white text-sm font-semibold px-3 py-1 rounded-full`}>
-                        {event.isPaid ? `${event.price} €` : 'Gratuit'}
+                      <span
+                        className={`${
+                          event.isPaid ? "bg-primary" : "bg-green-500"
+                        } text-white text-sm font-semibold px-3 py-1 rounded-full`}
+                      >
+                        {event.isPaid ? `${event.price} €` : "Gratuit"}
                       </span>
                     </div>
                   </div>
@@ -435,7 +482,10 @@ export default function Events() {
                       <Carousel slideInterval={5000} className="h-full">
                         {selectedEvent.images.map((image, index) => (
                           <div key={index} className="relative h-full">
-                            {renderEventImage(image, `${selectedEvent.title} ${index + 1}`)}
+                            {renderEventImage(
+                              image,
+                              `${selectedEvent.title} ${index + 1}`
+                            )}
                           </div>
                         ))}
                       </Carousel>
@@ -456,8 +506,14 @@ export default function Events() {
                           {category}
                         </span>
                       ))}
-                      <span className={`${selectedEvent.isPaid ? 'bg-primary' : 'bg-green-500'} text-white text-sm font-semibold px-3 py-1 rounded-full`}>
-                        {selectedEvent.isPaid ? `${selectedEvent.price} €` : 'Gratuit'}
+                      <span
+                        className={`${
+                          selectedEvent.isPaid ? "bg-primary" : "bg-green-500"
+                        } text-white text-sm font-semibold px-3 py-1 rounded-full`}
+                      >
+                        {selectedEvent.isPaid
+                          ? `${selectedEvent.price} €`
+                          : "Gratuit"}
                       </span>
                     </div>
 
@@ -481,17 +537,25 @@ export default function Events() {
                     </div>
 
                     <div>
-                      <div className="text-lg font-semibold mb-2">Description</div>
-                      <p className="text-gray-600">{selectedEvent.description}</p>
+                      <div className="text-lg font-semibold mb-2">
+                        Description
+                      </div>
+                      <p className="text-gray-600">
+                        {selectedEvent.description}
+                      </p>
                     </div>
 
-                    {(selectedEvent.organizerPhone || selectedEvent.organizerWebsite) && (
+                    {(selectedEvent.organizerPhone ||
+                      selectedEvent.organizerWebsite) && (
                       <div className="space-y-2">
                         <div className="text-lg font-semibold">Contact</div>
                         {selectedEvent.organizerPhone && (
                           <div className="flex items-center text-gray-600">
                             <Phone className="w-5 h-5 mr-2" />
-                            <a href={`tel:${selectedEvent.organizerPhone}`} className="hover:text-primary">
+                            <a
+                              href={`tel:${selectedEvent.organizerPhone}`}
+                              className="hover:text-primary"
+                            >
                               {selectedEvent.organizerPhone}
                             </a>
                           </div>
@@ -513,7 +577,9 @@ export default function Events() {
                     )}
 
                     <div className="space-y-2">
-                      <div className="text-lg font-semibold">Informations pratiques</div>
+                      <div className="text-lg font-semibold">
+                        Informations pratiques
+                      </div>
                       <div className="flex items-start text-gray-600">
                         <Info className="w-5 h-5 mr-2 mt-1 flex-shrink-0" />
                         <ul className="list-disc list-inside space-y-1">
@@ -548,18 +614,21 @@ export default function Events() {
                       onClick={handleFavoriteClick}
                       disabled={favoriteLoading}
                       className={`px-6 py-2 rounded-lg transition-colors flex items-center ${
-                        isFavorite 
-                          ? 'bg-red-500 text-white hover:bg-red-600' 
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        isFavorite
+                          ? "bg-red-500 text-white hover:bg-red-600"
+                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                       }`}
                     >
-                      <Heart className={`w-5 h-5 mr-2 ${isFavorite ? 'fill-current' : ''}`} />
-                      {favoriteLoading 
-                        ? 'Chargement...' 
-                        : isFavorite 
-                          ? 'Retirer des favoris' 
-                          : 'Ajouter aux favoris'
-                      }
+                      <Heart
+                        className={`w-5 h-5 mr-2 ${
+                          isFavorite ? "fill-current" : ""
+                        }`}
+                      />
+                      {favoriteLoading
+                        ? "Chargement..."
+                        : isFavorite
+                        ? "Retirer des favoris"
+                        : "Ajouter aux favoris"}
                     </button>
                   )}
                 </div>

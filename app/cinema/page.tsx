@@ -9,6 +9,7 @@ import { useAuth } from "@/context/auth-context";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useCartStore } from "@/lib/store/cart";
+import Image from "next/image";
 
 /**
  * @brief Cinema room configuration
@@ -70,7 +71,7 @@ export default function Cinema() {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [rooms, setRooms] = useState<CinemaRoom[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  // const [error, setError] = useState("");
   const [selectedRoom, setSelectedRoom] = useState<CinemaRoom | null>(null);
   const [showSeatMap, setShowSeatMap] = useState(false);
   const [selectedSeats, setSelectedSeats] = useState<
@@ -104,7 +105,7 @@ export default function Cinema() {
         }
       } catch (err) {
         console.error("Erreur lors du chargement des données:", err);
-        if (isMounted) setError("Erreur lors du chargement des informations");
+        // if (isMounted) setError("Erreur lors du chargement des informations");
       } finally {
         if (isMounted) setLoading(false);
       }
@@ -316,7 +317,7 @@ export default function Cinema() {
                 <div className="space-y-4">
                   {movies.find((m) => m.id === room.currentMovie?.id) && (
                     <>
-                      <img
+                      <Image
                         src={getImageUrl(
                           movies.find((m) => m.id === room.currentMovie?.id)
                             ?.poster_path ?? null,
@@ -324,9 +325,11 @@ export default function Cinema() {
                         )}
                         alt={
                           movies.find((m) => m.id === room.currentMovie?.id)
-                            ?.title
+                            ?.title || ""
                         }
                         className="rounded-lg shadow-lg w-full h-48 object-cover"
+                        width={500}
+                        height={750}
                       />
                       <div className="space-y-2">
                         <p className="font-semibold">

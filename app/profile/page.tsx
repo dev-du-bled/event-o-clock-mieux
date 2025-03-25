@@ -22,6 +22,7 @@ import {
 import { getMovieDetails, type Movie } from "@/lib/tmdb";
 import Link from "next/link";
 import { Alert, Table } from "flowbite-react";
+import Image from "next/image";
 
 /**
  * @brief User profile management component
@@ -230,10 +231,12 @@ export default function Profile() {
                 >
                   {imagePreview ? (
                     <div className="w-32 h-32 rounded-full overflow-hidden mx-auto">
-                      <img
+                      <Image
                         src={imagePreview}
                         alt="Photo de profil"
                         className="w-full h-full object-cover"
+                        height={128}
+                        width={128}
                       />
                     </div>
                   ) : (

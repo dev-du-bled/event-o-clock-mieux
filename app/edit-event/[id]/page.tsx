@@ -24,6 +24,7 @@ import { uploadEventImage } from "@/lib/storage";
 import Link from "next/link";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import Image from "next/image";
 
 export default function EditEvent({ params }: { params: { id: string } }) {
   const { user } = useAuth();
@@ -337,7 +338,7 @@ export default function EditEvent({ params }: { params: { id: string } }) {
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="container mx-auto px-4 max-w-3xl">
-        <h1 className="text-3xl font-bold mb-8">Modifier l&apos;événement</h1>
+        <h1 className="text-3xl font-bold mb-8">Modifier l`&apos;`événement</h1>
 
         <form
           onSubmit={handleSubmit}
@@ -350,7 +351,7 @@ export default function EditEvent({ params }: { params: { id: string } }) {
           {/* Title */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Titre de l&apos;événement *
+              Titre de l`&apos;`événement *
             </label>
             <input
               type="text"
@@ -507,7 +508,7 @@ export default function EditEvent({ params }: { params: { id: string } }) {
           <div className="space-y-4">
             <label className="block text-sm font-medium text-gray-700">
               <MapPin className="inline-block w-4 h-4 mr-2" />
-              Adresse de l&apos;événement *
+              Adresse de l`&apos;`événement *
             </label>
             <div className="relative">
               <input
@@ -590,10 +591,12 @@ export default function EditEvent({ params }: { params: { id: string } }) {
                 <div className="flex flex-wrap gap-2">
                   {existingImages.map((image, index) => (
                     <div key={index} className="relative">
-                      <img
+                      <Image
                         src={image}
                         alt={`Image existante ${index + 1}`}
                         className="h-20 w-20 object-cover rounded-lg"
+                        width={80}
+                        height={80}
                       />
                       <button
                         type="button"
@@ -635,10 +638,12 @@ export default function EditEvent({ params }: { params: { id: string } }) {
               <div className="mt-4 flex flex-wrap gap-2">
                 {images.map((image, index) => (
                   <div key={index} className="relative">
-                    <img
+                    <Image
                       src={URL.createObjectURL(image)}
                       alt={`Preview ${index + 1}`}
                       className="h-20 w-20 object-cover rounded-lg"
+                      width={80}
+                      height={80}
                     />
                     <button
                       type="button"
