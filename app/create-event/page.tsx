@@ -23,6 +23,7 @@ import { createEvent, updateEvent } from "@/lib/db/events";
 import { uploadEventImage } from "@/lib/storage";
 import Link from "next/link";
 import Image from "next/image";
+import AddressFeature from "@/lib/types";
 
 export default function CreateEvent() {
   const { user, userProfile } = useAuth();
@@ -132,9 +133,9 @@ export default function CreateEvent() {
     { id: "sunday", label: "Dimanche" },
   ];
 
-  function debounce<T extends (...args: any[]) => any>(
+  function debounce<T extends (...args: string[]) => void>(
     func: T,
-    wait: number
+    wait: number,
   ): (...args: Parameters<T>) => void {
     let timeout: NodeJS.Timeout;
 
@@ -158,9 +159,7 @@ export default function CreateEvent() {
 
     try {
       const response = await fetch(
-        `https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(
-          query
-        )}&limit=5`
+        `https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(query)}&limit=5`,
       );
       const data = await response.json();
       setAddressSuggestions(data.features || []);
@@ -183,7 +182,7 @@ export default function CreateEvent() {
    * @param feature Selected address feature
    */
   const handleAddressSelect = (feature: AddressFeature) => {
-    const { label, postcode, city, housenumber, street } = feature.properties;
+    const { postcode, city, housenumber, street } = feature.properties;
     setFormData((prev) => ({
       ...prev,
       streetNumber: housenumber || "",
@@ -214,7 +213,7 @@ export default function CreateEvent() {
     e.preventDefault();
     if (e.dataTransfer.files) {
       const newImages = Array.from(e.dataTransfer.files).filter((file) =>
-        file.type.startsWith("image/")
+        file.type.startsWith("image/"),
       );
       setImages((prev) => [...prev, ...newImages].slice(0, 5));
     }
@@ -246,7 +245,7 @@ export default function CreateEvent() {
 
     if (isRecurring && recurringDays.length === 0) {
       setError(
-        "Veuillez sélectionner au moins un jour de la semaine pour un événement récurrent"
+        "Veuillez sélectionner au moins un jour de la semaine pour un événement récurrent",
       );
       return;
     }
@@ -273,7 +272,7 @@ export default function CreateEvent() {
       const eventId = await createEvent(eventData);
 
       const imageUrls = await Promise.all(
-        images.map((image) => uploadEventImage(image, eventId))
+        images.map((image) => uploadEventImage(image, eventId)),
       );
 
       await updateEvent(eventId, { images: imageUrls });
@@ -352,7 +351,7 @@ export default function CreateEvent() {
                               setRecurringDays([...recurringDays, day.id]);
                             } else {
                               setRecurringDays(
-                                recurringDays.filter((d) => d !== day.id)
+                                recurringDays.filter((d) => d !== day.id),
                               );
                             }
                           }}
@@ -563,8 +562,6 @@ export default function CreateEvent() {
                       src={URL.createObjectURL(image)}
                       alt={`Preview ${index + 1}`}
                       className="h-20 w-20 object-cover rounded-lg"
-                      height={80}
-                      width={80}
                     />
                     <button
                       type="button"
@@ -595,7 +592,7 @@ export default function CreateEvent() {
                   onClick={() => {
                     if (selectedCategories.includes(category)) {
                       setSelectedCategories(
-                        selectedCategories.filter((c) => c !== category)
+                        selectedCategories.filter((c) => c !== category),
                       );
                     } else {
                       setSelectedCategories([...selectedCategories, category]);

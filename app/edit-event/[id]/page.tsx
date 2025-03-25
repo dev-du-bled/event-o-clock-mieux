@@ -7,7 +7,7 @@
  *          image management, and address validation
  */
 import React, { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import { useAuth } from "@/context/auth-context";
 import {
   MapPin,
@@ -24,9 +24,10 @@ import { uploadEventImage } from "@/lib/storage";
 import Link from "next/link";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import AddressFeature from "@/lib/types";
 import Image from "next/image";
 
-export default function EditEvent({ params }: { params: { id: string } }) {
+export default function EditEvent() {
   const { user } = useAuth();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -43,6 +44,10 @@ export default function EditEvent({ params }: { params: { id: string } }) {
   const [isRecurring, setIsRecurring] = useState(false);
   const [recurringDays, setRecurringDays] = useState<string[]>([]);
   const [initialLoad, setInitialLoad] = useState(true);
+
+  const { id } = router.query;
+  const eventID =
+    typeof id === "string" ? id : Array.isArray(id) ? id[0] : undefined;
 
   const [formData, setFormData] = useState({
     title: "",
@@ -66,10 +71,10 @@ export default function EditEvent({ params }: { params: { id: string } }) {
 
   useEffect(() => {
     async function loadEvent() {
-      if (!user) return;
+      if (!user || !eventID) return;
 
       try {
-        const eventDoc = await getDoc(doc(db, "events", params.id));
+        const eventDoc = await getDoc(doc(db, "events", eventID));
         if (!eventDoc.exists()) {
           setError("Événement non trouvé");
           return;
@@ -79,7 +84,7 @@ export default function EditEvent({ params }: { params: { id: string } }) {
 
         // Check if user is the creator of the event
         if (eventData.createdBy !== user.uid) {
-          setError("Vous n'êtes pas autorisé à modifier cet événement");
+          setError("Vous n&apos;êtes pas autorisé à modifier cet événement");
           return;
         }
 
@@ -110,13 +115,13 @@ export default function EditEvent({ params }: { params: { id: string } }) {
         setExistingImages(eventData.images || []);
         setInitialLoad(false);
       } catch (err) {
-        console.error("Erreur lors du chargement de l'événement:", err);
-        setError("Erreur lors du chargement de l'événement");
+        console.error("Erreur lors du chargement de l&apos;événement:", err);
+        setError("Erreur lors du chargement de l&apos;événement");
       }
     }
 
     loadEvent();
-  }, [params.id, user]);
+  }, [eventID, user]);
 
   const categories = [
     "Concert",
@@ -148,9 +153,9 @@ export default function EditEvent({ params }: { params: { id: string } }) {
    *
    */
 
-  function debounce<T extends (...args: any[]) => any>(
+  function debounce<T extends (...args: string[]) => void>(
     func: T,
-    wait: number
+    wait: number,
   ): (...args: Parameters<T>) => void {
     let timeout: NodeJS.Timeout;
 
@@ -180,15 +185,13 @@ export default function EditEvent({ params }: { params: { id: string } }) {
 
     try {
       const response = await fetch(
-        `https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(
-          query
-        )}&limit=5`
+        `https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(query)}&limit=5`,
       );
       const data = await response.json();
       setAddressSuggestions(data.features || []);
       setShowSuggestions(true);
     } catch (error) {
-      console.error("Erreur lors de la recherche d'adresse:", error);
+      console.error("Erreur lors de la recherche d&apos;adresse:", error);
     }
   };
 
@@ -206,7 +209,7 @@ export default function EditEvent({ params }: { params: { id: string } }) {
   };
 
   const handleAddressSelect = (feature: AddressFeature) => {
-    const { label, postcode, city, housenumber, street } = feature.properties;
+    const { postcode, city, housenumber, street } = feature.properties;
     setFormData((prev) => ({
       ...prev,
       streetNumber: housenumber || "",
@@ -229,7 +232,7 @@ export default function EditEvent({ params }: { params: { id: string } }) {
     e.preventDefault();
     if (e.dataTransfer.files) {
       const newImages = Array.from(e.dataTransfer.files).filter((file) =>
-        file.type.startsWith("image/")
+        file.type.startsWith("image/"),
       );
       setImages((prev) => [...prev, ...newImages].slice(0, 5));
     }
@@ -246,6 +249,11 @@ export default function EditEvent({ params }: { params: { id: string } }) {
       return;
     }
 
+    if (!eventID) {
+      setError("Identifiant d&apos;événement invalide");
+      return;
+    }
+
     if (selectedCategories.length === 0) {
       setError("Veuillez sélectionner au moins une catégorie");
       return;
@@ -253,7 +261,7 @@ export default function EditEvent({ params }: { params: { id: string } }) {
 
     if (isRecurring && recurringDays.length === 0) {
       setError(
-        "Veuillez sélectionner au moins un jour de la semaine pour un événement récurrent"
+        "Veuillez sélectionner au moins un jour de la semaine pour un événement récurrent",
       );
       return;
     }
@@ -276,13 +284,13 @@ export default function EditEvent({ params }: { params: { id: string } }) {
 
       // Upload new images if any
       const newImageUrls = await Promise.all(
-        images.map((image) => uploadEventImage(image, params.id))
+        images.map((image) => uploadEventImage(image, eventID)),
       );
 
       // Combine existing and new images
       const allImages = [...existingImages, ...newImageUrls];
 
-      await updateEvent(params.id, {
+      await updateEvent(eventID, {
         ...eventData,
         images: allImages,
       });
@@ -290,7 +298,7 @@ export default function EditEvent({ params }: { params: { id: string } }) {
       router.push("/my-events");
     } catch (err) {
       setError(
-        "Une erreur est survenue lors de la modification de l'événement"
+        "Une erreur est survenue lors de la modification de l&apos;événement",
       );
       console.error(err);
     } finally {
@@ -338,7 +346,7 @@ export default function EditEvent({ params }: { params: { id: string } }) {
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="container mx-auto px-4 max-w-3xl">
-        <h1 className="text-3xl font-bold mb-8">Modifier l`&apos;`événement</h1>
+        <h1 className="text-3xl font-bold mb-8">Modifier l&apos;événement</h1>
 
         <form
           onSubmit={handleSubmit}
@@ -351,7 +359,7 @@ export default function EditEvent({ params }: { params: { id: string } }) {
           {/* Title */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Titre de l`&apos;`événement *
+              Titre de l&apos;événement *
             </label>
             <input
               type="text"
@@ -399,7 +407,7 @@ export default function EditEvent({ params }: { params: { id: string } }) {
                               setRecurringDays([...recurringDays, day.id]);
                             } else {
                               setRecurringDays(
-                                recurringDays.filter((d) => d !== day.id)
+                                recurringDays.filter((d) => d !== day.id),
                               );
                             }
                           }}
@@ -508,7 +516,7 @@ export default function EditEvent({ params }: { params: { id: string } }) {
           <div className="space-y-4">
             <label className="block text-sm font-medium text-gray-700">
               <MapPin className="inline-block w-4 h-4 mr-2" />
-              Adresse de l`&apos;`événement *
+              Adresse de l&apos;événement *
             </label>
             <div className="relative">
               <input
@@ -672,7 +680,7 @@ export default function EditEvent({ params }: { params: { id: string } }) {
                   onClick={() => {
                     if (selectedCategories.includes(category)) {
                       setSelectedCategories(
-                        selectedCategories.filter((c) => c !== category)
+                        selectedCategories.filter((c) => c !== category),
                       );
                     } else {
                       setSelectedCategories([...selectedCategories, category]);

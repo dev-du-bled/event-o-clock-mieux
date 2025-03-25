@@ -131,7 +131,7 @@ export default function MyEvents() {
     try {
       const startTime = format(
         new Date(`2000-01-01T${event.startTime}`),
-        "HH:mm"
+        "HH:mm",
       );
       const endTime = format(new Date(`2000-01-01T${event.endTime}`), "HH:mm");
       return `${startTime} - ${endTime}`;

@@ -10,8 +10,8 @@ import { Card, Modal, Button } from "flowbite-react";
 import {
   CinemaRoom,
   getCinemaRooms,
-  assignMovieToRoom,
   createCinemaRoom,
+  assignMovieToRoom,
 } from "@/lib/db/cinema";
 import Link from "next/link";
 import Image from "next/image";
@@ -60,8 +60,8 @@ export default function CinemaManagement() {
                   number: seatIndex + 1,
                   isAvailable: true,
                   isVIP: ROOM_CONFIG.vipRows.includes(rowIndex),
-                })
-              )
+                }),
+              ),
           ).flat();
 
           for (let i = 1; i <= 3; i++) {
@@ -82,6 +82,7 @@ export default function CinemaManagement() {
         //   if (isMounted) setError("Erreur lors du chargement des informations");
         // } finally {
         //   if (isMounted) setLoading(false);
+        // }
       }
     }
 
@@ -117,7 +118,7 @@ export default function CinemaManagement() {
 
   const renderSeatMap = (room: CinemaRoom) => {
     const rows = Array.from({ length: ROOM_CONFIG.rows }, (_, rowIndex) =>
-      String.fromCharCode(65 + rowIndex)
+      String.fromCharCode(65 + rowIndex),
     );
 
     return (
@@ -144,21 +145,9 @@ export default function CinemaManagement() {
                     onClick={() => isAvailable && handleSeatClick(seatId)}
                     disabled={!isAvailable}
                     className={`w-8 h-8 rounded-t-lg flex items-center justify-center text-sm
-                      ${
-                        isVIP
-                          ? "bg-purple-100 hover:bg-purple-200"
-                          : "bg-gray-100 hover:bg-gray-200"
-                      }
-                      ${
-                        isSelected
-                          ? "bg-green-500 text-white hover:bg-green-600"
-                          : ""
-                      }
-                      ${
-                        !isAvailable
-                          ? "bg-gray-300 cursor-not-allowed"
-                          : "cursor-pointer"
-                      }
+                      ${isVIP ? "bg-purple-100 hover:bg-purple-200" : "bg-gray-100 hover:bg-gray-200"}
+                      ${isSelected ? "bg-green-500 text-white hover:bg-green-600" : ""}
+                      ${!isAvailable ? "bg-gray-300 cursor-not-allowed" : "cursor-pointer"}
                       transition-colors`}
                   >
                     {isSelected ? <Check className="w-4 h-4" /> : index + 1}
@@ -252,12 +241,12 @@ export default function CinemaManagement() {
                       <Image
                         src={getImageUrl(
                           movies.find((m) => m.id === room.currentMovie?.id)
-                            ?.poster_path,
-                          "w500"
+                            ?.poster_path ?? null,
+                          "w500",
                         )}
                         alt={
                           movies.find((m) => m.id === room.currentMovie?.id)
-                            ?.title
+                            ?.title || ""
                         }
                         className="rounded-lg shadow-lg w-full h-48 object-cover"
                       />

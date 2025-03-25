@@ -1,9 +1,14 @@
-'use client';
+"use client";
 
-import { createContext, useContext, useEffect, useState } from 'react';
-import { auth } from '@/lib/firebase';
-import { User, onAuthStateChanged } from 'firebase/auth';
-import { createUserProfile, getUserProfile, updateEmailVerificationStatus, type UserProfile } from '@/lib/db/users';
+import { createContext, useContext, useEffect, useState } from "react";
+import { auth } from "@/lib/firebase";
+import { User, onAuthStateChanged } from "firebase/auth";
+import {
+  createUserProfile,
+  getUserProfile,
+  updateEmailVerificationStatus,
+  type UserProfile,
+} from "@/lib/db/users";
 
 interface AuthContextType {
   user: User | null;
@@ -18,18 +23,18 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 /**
- * AuthProvider component that provides authentication state and user profile 
- * to the React component tree. It listens for authentication state changes, 
+ * AuthProvider component that provides authentication state and user profile
+ * to the React component tree. It listens for authentication state changes,
  * retrieves or creates user profiles, and updates the email verification status.
  * -createUserProfile: to create user profile
  * -getUserProfile: to get user profile
  * -setUserProfile: to set user profile
  * -updateEmailVerificationStatus: to valid the email verification
  * -checkEmailVerification: to check the email verification
- * 
+ *
  * @param {Object} props - The props object.
  * @param {React.ReactNode} props.children - The child components to render inside the provider.
- * @returns {JSX.Element} The AuthProvider component that wraps the children with 
+ * @returns {JSX.Element} The AuthProvider component that wraps the children with
  * the authentication context.
  */
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -40,7 +45,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setUser(user);
-      
+
       if (user) {
         try {
           let profile = await getUserProfile(user.uid);
@@ -52,15 +57,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             await updateEmailVerificationStatus(user.uid, user.emailVerified);
             profile.emailVerified = user.emailVerified;
           }
-          
+
           setUserProfile(profile);
         } catch (error) {
-          console.error('Erreur lors de la récupération du profil:', error);
+          console.error("Erreur lors de la récupération du profil:", error);
         }
       } else {
         setUserProfile(null);
       }
-      
+
       setLoading(false);
     });
 
@@ -74,13 +79,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         await user.reload();
         const updatedUser = auth.currentUser;
-        
-        if (updatedUser && updatedUser.emailVerified && userProfile && !userProfile.emailVerified) {
+
+        if (
+          updatedUser &&
+          updatedUser.emailVerified &&
+          userProfile &&
+          !userProfile.emailVerified
+        ) {
           await updateEmailVerificationStatus(updatedUser.uid, true);
-          setUserProfile(prev => prev ? { ...prev, emailVerified: true } : null);
+          setUserProfile((prev) =>
+            prev ? { ...prev, emailVerified: true } : null,
+          );
         }
       } catch (error) {
-        console.error('Erreur lors de la vérification du statut de l\'email:', error);
+        console.error(
+          "Erreur lors de la vérification du statut de l'email:",
+          error,
+        );
       }
     };
 
@@ -98,8 +113,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 /**
  * Custom hook to access the authentication context values.
- * 
- * @returns {AuthContextType} The authentication context values containing user, 
+ *
+ * @returns {AuthContextType} The authentication context values containing user,
  * user profile, and loading state.
  */
 export const useAuth = () => useContext(AuthContext);

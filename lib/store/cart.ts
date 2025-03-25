@@ -1,6 +1,6 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { CartItem } from '@/lib/db/cinema';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { CartItem } from "@/lib/db/cinema";
 
 /**
  * Interface representing the Cart store state and actions.
@@ -24,32 +24,34 @@ export const useCartStore = create<CartStore>()(
       items: [],
       /**
        * Adds an item to the cart if it doesn't already exist.
-       * 
+       *
        * @param item - The CartItem object to add to the cart.
        */
       addItem: (item) => {
         set((state) => {
           const exists = state.items.some(
-            existingItem => existingItem.seatId === item.seatId && existingItem.roomId === item.roomId
+            (existingItem) =>
+              existingItem.seatId === item.seatId &&
+              existingItem.roomId === item.roomId,
           );
-          
+
           if (!exists) {
             return { items: [...state.items, item] };
           }
           return state;
         });
       },
-       /**
+      /**
        * Removes an item from the cart by matching seatId and roomId.
-       * 
+       *
        * @param seatId - The unique identifier of the seat to remove.
        * @param roomId - The unique identifier of the room where the seat belongs.
        */
       removeItem: (seatId, roomId) => {
         set((state) => ({
           items: state.items.filter(
-            item => !(item.seatId === seatId && item.roomId === roomId)
-          )
+            (item) => !(item.seatId === seatId && item.roomId === roomId),
+          ),
         }));
       },
       /**
@@ -60,7 +62,7 @@ export const useCartStore = create<CartStore>()(
       },
       /**
        * Calculates the total price of all items in the cart.
-       * 
+       *
        * @returns The total amount of all items in the cart.
        */
       getTotalAmount: () => {
@@ -70,21 +72,21 @@ export const useCartStore = create<CartStore>()(
       /**
        * Extracts and returns the room number from a roomId string.
        * Assumes that the roomId contains a number, and returns that number as a string.
-       * 
+       *
        * @param roomId - The unique identifier of the room (may contain a number).
        * @returns The extracted room number as a string, or '1' if no number is found.
        */
       getRoomNumber: (roomId: string) => {
         const match = roomId.match(/\d+/);
-        return match ? match[0] : '1';
-      }
+        return match ? match[0] : "1";
+      },
     }),
     {
-      name: 'cinema-cart',
+      name: "cinema-cart",
       storage: {
-         /**
+        /**
          * Custom getItem method for retrieving the cart state from localStorage.
-         * 
+         *
          * @param name - The name of the storage key to retrieve.
          * @returns The parsed cart data or null if not found.
          */
@@ -96,8 +98,8 @@ export const useCartStore = create<CartStore>()(
             return {
               state: {
                 ...data.state,
-                items: data.state.items || []
-              }
+                items: data.state.items || [],
+              },
             };
           } catch {
             return null;
@@ -105,7 +107,7 @@ export const useCartStore = create<CartStore>()(
         },
         /**
          * Custom setItem method for saving the cart state to localStorage.
-         * 
+         *
          * @param name - The name of the storage key.
          * @param value - The value (cart state) to store in localStorage.
          */
@@ -114,11 +116,11 @@ export const useCartStore = create<CartStore>()(
         },
         /**
          * Custom removeItem method for removing the cart state from localStorage.
-         * 
+         *
          * @param name - The name of the storage key to remove.
          */
-        removeItem: (name) => localStorage.removeItem(name)
-      }
-    }
-  )
+        removeItem: (name) => localStorage.removeItem(name),
+      },
+    },
+  ),
 );

@@ -33,7 +33,7 @@ export default function Contact() {
       });
     } catch (err) {
       setError(
-        "Une erreur est survenue lors de l'envoi du message. Veuillez réessayer."
+        "Une erreur est survenue lors de l'envoi du message. Veuillez réessayer.",
       );
       console.error("Erreur lors de l'envoi du formulaire:", err);
     } finally {

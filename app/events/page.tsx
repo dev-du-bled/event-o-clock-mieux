@@ -6,7 +6,7 @@
  * @details Provides event browsing functionality with search, filtering, and favorite management
  */
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { getAllEvents, type Event } from "@/lib/db/events";
 import {
   Calendar,
@@ -44,6 +44,29 @@ interface CityFeature {
 }
 
 /**
+ * SearchParamsHandler component to handle URL search parameters
+ */
+function SearchParamsHandler({
+  setSearchTerm,
+  setLocation,
+}: {
+  setSearchTerm: (value: string) => void;
+  setLocation: (value: string) => void;
+}) {
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const searchFromUrl = searchParams.get("search");
+    const locationFromUrl = searchParams.get("location");
+
+    if (searchFromUrl) setSearchTerm(searchFromUrl);
+    if (locationFromUrl) setLocation(locationFromUrl);
+  }, [searchParams, setSearchTerm, setLocation]);
+
+  return null;
+}
+
+/**
  * @brief Events listing component
  * @details Main component for displaying and filtering events. Features include:
  *          - Event search and filtering
@@ -73,15 +96,6 @@ export default function Events() {
   const [location, setLocation] = useState("");
   const [citySuggestions, setCitySuggestions] = useState<CityFeature[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const searchParams = useSearchParams();
-
-  useEffect(() => {
-    const searchFromUrl = searchParams.get("search");
-    const locationFromUrl = searchParams.get("location");
-
-    if (searchFromUrl) setSearchTerm(searchFromUrl);
-    if (locationFromUrl) setLocation(locationFromUrl);
-  }, [searchParams]);
 
   useEffect(() => {
     async function loadEvents() {
@@ -141,9 +155,7 @@ export default function Events() {
 
     try {
       const response = await fetch(
-        `https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(
-          query
-        )}&type=municipality&limit=5`
+        `https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(query)}&type=municipality&limit=5`,
       );
       const data = await response.json();
       setCitySuggestions(data.features || []);
@@ -165,7 +177,7 @@ export default function Events() {
   };
 
   const categories = Array.from(
-    new Set(events.flatMap((event) => event.categories))
+    new Set(events.flatMap((event) => event.categories)),
   ).sort();
 
   const filteredEvents = events.filter((event) => {
@@ -248,7 +260,7 @@ export default function Events() {
     try {
       const startTime = format(
         new Date(`2000-01-01T${event.startTime}`),
-        "HH:mm"
+        "HH:mm",
       );
       const endTime = format(new Date(`2000-01-01T${event.endTime}`), "HH:mm");
       return `${startTime} - ${endTime}`;
@@ -272,8 +284,6 @@ export default function Events() {
           src={src}
           alt={alt}
           className="absolute inset-0 w-full h-full object-cover"
-          height={200}
-          width={200}
         />
       </div>
     );
@@ -281,6 +291,13 @@ export default function Events() {
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
+      <Suspense>
+        <SearchParamsHandler
+          setSearchTerm={setSearchTerm}
+          setLocation={setLocation}
+        />
+      </Suspense>
+
       <div className="container mx-auto px-4">
         <h1 className="text-3xl font-bold mb-8">Découvrir les événements</h1>
 
@@ -425,9 +442,7 @@ export default function Events() {
                     </div>
                     <div className="absolute top-4 right-4">
                       <span
-                        className={`${
-                          event.isPaid ? "bg-primary" : "bg-green-500"
-                        } text-white text-sm font-semibold px-3 py-1 rounded-full`}
+                        className={`${event.isPaid ? "bg-primary" : "bg-green-500"} text-white text-sm font-semibold px-3 py-1 rounded-full`}
                       >
                         {event.isPaid ? `${event.price} €` : "Gratuit"}
                       </span>
@@ -484,7 +499,7 @@ export default function Events() {
                           <div key={index} className="relative h-full">
                             {renderEventImage(
                               image,
-                              `${selectedEvent.title} ${index + 1}`
+                              `${selectedEvent.title} ${index + 1}`,
                             )}
                           </div>
                         ))}
@@ -507,9 +522,7 @@ export default function Events() {
                         </span>
                       ))}
                       <span
-                        className={`${
-                          selectedEvent.isPaid ? "bg-primary" : "bg-green-500"
-                        } text-white text-sm font-semibold px-3 py-1 rounded-full`}
+                        className={`${selectedEvent.isPaid ? "bg-primary" : "bg-green-500"} text-white text-sm font-semibold px-3 py-1 rounded-full`}
                       >
                         {selectedEvent.isPaid
                           ? `${selectedEvent.price} €`
@@ -620,15 +633,13 @@ export default function Events() {
                       }`}
                     >
                       <Heart
-                        className={`w-5 h-5 mr-2 ${
-                          isFavorite ? "fill-current" : ""
-                        }`}
+                        className={`w-5 h-5 mr-2 ${isFavorite ? "fill-current" : ""}`}
                       />
                       {favoriteLoading
                         ? "Chargement..."
                         : isFavorite
-                        ? "Retirer des favoris"
-                        : "Ajouter aux favoris"}
+                          ? "Retirer des favoris"
+                          : "Ajouter aux favoris"}
                     </button>
                   )}
                 </div>

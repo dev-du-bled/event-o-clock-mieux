@@ -1,0 +1,11 @@
+/node_modules
+/.github
+
+next.config.js
+components.json
+eslint.config.mjs
+package.json
+postcss.config.js
+tailwind.config.ts
+tsconfig.json
+bun.lock
