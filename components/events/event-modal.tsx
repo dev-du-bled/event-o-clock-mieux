@@ -3,6 +3,7 @@ import { Event } from '@/lib/db/events';
 import { Calendar, MapPin, Clock, Phone, Globe, Info, Heart, Repeat } from 'lucide-react';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import Image from 'next/image';
 
 interface EventModalProps {
   event: Event;
@@ -61,7 +62,7 @@ export function EventModal({
         return startDate;
       }
       return `Du ${startDate} au ${endDate}`;
-    } catch (err) {
+    } catch {
       return 'Date non définie';
     }
   };
@@ -75,7 +76,7 @@ export function EventModal({
       const startTime = format(new Date(`2000-01-01T${event.startTime}`), 'HH:mm');
       const endTime = format(new Date(`2000-01-01T${event.endTime}`), 'HH:mm');
       return `${startTime} - ${endTime}`;
-    } catch (err) {
+    } catch {
       return 'Horaire non défini';
     }
   };
@@ -93,7 +94,7 @@ export function EventModal({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="h-[300px] rounded-lg overflow-hidden">
             {event.images && event.images.length > 0 ? (
-              <img
+              <Image
                 src={event.images[0]}
                 alt={event.title}
                 className="w-full h-full object-cover"

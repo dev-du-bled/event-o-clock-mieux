@@ -6,9 +6,10 @@ import { getMovieDetails, getImageUrl, type Movie } from '@/lib/tmdb';
 import { Calendar, Star, Film, Clock, Check } from 'lucide-react';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
-import { Card, Modal, Button, Alert } from 'flowbite-react';
-import { CinemaRoom, getCinemaRooms, assignMovieToRoom, updateCinemaRoom } from '@/lib/db/cinema';
+import { Card, Modal, Button } from 'flowbite-react';
+import { CinemaRoom, getCinemaRooms, assignMovieToRoom } from '@/lib/db/cinema';
 import Link from 'next/link';
+import Image from 'next/image';
 
 
 const AVAILABLE_MOVIES = [
@@ -234,7 +235,7 @@ export default function CinemaManagement() {
                 <div className="space-y-4">
                   {movies.find(m => m.id === room.currentMovie?.id) && (
                     <>
-                      <img
+                      <Image
                         src={getImageUrl(movies.find(m => m.id === room.currentMovie?.id)?.poster_path, 'w500')}
                         alt={movies.find(m => m.id === room.currentMovie?.id)?.title}
                         className="rounded-lg shadow-lg w-full h-48 object-cover"
@@ -357,7 +358,7 @@ export default function CinemaManagement() {
           {movies.map(movie => (
             <Card key={movie.id}>
               <div className="grid grid-cols-1 gap-4">
-                <img
+                <Image
                   src={getImageUrl(movie.poster_path, 'w500')}
                   alt={movie.title}
                   className="rounded-lg shadow-lg w-full h-64 object-cover"

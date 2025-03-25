@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 /**
  * @file page.tsx
@@ -6,15 +6,18 @@
  * @details Manages and displays user's favorite events with real-time updates
  */
 
-import React, { useEffect, useState } from 'react';
-import { useAuth } from '@/context/auth-context';
-import { getUserFavorites } from '@/lib/db/favorites';
-import { getAllEvents, type Event } from '@/lib/db/events';
-import Link from 'next/link';
-import { EventCard } from '@/components/events/event-card';
-import { EventModal } from '@/components/events/event-modal';
-import { addToFavorites, removeFromFavorites, isEventFavorite } from '@/lib/db/favorites';
-
+import React, { useEffect, useState } from "react";
+import { useAuth } from "@/context/auth-context";
+import { getUserFavorites } from "@/lib/db/favorites";
+import { getAllEvents, type Event } from "@/lib/db/events";
+import Link from "next/link";
+import { EventCard } from "@/components/events/event-card";
+import { EventModal } from "@/components/events/event-modal";
+import {
+  addToFavorites,
+  removeFromFavorites,
+  isEventFavorite,
+} from "@/lib/db/favorites";
 
 /**
  * @brief Favorites management component
@@ -23,14 +26,14 @@ import { addToFavorites, removeFromFavorites, isEventFavorite } from '@/lib/db/f
  *          - Real-time favorite status updates
  *          - Event detail modal integration
  *          - Favorite addition/removal functionality
- * 
+ *
  * @returns React component for favorites page
  */
 export default function Favorites() {
   const { user } = useAuth();
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [openModal, setOpenModal] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
@@ -39,14 +42,16 @@ export default function Favorites() {
   useEffect(() => {
     async function loadFavorites() {
       if (!user) return;
-      
+
       try {
         const favoriteIds = await getUserFavorites(user.uid);
         const allEvents = await getAllEvents();
-        const favoriteEvents = allEvents.filter(event => favoriteIds.includes(event.id!));
+        const favoriteEvents = allEvents.filter((event) =>
+          favoriteIds.includes(event.id!)
+        );
         setEvents(favoriteEvents);
       } catch (err) {
-        setError('Erreur lors du chargement des favoris');
+        setError("Erreur lors du chargement des favoris");
         console.error(err);
       } finally {
         setLoading(false);
@@ -63,7 +68,7 @@ export default function Favorites() {
           const favorite = await isEventFavorite(user.uid, selectedEvent.id);
           setIsFavorite(favorite);
         } catch (err) {
-          console.error('Erreur lors de la vérification des favoris:', err);
+          console.error("Erreur lors de la vérification des favoris:", err);
         }
       }
     }
@@ -81,13 +86,13 @@ export default function Favorites() {
       if (isFavorite) {
         await removeFromFavorites(user.uid, selectedEvent.id);
         // Remove event from list
-        setEvents(events.filter(event => event.id !== selectedEvent.id));
+        setEvents(events.filter((event) => event.id !== selectedEvent.id));
       } else {
         await addToFavorites(user.uid, selectedEvent.id);
       }
       setIsFavorite(!isFavorite);
     } catch (err) {
-      console.error('Erreur lors de la gestion des favoris:', err);
+      console.error("Erreur lors de la gestion des favoris:", err);
     } finally {
       setFavoriteLoading(false);
     }
@@ -99,7 +104,9 @@ export default function Favorites() {
       <div className="min-h-screen bg-gray-50 py-12">
         <div className="container mx-auto px-4">
           <div className="bg-white rounded-lg shadow-lg p-6 text-center">
-            <h2 className="text-xl font-semibold mb-4">Vous devez être connecté pour voir vos favoris</h2>
+            <h2 className="text-xl font-semibold mb-4">
+              Vous devez être connecté pour voir vos favoris
+            </h2>
             <Link href="/login" className="text-primary hover:text-primary/80">
               Se connecter
             </Link>
@@ -119,12 +126,12 @@ export default function Favorites() {
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
           </div>
         ) : error ? (
-          <div className="bg-red-50 text-red-800 p-4 rounded-lg">
-            {error}
-          </div>
+          <div className="bg-red-50 text-red-800 p-4 rounded-lg">{error}</div>
         ) : events.length === 0 ? (
           <div className="bg-white rounded-lg shadow-lg p-6 text-center">
-            <h2 className="text-xl font-semibold mb-4">Vous n'avez pas encore de favoris</h2>
+            <h2 className="text-xl font-semibold mb-4">
+              Vous n&apos;avez pas encore de favoris
+            </h2>
             <p className="text-gray-600 mb-4">
               Explorez les événements et ajoutez-les à vos favoris !
             </p>

@@ -1,11 +1,21 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { Menu, X, Calendar, PlusCircle, Heart, User, Film, ShoppingCart } from 'lucide-react';
-import { useAuth } from '@/context/auth-context';
-import { auth } from '@/lib/firebase';
-import { CartItem } from '@/lib/db/cinema';
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import {
+  Menu,
+  X,
+  Calendar,
+  PlusCircle,
+  Heart,
+  User,
+  Film,
+  ShoppingCart,
+} from "lucide-react";
+import { useAuth } from "@/context/auth-context";
+import { auth } from "@/lib/firebase";
+import { CartItem } from "@/lib/db/cinema";
+import Image from "next/image";
 
 /**
  * Navbar component that include menu
@@ -18,12 +28,12 @@ export function Navbar() {
   const { user, userProfile } = useAuth();
   const [cartItemsCount, setCartItemsCount] = useState(0);
 
-  const displayName = userProfile?.displayName || 'Mon profil';
+  const displayName = userProfile?.displayName || "Mon profil";
 
   useEffect(() => {
     const updateCartCount = () => {
       try {
-        const cart = localStorage.getItem('cinemaCart');
+        const cart = localStorage.getItem("cinemaCart");
         if (cart) {
           const items = JSON.parse(cart) as CartItem[];
           setCartItemsCount(items.length);
@@ -31,7 +41,7 @@ export function Navbar() {
           setCartItemsCount(0);
         }
       } catch (error) {
-        console.error('Erreur lors de la lecture du panier:', error);
+        console.error("Erreur lors de la lecture du panier:", error);
         setCartItemsCount(0);
       }
     };
@@ -41,15 +51,15 @@ export function Navbar() {
     const interval = setInterval(updateCartCount, 1000);
 
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'cinemaCart') {
+      if (e.key === "cinemaCart") {
         updateCartCount();
       }
     };
-    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener("storage", handleStorageChange);
 
     return () => {
       clearInterval(interval);
-      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
 
@@ -61,13 +71,21 @@ export function Navbar() {
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
               <Calendar className="h-8 w-8 text-primary" />
-              <span className="ml-2 text-xl font-bold">Event'O'Clock</span>
+              <span className="ml-2 text-xl font-bold">
+                Event&apos;O&apos;Clock
+              </span>
             </Link>
             <div className="hidden md:flex items-center ml-10 space-x-8">
-              <Link href="/events" className="text-gray-600 hover:text-primary transition-colors">
+              <Link
+                href="/events"
+                className="text-gray-600 hover:text-primary transition-colors"
+              >
                 Découvrir
               </Link>
-              <Link href="/cinema" className="text-gray-600 hover:text-primary transition-colors">
+              <Link
+                href="/cinema"
+                className="text-gray-600 hover:text-primary transition-colors"
+              >
                 <span className="flex items-center">
                   <Film className="w-5 h-5 mr-1" />
                   Cinéma
@@ -75,10 +93,16 @@ export function Navbar() {
               </Link>
               {user && (
                 <>
-                  <Link href="/my-events" className="text-gray-600 hover:text-primary transition-colors">
+                  <Link
+                    href="/my-events"
+                    className="text-gray-600 hover:text-primary transition-colors"
+                  >
                     Mes événements
                   </Link>
-                  <Link href="/favorites" className="text-gray-600 hover:text-primary transition-colors">
+                  <Link
+                    href="/favorites"
+                    className="text-gray-600 hover:text-primary transition-colors"
+                  >
                     <span className="flex items-center">
                       <Heart className="w-5 h-5 mr-1" />
                       Favoris
@@ -94,8 +118,8 @@ export function Navbar() {
             {user && (
               <>
                 {/* Panier */}
-                <Link 
-                  href="/cinema/cart" 
+                <Link
+                  href="/cinema/cart"
                   className="flex items-center px-4 py-2 text-gray-600 hover:text-primary transition-colors relative"
                 >
                   <ShoppingCart className="w-5 h-5" />
@@ -106,11 +130,17 @@ export function Navbar() {
                   )}
                 </Link>
 
-                <Link href="/create-event" className="flex items-center px-4 py-2 text-gray-600 hover:text-primary transition-colors">
+                <Link
+                  href="/create-event"
+                  className="flex items-center px-4 py-2 text-gray-600 hover:text-primary transition-colors"
+                >
                   <PlusCircle className="w-5 h-5 mr-1" />
                   Créer un événement
                 </Link>
-                <Link href="/profile" className="flex items-center px-4 py-2 text-gray-600 hover:text-primary transition-colors">
+                <Link
+                  href="/profile"
+                  className="flex items-center px-4 py-2 text-gray-600 hover:text-primary transition-colors"
+                >
                   {userProfile?.photoURL ? (
                     <img
                       src={userProfile.photoURL}
@@ -126,10 +156,16 @@ export function Navbar() {
             )}
             {!user ? (
               <>
-                <Link href="/login" className="px-4 py-2 text-gray-600 hover:text-primary transition-colors">
+                <Link
+                  href="/login"
+                  className="px-4 py-2 text-gray-600 hover:text-primary transition-colors"
+                >
                   Connexion
                 </Link>
-                <Link href="/register" className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+                <Link
+                  href="/register"
+                  className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+                >
                   Inscription
                 </Link>
               </>
@@ -145,8 +181,15 @@ export function Navbar() {
 
           {/* Bouton menu mobile */}
           <div className="md:hidden">
-            <button onClick={() => setIsOpen(!isOpen)} className="text-gray-600 hover:text-primary">
-              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="text-gray-600 hover:text-primary"
+            >
+              {isOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
             </button>
           </div>
         </div>
@@ -155,10 +198,16 @@ export function Navbar() {
         {isOpen && (
           <div className="md:hidden py-4">
             <div className="flex flex-col space-y-4">
-              <Link href="/events" className="text-gray-600 hover:text-primary transition-colors">
+              <Link
+                href="/events"
+                className="text-gray-600 hover:text-primary transition-colors"
+              >
                 Découvrir
               </Link>
-              <Link href="/cinema" className="text-gray-600 hover:text-primary transition-colors">
+              <Link
+                href="/cinema"
+                className="text-gray-600 hover:text-primary transition-colors"
+              >
                 <span className="flex items-center">
                   <Film className="w-5 h-5 mr-1" />
                   Cinéma
@@ -166,25 +215,37 @@ export function Navbar() {
               </Link>
               {user && (
                 <>
-                  <Link href="/my-events" className="text-gray-600 hover:text-primary transition-colors">
+                  <Link
+                    href="/my-events"
+                    className="text-gray-600 hover:text-primary transition-colors"
+                  >
                     Mes événements
                   </Link>
-                  <Link href="/favorites" className="text-gray-600 hover:text-primary transition-colors">
+                  <Link
+                    href="/favorites"
+                    className="text-gray-600 hover:text-primary transition-colors"
+                  >
                     <span className="flex items-center">
                       <Heart className="w-5 h-5 mr-1" />
                       Favoris
                     </span>
                   </Link>
-                  <Link href="/cinema/cart" className="text-gray-600 hover:text-primary transition-colors">
+                  <Link
+                    href="/cinema/cart"
+                    className="text-gray-600 hover:text-primary transition-colors"
+                  >
                     <span className="flex items-center">
                       <ShoppingCart className="w-5 h-5 mr-1" />
                       Panier {cartItemsCount > 0 && `(${cartItemsCount})`}
                     </span>
                   </Link>
-                  <Link href="/profile" className="text-gray-600 hover:text-primary transition-colors">
+                  <Link
+                    href="/profile"
+                    className="text-gray-600 hover:text-primary transition-colors"
+                  >
                     <span className="flex items-center">
                       {userProfile?.photoURL ? (
-                        <img
+                        <Image
                           src={userProfile.photoURL}
                           alt="Photo de profil"
                           className="w-6 h-6 rounded-full mr-2 object-cover"
@@ -198,7 +259,10 @@ export function Navbar() {
                 </>
               )}
               {user && (
-                <Link href="/create-event" className="text-gray-600 hover:text-primary transition-colors">
+                <Link
+                  href="/create-event"
+                  className="text-gray-600 hover:text-primary transition-colors"
+                >
                   <span className="flex items-center">
                     <PlusCircle className="w-5 h-5 mr-1" />
                     Créer un événement
@@ -207,10 +271,16 @@ export function Navbar() {
               )}
               {!user ? (
                 <>
-                  <Link href="/login" className="text-gray-600 hover:text-primary transition-colors">
+                  <Link
+                    href="/login"
+                    className="text-gray-600 hover:text-primary transition-colors"
+                  >
                     Connexion
                   </Link>
-                  <Link href="/register" className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-center">
+                  <Link
+                    href="/register"
+                    className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-center"
+                  >
                     Inscription
                   </Link>
                 </>
