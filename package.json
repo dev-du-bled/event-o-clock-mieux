@@ -10,6 +10,7 @@
     "clean": "shx rm -rf .next"
   },
   "dependencies": {
+    "@radix-ui/react-label": "^2.1.2",
     "@radix-ui/react-slot": "^1.1.2",
     "@radix-ui/react-toast": "^1.2.6",
     "caniuse-lite": "^1.0.30001707",
