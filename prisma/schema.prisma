@@ -14,8 +14,8 @@ enum ContactStatus {
 }
 
 enum Role {
-  USER
-  ADMIN
+  user
+  admin
 }
 
 enum EventStatus {
@@ -35,18 +35,59 @@ enum TicketType {
   STUDENT
 }
 
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  impersonatedBy String?
+
+  @@unique([token])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+
+  @@map("account")
+}
+
 model User {
   id            String     @id @default(uuid())
   email         String     @unique
-  displayName   String?
+  name          String
   photoURL      String?
-  role          Role       @default(USER)
+  role          Role       @default(user)
   emailVerified Boolean    @default(false)
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
   Event         Event[]
   Favorite      Favorite[]
   Booking       Booking[]
+  sessions      Session[]
+  accounts      Account[]
+  banned        Boolean?
+  banReason     String?
+  banExpires    DateTime?
 }
 
 model ContactMessage {

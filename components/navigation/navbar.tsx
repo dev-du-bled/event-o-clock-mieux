@@ -12,10 +12,10 @@ import {
   Film,
   ShoppingCart,
 } from "lucide-react";
-import { useAuth } from "@/context/auth-context";
 import { auth } from "@/lib/firebase";
 import { CartItem } from "@/lib/db/cinema";
 import Image from "next/image";
+import { authClient } from "@/lib/auth/auth-client";
 
 /**
  * Navbar component that include menu
@@ -25,10 +25,11 @@ import Image from "next/image";
  */
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const { user, userProfile } = useAuth();
+  const { data: session } = authClient.useSession();
   const [cartItemsCount, setCartItemsCount] = useState(0);
 
-  const displayName = userProfile?.displayName || "Mon profil";
+  const displayName = session?.user.name || "Mon profil";
+  const user = session?.user;
 
   useEffect(() => {
     const updateCartCount = () => {
@@ -141,9 +142,9 @@ export function Navbar() {
                   href="/profile"
                   className="flex items-center px-4 py-2 text-gray-600 hover:text-primary transition-colors"
                 >
-                  {userProfile?.photoURL ? (
+                  {user.image ? (
                     <Image
-                      src={userProfile.photoURL}
+                      src={user.image}
                       alt="Photo de profil"
                       className="w-8 h-8 rounded-full mr-2 object-cover"
                       height={32}
@@ -246,9 +247,9 @@ export function Navbar() {
                     className="text-gray-600 hover:text-primary transition-colors"
                   >
                     <span className="flex items-center">
-                      {userProfile?.photoURL ? (
+                      {user.image ? (
                         <Image
-                          src={userProfile.photoURL}
+                          src={user.image}
                           alt="Photo de profil"
                           className="w-6 h-6 rounded-full mr-2 object-cover"
                         />
