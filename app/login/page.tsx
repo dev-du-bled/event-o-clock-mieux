@@ -7,8 +7,6 @@
  */
 
 import { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Mail, Lock, AlertCircle } from "lucide-react";
@@ -121,15 +119,6 @@ export default function Login() {
                 />
               </div>
             </div>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <Link
-              href="/forgot-password"
-              className="text-sm text-primary hover:text-primary/80 focus:outline-none"
-            >
-              Mot de passe oublié ?
-            </Link>
           </div>
 
           <div>

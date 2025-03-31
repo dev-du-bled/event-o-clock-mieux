@@ -1,16 +1,7 @@
-import { db, storage } from "@/lib/firebase";
-import {
-  collection,
-  addDoc,
-  Timestamp,
-  query,
-  where,
-  getDocs,
-  doc,
-  updateDoc,
-  deleteDoc,
-} from "firebase/firestore";
-import { ref, deleteObject, listAll } from "firebase/storage";
+"use server";
+
+import prisma from "../prisma";
+import { EventStatus } from "@prisma/client";
 
 /**
  * Interface representing the structure of an Event.
@@ -23,7 +14,11 @@ export interface Event {
   startTime: string;
   endDate: string;
   endTime: string;
-  location: string;
+  address: string;
+  streetNumber: string;
+  street: string;
+  city: string;
+  postalCode: string;
   description: string;
   images: string[];
   categories: string[];
@@ -32,15 +27,15 @@ export interface Event {
   organizerWebsite?: string;
   organizerPhone?: string;
   createdBy: string;
-  status: "draft" | "published";
+  status: EventStatus;
   isRecurring: boolean;
   recurringDays: string[];
   recurringEndDate: string | null;
   isAccessible: boolean;
   hasParking: boolean;
   hasPublicTransport: boolean;
-  createdAt?: Timestamp;
-  updatedAt?: Timestamp;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 /**
@@ -54,12 +49,20 @@ export async function createEvent(
   eventData: Omit<Event, "id" | "createdAt" | "updatedAt">,
 ) {
   try {
-    const eventRef = await addDoc(collection(db, "events"), {
-      ...eventData,
-      createdAt: Timestamp.now(),
-      updatedAt: Timestamp.now(),
+    const { address, streetNumber, street, city, postalCode, ...data } =
+      eventData;
+
+    const location = `${address} ${streetNumber} ${street} ${city} ${postalCode}`;
+
+    const event = await prisma.event.create({
+      data: {
+        ...data,
+        location: location,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
     });
-    return eventRef.id;
+    return event.id;
   } catch (error) {
     console.error("Erreur lors de la création de l'événement:", error);
     throw error;
@@ -74,14 +77,9 @@ export async function createEvent(
  */
 export async function getAllEvents() {
   try {
-    const eventsRef = collection(db, "events");
-    const q = query(eventsRef, where("status", "==", "published"));
-    const querySnapshot = await getDocs(q);
+    const events = await prisma.event.findMany();
 
-    return querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    })) as Event[];
+    return events;
   } catch (error) {
     console.error("Erreur lors de la récupération des événements:", error);
     throw error;
@@ -97,14 +95,11 @@ export async function getAllEvents() {
  */
 export async function getUserEvents(userId: string) {
   try {
-    const eventsRef = collection(db, "events");
-    const q = query(eventsRef, where("createdBy", "==", userId));
-    const querySnapshot = await getDocs(q);
+    const userEvents = await prisma.event.findMany({
+      where: { user: { id: userId } },
+    });
 
-    return querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    })) as Event[];
+    return userEvents;
   } catch (error) {
     console.error("Erreur lors de la récupération des événements:", error);
     throw error;
@@ -123,10 +118,14 @@ export async function updateEvent(
   eventData: Partial<Omit<Event, "id" | "createdAt" | "createdBy">>,
 ) {
   try {
-    const eventRef = doc(db, "events", eventId);
-    await updateDoc(eventRef, {
-      ...eventData,
-      updatedAt: Timestamp.now(),
+    await prisma.event.update({
+      data: {
+        ...eventData,
+        updatedAt: new Date(),
+      },
+      where: {
+        id: eventId,
+      },
     });
   } catch (error) {
     console.error("Erreur lors de la mise à jour de l'événement:", error);
@@ -143,24 +142,7 @@ export async function updateEvent(
  */
 export async function deleteEvent(eventId: string) {
   try {
-    const storageRef = ref(storage, `events/${eventId}`);
-    try {
-      const imagesList = await listAll(storageRef);
-      await Promise.all(
-        imagesList.items.map((imageRef) => deleteObject(imageRef)),
-      );
-    } catch (error) {
-      console.error("Erreur lors de la suppression des images:", error);
-    }
-
-    const eventRef = doc(db, "events", eventId);
-    await deleteDoc(eventRef);
-
-    const favoritesRef = collection(db, "favorites");
-    const q = query(favoritesRef, where("eventId", "==", eventId));
-    const favoritesSnapshot = await getDocs(q);
-
-    await Promise.all(favoritesSnapshot.docs.map((doc) => deleteDoc(doc.ref)));
+    await prisma.event.delete({ where: { id: eventId } });
   } catch (error) {
     console.error("Erreur lors de la suppression de l'événement:", error);
     throw error;

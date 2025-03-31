@@ -231,14 +231,12 @@ export default function CreateEvent() {
     try {
       const eventData = {
         ...formData,
-        location:
-          `${formData.streetNumber} ${formData.street}, ${formData.postalCode} ${formData.city}`.trim(),
         categories: selectedCategories,
         isPaid,
         price: isPaid ? parseFloat(formData.price) : 0,
         createdBy: user.id,
         images: [],
-        status: "published" as const,
+        status: "PUBLISHED" as const,
         isRecurring,
         recurringDays: isRecurring ? recurringDays : [],
         recurringEndDate: null,
