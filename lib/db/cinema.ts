@@ -1,15 +1,7 @@
-import { db } from "@/lib/firebase";
-import {
-  collection,
-  addDoc,
-  getDocs,
-  doc,
-  updateDoc,
-  Timestamp,
-  query,
-  where,
-  getDoc,
-} from "firebase/firestore";
+"use server";
+
+import prisma from "../prisma";
+import { TicketType, Prisma } from "@prisma/client";
 
 /**
  * Interface representing a Seat in the cinema.
@@ -59,10 +51,19 @@ export async function createCinemaRoom(
   roomData: Omit<CinemaRoom, "id">,
 ): Promise<string> {
   try {
-    const roomRef = await addDoc(collection(db, "cinema_rooms"), {
-      ...roomData,
-      createdAt: Timestamp.now(),
-      updatedAt: Timestamp.now(),
+    const roomRef = await prisma.cinemaRoom.create({
+      data: {
+        name: roomData.name,
+        capacity: roomData.capacity,
+        seats: {
+          create: roomData.seats.map((seat) => seat),
+        },
+        ...(roomData.currentMovie
+          ? { currentMovie: roomData.currentMovie }
+          : {}),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
     });
     return roomRef.id;
   } catch (error) {
@@ -78,11 +79,27 @@ export async function createCinemaRoom(
  */
 export async function getCinemaRooms(): Promise<CinemaRoom[]> {
   try {
-    const roomsSnapshot = await getDocs(collection(db, "cinema_rooms"));
-    return roomsSnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    })) as CinemaRoom[];
+    const rooms = await prisma.cinemaRoom.findMany({
+      include: {
+        seats: true,
+      },
+    });
+
+    return rooms.map((room) => ({
+      id: room.id,
+      name: room.name,
+      capacity: room.capacity,
+      currentMovie: room.currentMovie as {
+        id: number;
+        showtime: string;
+      } | null,
+      seats: room.seats.map((seat) => ({
+        id: seat.id,
+        row: seat.row,
+        number: seat.number,
+        isAvailable: seat.isAvailable,
+      })),
+    }));
   } catch (error) {
     console.error("Erreur lors de la récupération des salles:", error);
     throw error;
@@ -100,11 +117,41 @@ export async function updateCinemaRoom(
   data: Partial<Omit<CinemaRoom, "id">>,
 ): Promise<void> {
   try {
-    const roomRef = doc(db, "cinema_rooms", roomId);
-    await updateDoc(roomRef, {
-      ...data,
-      updatedAt: Timestamp.now(),
+    const { seats, currentMovie, ...updateRoomData } = data;
+    const updateData: Prisma.CinemaRoomUpdateInput = {
+      ...updateRoomData,
+      updatedAt: new Date(),
+      ...(currentMovie !== undefined
+        ? {
+            currentMovie:
+              currentMovie === null ? Prisma.JsonNull : currentMovie,
+          }
+        : {}),
+    };
+
+    // Handle seats separately if they're included in the update
+
+    await prisma.cinemaRoom.update({
+      where: { id: roomId },
+      data: updateData,
     });
+
+    // If seats were provided, update them separately
+    if (seats) {
+      // Delete existing seats and create new ones
+      await prisma.$transaction(async (tx) => {
+        await tx.seat.deleteMany({
+          where: { roomId },
+        });
+
+        await tx.seat.createMany({
+          data: seats.map((seat) => ({
+            ...seat,
+            roomId,
+          })),
+        });
+      });
+    }
   } catch (error) {
     console.error("Erreur lors de la mise à jour de la salle:", error);
     throw error;
@@ -124,13 +171,15 @@ export async function assignMovieToRoom(
   showtime: string,
 ): Promise<void> {
   try {
-    const roomRef = doc(db, "cinema_rooms", roomId);
-    await updateDoc(roomRef, {
-      currentMovie: {
-        id: movieId,
-        showtime,
+    await prisma.cinemaRoom.update({
+      where: { id: roomId },
+      data: {
+        currentMovie: {
+          id: movieId,
+          showtime,
+        },
+        updatedAt: new Date(),
       },
-      updatedAt: Timestamp.now(),
     });
   } catch (error) {
     console.error("Erreur lors de l'assignation du film:", error);
@@ -143,22 +192,34 @@ export async function assignMovieToRoom(
  */
 export async function resetCinemaRooms(): Promise<void> {
   try {
-    const roomsSnapshot = await getDocs(collection(db, "cinema_rooms"));
-    for (const roomDoc of roomsSnapshot.docs) {
-      // const room = roomDoc.data() as CinemaRoom;
+    const rooms = await prisma.cinemaRoom.findMany();
 
+    for (const room of rooms) {
       const seats = Array.from({ length: 5 }, (_, rowIndex) =>
         Array.from({ length: 8 }, (_, seatIndex) => ({
-          id: `${String.fromCharCode(65 + rowIndex)}${seatIndex + 1}`,
           row: String.fromCharCode(65 + rowIndex),
           number: seatIndex + 1,
           isAvailable: true,
+          roomId: room.id,
         })),
       ).flat();
 
-      await updateDoc(doc(db, "cinema_rooms", roomDoc.id), {
-        seats,
-        updatedAt: Timestamp.now(),
+      await prisma.$transaction(async (tx) => {
+        // Delete all existing seats for the room
+        await tx.seat.deleteMany({
+          where: { roomId: room.id },
+        });
+
+        // Create new seats
+        await tx.seat.createMany({
+          data: seats,
+        });
+
+        // Update the room's updatedAt timestamp
+        await tx.cinemaRoom.update({
+          where: { id: room.id },
+          data: { updatedAt: new Date() },
+        });
       });
     }
   } catch (error) {
@@ -182,8 +243,21 @@ export interface Booking {
     price: number;
   }[];
   totalAmount: number;
-  createdAt: Timestamp;
+  createdAt?: Date;
   status: "pending" | "confirmed" | "cancelled";
+}
+
+/**
+ * Enhanced Booking interface to include additional display information
+ */
+export interface BookingWithDetails extends Booking {
+  roomName?: string;
+  seats: {
+    seatId: string;
+    ticketType: "child" | "adult" | "student";
+    price: number;
+    displayId?: string; // Human-readable ID like "A2"
+  }[];
 }
 
 /**
@@ -196,24 +270,114 @@ export async function createBooking(
   bookingData: Omit<Booking, "id" | "createdAt">,
 ): Promise<string> {
   try {
-    const bookingRef = await addDoc(collection(db, "bookings"), {
-      ...bookingData,
-      createdAt: Timestamp.now(),
+    // Use a transaction to ensure all operations succeed or fail together
+    const result = await prisma.$transaction(async (tx) => {
+      // Check if seat IDs are in the format of row+number (e.g., "A5")
+      const hasRowNumberFormat = bookingData.seats.some((seat) => {
+        // Check if seat ID follows pattern like "A5", "B3", etc.
+        return /^[A-Z]\d+$/.test(seat.seatId);
+      });
+
+      let seatIds = bookingData.seats.map((seat) => seat.seatId);
+      let processedSeats = [...bookingData.seats];
+
+      // If using row+number format, convert to actual seat IDs
+      if (hasRowNumberFormat) {
+        const seatPromises = bookingData.seats.map(async (seat) => {
+          if (/^[A-Z]\d+$/.test(seat.seatId)) {
+            const row = seat.seatId[0]; // First character (e.g., "A")
+            const number = parseInt(seat.seatId.substring(1)); // Rest of string as number (e.g., "5" -> 5)
+
+            // Find the actual seat ID by row and number
+            const dbSeat = await tx.seat.findFirst({
+              where: {
+                roomId: bookingData.roomId,
+                row,
+                number,
+              },
+            });
+
+            if (!dbSeat) {
+              throw new Error(
+                `Seat ${seat.seatId} not found in room ${bookingData.roomId}`,
+              );
+            }
+
+            // Return the same seat object but with the real UUID
+            return {
+              ...seat,
+              seatId: dbSeat.id,
+            };
+          }
+          return seat;
+        });
+
+        processedSeats = await Promise.all(seatPromises);
+        seatIds = processedSeats.map((seat) => seat.seatId);
+      }
+
+      // First, verify all seats exist and are available
+      const existingSeats = await tx.seat.findMany({
+        where: {
+          id: { in: seatIds },
+          roomId: bookingData.roomId,
+        },
+      });
+
+      // Check if all seats were found
+      if (existingSeats.length !== seatIds.length) {
+        const foundIds = existingSeats.map((seat) => seat.id);
+        const missingIds = seatIds.filter((id) => !foundIds.includes(id));
+        throw new Error(`Some seats do not exist: ${missingIds.join(", ")}`);
+      }
+
+      // Check if all seats are available
+      const unavailableSeats = existingSeats.filter(
+        (seat) => !seat.isAvailable,
+      );
+      if (unavailableSeats.length > 0) {
+        const unavailableIds = unavailableSeats.map((seat) => seat.id);
+        throw new Error(
+          `Some seats are already booked: ${unavailableIds.join(", ")}`,
+        );
+      }
+
+      // Create the booking
+      const booking = await tx.booking.create({
+        data: {
+          userId: bookingData.userId,
+          roomId: bookingData.roomId,
+          movieId: bookingData.movieId,
+          totalAmount: bookingData.totalAmount,
+          status: bookingData.status.toUpperCase() as
+            | "PENDING"
+            | "CONFIRMED"
+            | "CANCELLED",
+        },
+      });
+
+      // Create booking seats
+      for (const seat of processedSeats) {
+        await tx.bookingSeat.create({
+          data: {
+            bookingId: booking.id,
+            seatId: seat.seatId,
+            ticketType: seat.ticketType.toUpperCase() as TicketType,
+            price: seat.price,
+          },
+        });
+
+        // Update seat availability
+        await tx.seat.update({
+          where: { id: seat.seatId },
+          data: { isAvailable: false },
+        });
+      }
+
+      return booking.id;
     });
 
-    const roomRef = doc(db, "cinema_rooms", bookingData.roomId);
-    const room = (await getDoc(roomRef)).data() as CinemaRoom;
-
-    const updatedSeats = room.seats.map((seat) => ({
-      ...seat,
-      isAvailable: !bookingData.seats.some(
-        (bookedSeat) => bookedSeat.seatId === seat.id,
-      ),
-    }));
-
-    await updateDoc(roomRef, { seats: updatedSeats });
-
-    return bookingRef.id;
+    return result;
   } catch (error) {
     console.error("Erreur lors de la création de la réservation:", error);
     throw error;
@@ -224,18 +388,46 @@ export async function createBooking(
  * Function to get all bookings for a user.
  *
  * @param userId - The ID of the user whose bookings to fetch.
- * @returns A list of bookings for the user.
+ * @returns A list of bookings for the user with human-readable details.
  */
-export async function getUserBookings(userId: string): Promise<Booking[]> {
+export async function getUserBookings(
+  userId: string,
+): Promise<BookingWithDetails[]> {
   try {
-    const bookingsRef = collection(db, "bookings");
-    const q = query(bookingsRef, where("userId", "==", userId));
-    const querySnapshot = await getDocs(q);
+    const bookings = await prisma.booking.findMany({
+      where: { userId },
+      include: {
+        seats: {
+          include: {
+            seat: true, // Include the full seat data to get row and number
+          },
+        },
+        room: true, // Include the room to get the name
+      },
+    });
 
-    return querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    })) as Booking[];
+    return bookings.map((booking) => ({
+      id: booking.id,
+      userId: booking.userId,
+      roomId: booking.roomId,
+      roomName: booking.room.name, // Add the room name
+      movieId: booking.movieId,
+      totalAmount: booking.totalAmount,
+      status: booking.status.toLowerCase() as
+        | "pending"
+        | "confirmed"
+        | "cancelled",
+      createdAt: booking.createdAt,
+      seats: booking.seats.map((bookingSeat) => ({
+        seatId: bookingSeat.seatId,
+        displayId: `${bookingSeat.seat.row}${bookingSeat.seat.number}`, // Create human-readable ID
+        ticketType: bookingSeat.ticketType.toLowerCase() as
+          | "child"
+          | "adult"
+          | "student",
+        price: bookingSeat.price,
+      })),
+    }));
   } catch (error) {
     console.error("Erreur lors de la récupération des réservations:", error);
     throw error;

@@ -250,6 +250,8 @@ export default function CinemaManagement() {
                             ?.title || ""
                         }
                         className="rounded-lg shadow-lg w-full h-48 object-cover"
+                        width={500}
+                        height={750}
                       />
                       <div className="space-y-2">
                         <p className="font-semibold">
@@ -366,6 +368,8 @@ export default function CinemaManagement() {
                   src={getImageUrl(movie.poster_path, "w500")}
                   alt={movie.title}
                   className="rounded-lg shadow-lg w-full h-64 object-cover"
+                  width={500}
+                  height={750}
                 />
                 <div className="space-y-4">
                   <h5 className="text-xl font-bold tracking-tight text-gray-900">

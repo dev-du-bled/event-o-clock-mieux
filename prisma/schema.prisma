@@ -1,3 +1,4 @@
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -88,6 +89,9 @@ model User {
   banned        Boolean?
   banReason     String?
   banExpires    DateTime?
+  image         String?
+
+  @@map("user")
 }
 
 model ContactMessage {
@@ -166,7 +170,8 @@ model Seat {
   room         CinemaRoom    @relation(fields: [roomId], references: [id], onDelete: Cascade)
   bookingSeats BookingSeat[]
 
-  @@unique([roomId, row, number]) // Ensure seat numbers are unique within a room
+  // Ensure seat numbers are unique within a room
+  @@unique([roomId, row, number])
 }
 
 model Booking {
@@ -195,5 +200,17 @@ model BookingSeat {
   booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
   seat    Seat    @relation(fields: [seatId], references: [id])
 
-  @@unique([bookingId, seatId]) // Each seat can only be booked once per booking
+  // Each seat can only be booked once per booking
+  @@unique([bookingId, seatId])
+}
+
+model Verification {
+  id         String    @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  @@map("verification")
 }

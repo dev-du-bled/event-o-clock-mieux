@@ -14,7 +14,7 @@ import {
   assignMovieToRoom,
   getCinemaRooms,
   getUserBookings,
-  type Booking,
+  type BookingWithDetails, // Change this import from Booking to BookingWithDetails
   resetCinemaRooms,
 } from "@/lib/db/cinema";
 import { getMovieDetails, type Movie } from "@/lib/tmdb";
@@ -48,7 +48,9 @@ export default function Profile() {
   );
   const [newImage, setNewImage] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [bookings, setBookings] = useState<(Booking & { movie?: Movie })[]>([]);
+  const [bookings, setBookings] = useState<
+    (BookingWithDetails & { movie?: Movie })[]
+  >([]);
   const [loadingBookings, setLoadingBookings] = useState(true);
   const [resettingRooms, setResettingRooms] = useState(false);
 
@@ -337,12 +339,15 @@ export default function Profile() {
                       <Table.Cell className="whitespace-nowrap font-medium text-gray-900">
                         {booking.movie?.title || `Film #${booking.movieId}`}
                       </Table.Cell>
-                      <Table.Cell>Salle {booking.roomId}</Table.Cell>
+                      <Table.Cell>
+                        {booking.roomName ||
+                          `Salle ${booking.roomId.substring(0, 4)}`}
+                      </Table.Cell>
                       <Table.Cell>
                         {booking.seats.map((seat) => (
                           <div key={seat.seatId}>
-                            {seat.seatId} ({seat.ticketType} -{" "}
-                            {seat.price.toFixed(2)} €)
+                            {seat.displayId || seat.seatId.substring(0, 8)} (
+                            {seat.ticketType} - {seat.price.toFixed(2)} €)
                           </div>
                         ))}
                       </Table.Cell>

@@ -12,7 +12,7 @@ export interface ContactMessage {
   subject: string;
   message: string;
   createdAt: Date;
-  status: "pending" | "sent" | "error";
+  status: "PENDING" | "SENT" | "ERROR";
 }
 
 /**
@@ -26,8 +26,12 @@ export async function submitContactForm(
   data: Omit<ContactMessage, "createdAt" | "status">,
 ) {
   try {
-    const contact = await prisma.contactMessage.create({
-      data: data,
+    const contactRef = await prisma.contactMessage.create({
+      data: {
+        ...data,
+        createdAt: new Date(),
+        status: "PENDING",
+      },
     });
 
     return contact.id;
