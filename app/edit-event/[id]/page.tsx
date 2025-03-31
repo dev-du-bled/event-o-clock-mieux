@@ -8,7 +8,6 @@
  */
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
-import { useAuth } from "@/context/auth-context";
 import {
   MapPin,
   Upload,
@@ -26,9 +25,11 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import AddressFeature from "@/lib/types";
 import Image from "next/image";
+import { authClient } from "@/lib/auth/auth-client";
 
 export default function EditEvent() {
-  const { user } = useAuth();
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -83,7 +84,7 @@ export default function EditEvent() {
         const eventData = eventDoc.data();
 
         // Check if user is the creator of the event
-        if (eventData.createdBy !== user.uid) {
+        if (eventData.createdBy !== user.id) {
           setError("Vous n&apos;êtes pas autorisé à modifier cet événement");
           return;
         }

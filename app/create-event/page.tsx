@@ -8,7 +8,6 @@
 
 import React, { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/context/auth-context";
 import {
   MapPin,
   Upload,
@@ -24,9 +23,12 @@ import { uploadEventImage } from "@/lib/storage";
 import Link from "next/link";
 import Image from "next/image";
 import AddressFeature from "@/lib/types";
+import { authClient } from "@/lib/auth/auth-client";
 
 export default function CreateEvent() {
-  const { user, userProfile } = useAuth();
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
+
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -78,33 +80,6 @@ export default function CreateEvent() {
             <Link href="/login" className="text-primary hover:text-primary/80">
               Se connecter
             </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!userProfile?.emailVerified) {
-    return (
-      <div className="min-h-screen bg-gray-50 py-12">
-        <div className="container mx-auto px-4">
-          <div className="bg-white rounded-lg shadow-lg p-6 text-center">
-            <h2 className="text-xl font-semibold mb-4">
-              Vérification d&apos;email requise
-            </h2>
-            <p className="text-gray-600 mb-4">
-              Vous devez vérifier votre adresse email avant de pouvoir créer un
-              événement. Veuillez vérifier votre boîte de réception et cliquer
-              sur le lien de confirmation.
-            </p>
-            <div className="mt-4">
-              <Link
-                href="/events"
-                className="text-primary hover:text-primary/80"
-              >
-                Retour aux événements
-              </Link>
-            </div>
           </div>
         </div>
       </div>
@@ -261,7 +236,7 @@ export default function CreateEvent() {
         categories: selectedCategories,
         isPaid,
         price: isPaid ? parseFloat(formData.price) : 0,
-        createdBy: user.uid,
+        createdBy: user.id,
         images: [],
         status: "published" as const,
         isRecurring,

@@ -38,34 +38,6 @@ export default function Register() {
     setError("");
 
     // TODO: zod i beg
-    const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
-    const digitRegex = /\d/;
-    const uppercaseRegex = /[A-Z]/;
-
-    if (password !== confirmPassword) {
-      setError("Les mots de passe ne correspondent pas");
-      return;
-    }
-
-    if (password.length < 8) {
-      setError("Le mot de passe doit contenir au moins 8 caractères");
-      return;
-    }
-
-    if (!specialCharRegex.test(password)) {
-      setError("Le mot de passe doit contenir au moins un caractère spécial");
-      return;
-    }
-
-    if (!digitRegex.test(password)) {
-      setError("Le mot de passe doit contenir au moins un chiffre");
-      return;
-    }
-
-    if (!uppercaseRegex.test(password)) {
-      setError("Le mot de passe doit contenir au moins une majuscule");
-      return;
-    }
 
     await authClient.signUp.email(
       {
@@ -80,7 +52,7 @@ export default function Register() {
         },
         onSuccess() {
           setLoading(false);
-          router.push("/login");
+          router.push("/");
         },
         onError(ctx) {
           setError(ctx.error.message || "Erreur lors de la création du compte");

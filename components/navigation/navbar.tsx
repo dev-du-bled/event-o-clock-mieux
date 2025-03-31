@@ -12,10 +12,10 @@ import {
   Film,
   ShoppingCart,
 } from "lucide-react";
-import { auth } from "@/lib/firebase";
 import { CartItem } from "@/lib/db/cinema";
 import Image from "next/image";
 import { authClient } from "@/lib/auth/auth-client";
+import { useRouter } from "next/navigation";
 
 /**
  * Navbar component that include menu
@@ -23,13 +23,25 @@ import { authClient } from "@/lib/auth/auth-client";
  * -setCartItemsCount: to set cart items count to parameter value
  * -setInterval: to check the cart count regularly
  */
+
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const { data: session } = authClient.useSession();
   const [cartItemsCount, setCartItemsCount] = useState(0);
+  const router = useRouter();
 
   const displayName = session?.user.name || "Mon profil";
   const user = session?.user;
+
+  const logout = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/login");
+        },
+      },
+    });
+  };
 
   useEffect(() => {
     const updateCartCount = () => {
@@ -174,7 +186,7 @@ export function Navbar() {
               </>
             ) : (
               <button
-                onClick={() => auth.signOut()}
+                onClick={logout}
                 className="px-4 py-2 text-gray-600 hover:text-primary transition-colors"
               >
                 Déconnexion
@@ -289,7 +301,7 @@ export function Navbar() {
                 </>
               ) : (
                 <button
-                  onClick={() => auth.signOut()}
+                  onClick={logout}
                   className="text-gray-600 hover:text-primary transition-colors text-left"
                 >
                   Déconnexion

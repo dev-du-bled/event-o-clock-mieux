@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useAuth } from "@/context/auth-context";
 import { getMovieDetails, getImageUrl, type Movie } from "@/lib/tmdb";
 import { Calendar, Star, Film, Clock, Check } from "lucide-react";
 import { format } from "date-fns";
@@ -15,6 +14,7 @@ import {
 } from "@/lib/db/cinema";
 import Link from "next/link";
 import Image from "next/image";
+import { authClient } from "@/lib/auth/auth-client";
 
 const AVAILABLE_MOVIES = [27205, 155, 680];
 
@@ -25,7 +25,8 @@ const ROOM_CONFIG = {
 };
 
 export default function CinemaManagement() {
-  const { user } = useAuth();
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
   const [movies, setMovies] = useState<Movie[]>([]);
   const [rooms, setRooms] = useState<CinemaRoom[]>([]);
   // const [loading, setLoading] = useState(true);

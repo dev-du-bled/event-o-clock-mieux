@@ -5,11 +5,11 @@ import { getMovieDetails, getImageUrl, type Movie } from "@/lib/tmdb";
 import { Film, Clock, Check, Ticket } from "lucide-react";
 import { Card, Modal, Button } from "flowbite-react";
 import { CinemaRoom, getCinemaRooms } from "@/lib/db/cinema";
-import { useAuth } from "@/context/auth-context";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useCartStore } from "@/lib/store/cart";
 import Image from "next/image";
+import { authClient } from "@/lib/auth/auth-client";
 
 /**
  * @brief Cinema room configuration
@@ -65,7 +65,8 @@ export default function Cinema() {
    * @note The component uses the TMDb API to fetch movie details and images
    *
    */
-  const { user } = useAuth();
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
   const router = useRouter();
   const { addItem } = useCartStore();
   const [movies, setMovies] = useState<Movie[]>([]);

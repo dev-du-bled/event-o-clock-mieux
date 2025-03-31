@@ -5,7 +5,6 @@
  * @details Handles displaying, editing and deleting user's created events
  */
 import React, { useEffect, useState } from "react";
-import { useAuth } from "@/context/auth-context";
 import { getUserEvents, deleteEvent, type Event } from "@/lib/db/events";
 import {
   Calendar,
@@ -21,6 +20,7 @@ import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Modal } from "flowbite-react";
 import Image from "next/image";
+import { authClient } from "@/lib/auth/auth-client";
 
 /**
  * @brief User events management component
@@ -35,7 +35,8 @@ import Image from "next/image";
  */
 
 export default function MyEvents() {
-  const { user } = useAuth();
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -48,7 +49,7 @@ export default function MyEvents() {
       if (!user) return;
 
       try {
-        const userEvents = await getUserEvents(user.uid);
+        const userEvents = await getUserEvents(user.id);
         setEvents(userEvents);
       } catch (err) {
         setError("Erreur lors du chargement des événements");
