@@ -23,7 +23,6 @@
     "date-fns": "^2.30.0",
     "eslint": "^9.23.0",
     "eslint-config-next": "^15.2.3",
-    "firebase": "^11.5.0",
     "flowbite": "^3.1.2",
     "flowbite-react": "^0.7.8",
     "lucide-react": "^0.294.0",
