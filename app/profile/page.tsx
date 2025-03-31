@@ -9,7 +9,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { User, Camera, Film, Ticket, RefreshCw } from "lucide-react";
-import { updateUserProfile } from "@/lib/db/users";
 import { uploadProfileImage } from "@/lib/storage";
 import {
   assignMovieToRoom,
@@ -139,9 +138,9 @@ export default function Profile() {
         photoURL = await uploadProfileImage(newImage, user.id);
       }
 
-      await updateUserProfile(user.id, {
-        displayName,
-        photoURL,
+      await authClient.updateUser({
+        image: photoURL,
+        name: displayName,
       });
 
       router.refresh();
