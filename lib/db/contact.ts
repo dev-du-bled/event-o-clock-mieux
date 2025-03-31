@@ -34,7 +34,7 @@ export async function submitContactForm(
       },
     });
 
-    return contact.id;
+    return contactRef.id;
   } catch (error) {
     console.error("Erreur lors de l'envoi du message:", error);
     throw error;
