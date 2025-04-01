@@ -285,6 +285,8 @@ export default function Events() {
           src={src}
           alt={alt}
           className="absolute inset-0 w-full h-full object-cover"
+          width={500}
+          height={300}
         />
       </div>
     );

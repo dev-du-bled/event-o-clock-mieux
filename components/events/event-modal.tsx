@@ -116,6 +116,8 @@ export function EventModal({
                 src={event.images[0]}
                 alt={event.title}
                 className="w-full h-full object-cover"
+                width={500}
+                height={300}
               />
             ) : (
               <div className="w-full h-full bg-gray-200 flex items-center justify-center">

@@ -264,6 +264,8 @@ export function Navbar() {
                           src={user.image}
                           alt="Photo de profil"
                           className="w-6 h-6 rounded-full mr-2 object-cover"
+                          height={24}
+                          width={24}
                         />
                       ) : (
                         <User className="w-5 h-5 mr-1" />
