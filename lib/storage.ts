@@ -1,5 +1,10 @@
+"use server";
+
 import { storage } from "./firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+
+import sharp from "sharp";
+import prisma from "./prisma";
 
 /**
  * Allowed image types for upload (JPEG, JPG, PNG, and WEBP formats).
@@ -20,7 +25,7 @@ const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
  * Custom error class for image validation errors.
  * It provides a custom error name to make error handling more specific.
  */
-export class ImageValidationError extends Error {
+class ImageValidationError extends Error {
   constructor(message: string) {
     super(message);
     this.name = "ImageValidationError";
@@ -35,7 +40,7 @@ export class ImageValidationError extends Error {
  * @returns boolean - Returns true if the image is valid.
  * @throws ImageValidationError - Throws an error if validation fails.
  */
-export function validateImage(file: File): boolean {
+function validateImage(file: File): boolean {
   if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
     throw new ImageValidationError(
       "Format de fichier non autorisé. Seuls les formats JPEG, JPG, PNG et WEBP sont acceptés.",
@@ -59,6 +64,8 @@ export function validateImage(file: File): boolean {
  * @returns string - The URL of the uploaded image after it's successfully stored.
  * @throws ImageValidationError - Throws an error if image validation fails.
  */
+
+// TODO: Replace with DB
 export async function uploadEventImage(
   file: File,
   eventId: string,
@@ -91,12 +98,27 @@ export async function uploadProfileImage(
 ): Promise<string> {
   try {
     validateImage(file);
-    const imageRef = ref(
-      storage,
-      `users/${userId}/profile.${file.name.split(".").pop()}`,
-    );
-    await uploadBytes(imageRef, file);
-    return await getDownloadURL(imageRef);
+    const img = sharp(await file.arrayBuffer());
+    const processed_img_buffer = await img
+      .resize({
+        width: 512,
+        height: 512,
+      })
+      .toFormat("webp")
+      .toBuffer();
+
+    const b64_img = `data:image/png;base64,${processed_img_buffer.toString("base64")}`;
+
+    prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        image: b64_img,
+      },
+    });
+
+    return b64_img;
   } catch (error) {
     if (error instanceof ImageValidationError) {
       throw error;

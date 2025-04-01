@@ -534,6 +534,8 @@ export default function CreateEvent() {
                     <Image
                       src={URL.createObjectURL(image)}
                       alt={`Preview ${index + 1}`}
+                      width={100}
+                      height={100}
                       className="h-20 w-20 object-cover rounded-lg"
                     />
                     <button
