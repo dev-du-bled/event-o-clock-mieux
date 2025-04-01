@@ -17,7 +17,7 @@ import { useRouter } from "next/navigation";
  * @details Manages user registration process including:
  *          - Email and password validation
  *          - Password strength requirements
- *          - Account creation via Firebase
+ *          - Account creation via Better-Auth
  *          - Email verification
  *          - Error handling
  *

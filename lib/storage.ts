@@ -1,8 +1,5 @@
 "use server";
 
-import { storage } from "./firebase";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-
 import sharp from "sharp";
 import prisma from "./prisma";
 
@@ -57,7 +54,7 @@ function validateImage(file: File): boolean {
 }
 
 /**
- * Uploads an image to Firebase Storage for an event.
+ * Uploads an image to the database for an event.
  *
  * @param file - The image file to upload.
  * @param eventId - The ID of the event to associate the image with.
@@ -72,9 +69,29 @@ export async function uploadEventImage(
 ): Promise<string> {
   try {
     validateImage(file);
-    const imageRef = ref(storage, `events/${eventId}/${file.name}`);
-    await uploadBytes(imageRef, file);
-    return await getDownloadURL(imageRef);
+    const img = sharp(await file.arrayBuffer());
+    const processed_img_buffer = await img
+      .resize({
+        width: 800,
+        height: 600,
+      })
+      .toFormat("webp")
+      .toBuffer();
+
+    const b64_img = `data:image/webp;base64,${processed_img_buffer.toString("base64")}`;
+
+    await prisma.event.update({
+      where: {
+        id: eventId,
+      },
+      data: {
+        images: {
+          push: b64_img,
+        },
+      },
+    });
+
+    return b64_img;
   } catch (error) {
     if (error instanceof ImageValidationError) {
       throw error;
@@ -85,7 +102,7 @@ export async function uploadEventImage(
 }
 
 /**
- * Uploads a profile image to Firebase Storage for a user.
+ * Uploads a profile image to the database for a user.
  *
  * @param file - The profile image file to upload.
  * @param userId - The ID of the user to associate the image with.
@@ -101,15 +118,15 @@ export async function uploadProfileImage(
     const img = sharp(await file.arrayBuffer());
     const processed_img_buffer = await img
       .resize({
-        width: 512,
-        height: 512,
+        width: 256,
+        height: 256,
       })
       .toFormat("webp")
       .toBuffer();
 
-    const b64_img = `data:image/png;base64,${processed_img_buffer.toString("base64")}`;
+    const b64_img = `data:image/webp;base64,${processed_img_buffer.toString("base64")}`;
 
-    prisma.user.update({
+    await prisma.user.update({
       where: {
         id: userId,
       },

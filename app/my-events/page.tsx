@@ -210,6 +210,8 @@ export default function MyEvents() {
                       src={event.images[0]}
                       alt={event.title}
                       className="w-full h-full object-cover"
+                      width={800}
+                      height={600}
                     />
                   </div>
                 )}

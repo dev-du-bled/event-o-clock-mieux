@@ -135,7 +135,7 @@ export async function updateEvent(
 
 /**
  * Function to delete an event and its associated resources.
- * Deletes the event document from Firestore, removes images from Firebase Storage,
+ * Deletes the event document from Firestore, removes images from the database ,
  * and deletes any associated favorites.
  *
  * @param eventId - The ID of the event to be deleted.

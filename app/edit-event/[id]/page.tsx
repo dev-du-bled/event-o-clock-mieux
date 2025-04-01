@@ -21,8 +21,6 @@ import {
 import { updateEvent } from "@/lib/db/events";
 import { uploadEventImage } from "@/lib/storage";
 import Link from "next/link";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "@/lib/firebase";
 import AddressFeature from "@/lib/types";
 import Image from "next/image";
 import { authClient } from "@/lib/auth/auth-client";

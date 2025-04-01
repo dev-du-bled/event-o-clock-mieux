@@ -16,7 +16,6 @@ import { authClient } from "@/lib/auth/auth-client";
  * @brief Login component
  * @details Manages user authentication including:
  *          - Email/password validation
- *          - Firebase authentication
  *          - Error handling
  *          - Redirect after successful login
  *
