@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useAuth } from "@/context/auth-context";
 import { createBooking } from "@/lib/db/cinema";
 import {
   MapPin,
@@ -14,6 +13,7 @@ import {
 import { Alert } from "flowbite-react";
 import Link from "next/link";
 import { useCartStore } from "@/lib/store/cart";
+import { authClient } from "@/lib/auth/auth-client";
 
 interface AddressFeature {
   properties: {
@@ -26,7 +26,8 @@ interface AddressFeature {
 }
 
 export default function CinemaCart() {
-  const { user } = useAuth();
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
   const {
     items: cartItems,
     removeItem,
@@ -145,7 +146,7 @@ export default function CinemaCart() {
         const totalAmount = items.reduce((sum, item) => sum + item.price, 0);
 
         await createBooking({
-          userId: user.uid,
+          userId: user.id,
           roomId,
           movieId: items[0].movieId,
           seats: items.map((item) => ({

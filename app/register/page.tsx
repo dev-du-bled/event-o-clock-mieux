@@ -7,113 +7,86 @@
  */
 
 import { useState } from "react";
-import {
-  createUserWithEmailAndPassword,
-  sendEmailVerification,
-} from "firebase/auth";
-import { auth } from "@/lib/firebase";
 import Link from "next/link";
-import { Mail, Lock, AlertCircle } from "lucide-react";
+import { Mail, Lock, AlertCircle, User } from "lucide-react";
+import { authClient } from "@/lib/auth/auth-client";
+import { useRouter } from "next/navigation";
 
 /**
  * @brief User registration component
  * @details Manages user registration process including:
  *          - Email and password validation
  *          - Password strength requirements
- *          - Account creation via Firebase
+ *          - Account creation via Better-Auth
  *          - Email verification
  *          - Error handling
  *
  * @returns React component for registration page
  */
 export default function Register() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [verificationEmailSent, setVerificationEmailSent] = useState(false);
+  // const [verificationEmailSent, setVerificationEmailSent] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
-    const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
-    const digitRegex = /\d/;
-    const uppercaseRegex = /[A-Z]/;
+    // TODO: zod i beg
 
-    if (password !== confirmPassword) {
-      setError("Les mots de passe ne correspondent pas");
-      return;
-    }
-
-    if (password.length < 8) {
-      setError("Le mot de passe doit contenir au moins 8 caractères");
-      return;
-    }
-
-    if (!specialCharRegex.test(password)) {
-      setError("Le mot de passe doit contenir au moins un caractère spécial");
-      return;
-    }
-
-    if (!digitRegex.test(password)) {
-      setError("Le mot de passe doit contenir au moins un chiffre");
-      return;
-    }
-
-    if (!uppercaseRegex.test(password)) {
-      setError("Le mot de passe doit contenir au moins une majuscule");
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
+    await authClient.signUp.email(
+      {
         email,
         password,
-      );
-      await sendEmailVerification(userCredential.user);
-      setVerificationEmailSent(true);
-    } catch (err) {
-      if (err instanceof Error && "code" in err) {
-        if (err.code === "auth/email-already-in-use") {
-          setError("Cet email est déjà utilisé");
-        } else {
-          setError("Une erreur est survenue lors de l'inscription");
-        }
-      }
-      setLoading(false);
-    }
+        name,
+        image: undefined,
+      },
+      {
+        onRequest() {
+          setLoading(true);
+        },
+        onSuccess() {
+          setLoading(false);
+          router.push("/");
+        },
+        onError(ctx) {
+          setError(ctx.error.message || "Erreur lors de la création du compte");
+          setLoading(false);
+        },
+      },
+    );
   };
 
-  if (verificationEmailSent) {
-    return (
-      <div className="min-h-screen flex items-center justify-center px-4 py-12">
-        <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-lg">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-900">
-              Vérifiez votre email
-            </h2>
-            <p className="mt-2 text-gray-600">
-              Un email de confirmation a été envoyé à {email}. Veuillez cliquer
-              sur le lien dans l&apos;email pour vérifier votre compte.
-            </p>
-            <div className="mt-6">
-              <Link
-                href="/login"
-                className="text-primary hover:text-primary/80"
-              >
-                Retour à la connexion
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // if (verificationEmailSent) {
+  //   return (
+  //     <div className="min-h-screen flex items-center justify-center px-4 py-12">
+  //       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-lg">
+  //         <div className="text-center">
+  //           <h2 className="text-3xl font-bold text-gray-900">
+  //             Vérifiez votre email
+  //           </h2>
+  //           <p className="mt-2 text-gray-600">
+  //             Un email de confirmation a été envoyé à {email}. Veuillez cliquer
+  //             sur le lien dans l&apos;email pour vérifier votre compte.
+  //           </p>
+  //           <div className="mt-6">
+  //             <Link
+  //               href="/login"
+  //               className="text-primary hover:text-primary/80"
+  //             >
+  //               Retour à la connexion
+  //             </Link>
+  //           </div>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12">
@@ -134,6 +107,27 @@ export default function Register() {
           )}
 
           <div className="space-y-4">
+            <div>
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Nom
+              </label>
+              <div className="mt-1 relative">
+                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                <input
+                  id="name"
+                  type="name"
+                  required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="pl-10 block w-full rounded-lg border border-gray-300 py-2 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  placeholder="mon nom"
+                />
+              </div>
+            </div>
+
             <div>
               <label
                 htmlFor="email"

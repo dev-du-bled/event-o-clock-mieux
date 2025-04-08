@@ -1,5 +1,6 @@
-import { db } from "@/lib/firebase";
-import { collection, addDoc, Timestamp } from "firebase/firestore";
+"use server";
+
+import prisma from "../prisma";
 
 /**
  * Interface for a ContactMessage, representing the structure of a message
@@ -10,8 +11,8 @@ export interface ContactMessage {
   email: string;
   subject: string;
   message: string;
-  createdAt: Timestamp;
-  status: "pending" | "sent" | "error";
+  createdAt: Date;
+  status: "PENDING" | "SENT" | "ERROR";
 }
 
 /**
@@ -25,11 +26,14 @@ export async function submitContactForm(
   data: Omit<ContactMessage, "createdAt" | "status">,
 ) {
   try {
-    const contactRef = await addDoc(collection(db, "contact_messages"), {
-      ...data,
-      createdAt: Timestamp.now(),
-      status: "pending",
+    const contactRef = await prisma.contactMessage.create({
+      data: {
+        ...data,
+        createdAt: new Date(),
+        status: "PENDING",
+      },
     });
+
     return contactRef.id;
   } catch (error) {
     console.error("Erreur lors de l'envoi du message:", error);

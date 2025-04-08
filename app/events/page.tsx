@@ -22,7 +22,6 @@ import {
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { Modal, Carousel } from "flowbite-react";
-import { useAuth } from "@/context/auth-context";
 import {
   addToFavorites,
   removeFromFavorites,
@@ -30,6 +29,7 @@ import {
 } from "@/lib/db/favorites";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
+import { authClient } from "@/lib/auth/auth-client";
 
 /**
  * @interface CityFeature
@@ -80,7 +80,8 @@ function SearchParamsHandler({
  * @returns React component for events page
  */
 export default function Events() {
-  const { user } = useAuth();
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -117,7 +118,7 @@ export default function Events() {
     async function checkFavorite() {
       if (user && selectedEvent?.id) {
         try {
-          const favorite = await isEventFavorite(user.uid, selectedEvent.id);
+          const favorite = await isEventFavorite(user.id, selectedEvent.id);
           setIsFavorite(favorite);
         } catch (err) {
           console.error("Erreur lors de la vérification des favoris:", err);
@@ -134,9 +135,9 @@ export default function Events() {
     setFavoriteLoading(true);
     try {
       if (isFavorite) {
-        await removeFromFavorites(user.uid, selectedEvent.id);
+        await removeFromFavorites(user.id, selectedEvent.id);
       } else {
-        await addToFavorites(user.uid, selectedEvent.id);
+        await addToFavorites(user.id, selectedEvent.id);
       }
       setIsFavorite(!isFavorite);
     } catch (err) {
@@ -284,6 +285,8 @@ export default function Events() {
           src={src}
           alt={alt}
           className="absolute inset-0 w-full h-full object-cover"
+          width={500}
+          height={300}
         />
       </div>
     );

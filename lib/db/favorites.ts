@@ -1,14 +1,6 @@
-import { db } from "@/lib/firebase";
-import {
-  collection,
-  addDoc,
-  query,
-  where,
-  getDocs,
-  deleteDoc,
-  doc,
-  Timestamp,
-} from "firebase/firestore";
+"use server";
+
+import prisma from "../prisma";
 
 /**
  * Interface representing the structure of a Favorite.
@@ -18,7 +10,7 @@ export interface Favorite {
   id?: string;
   userId: string;
   eventId: string;
-  createdAt: Timestamp;
+  createdAt: Date;
 }
 
 /**
@@ -27,21 +19,23 @@ export interface Favorite {
  *
  * @param userId - The ID of the user adding the event to their favorites.
  * @param eventId - The ID of the event being added to favorites.
- * @returns The ID of the newly created favorite document.
+ * @returns The ID of the newly created favorite.
  */
 export async function addToFavorites(
   userId: string,
   eventId: string,
 ): Promise<string> {
   try {
-    const favorite = {
-      userId,
-      eventId,
-      createdAt: Timestamp.now(),
-    };
+    console.log(eventId, userId);
+    const addFavorite = await prisma.favorite.create({
+      data: {
+        userId,
+        eventId,
+        createdAt: new Date(),
+      },
+    });
 
-    const docRef = await addDoc(collection(db, "favorites"), favorite);
-    return docRef.id;
+    return addFavorite.id;
   } catch (error) {
     console.error("Erreur lors de l'ajout aux favoris:", error);
     throw error;
@@ -60,19 +54,9 @@ export async function removeFromFavorites(
   eventId: string,
 ): Promise<void> {
   try {
-    const favoritesRef = collection(db, "favorites");
-    const q = query(
-      favoritesRef,
-      where("userId", "==", userId),
-      where("eventId", "==", eventId),
-    );
-
-    const querySnapshot = await getDocs(q);
-    const favoriteDoc = querySnapshot.docs[0];
-
-    if (favoriteDoc) {
-      await deleteDoc(doc(db, "favorites", favoriteDoc.id));
-    }
+    await prisma.favorite.delete({
+      where: { userId_eventId: { userId: userId, eventId: eventId } },
+    });
   } catch (error) {
     console.error("Erreur lors de la suppression des favoris:", error);
     throw error;
@@ -88,11 +72,16 @@ export async function removeFromFavorites(
  */
 export async function getUserFavorites(userId: string): Promise<string[]> {
   try {
-    const favoritesRef = collection(db, "favorites");
-    const q = query(favoritesRef, where("userId", "==", userId));
-    const querySnapshot = await getDocs(q);
+    const favorites = await prisma.favorite.findMany({
+      where: {
+        userId: userId,
+      },
+      select: {
+        eventId: true,
+      },
+    });
 
-    return querySnapshot.docs.map((doc) => doc.data().eventId);
+    return favorites.map((favorite) => favorite.eventId);
   } catch (error) {
     console.error("Erreur lors de la récupération des favoris:", error);
     throw error;
@@ -113,15 +102,14 @@ export async function isEventFavorite(
   eventId: string,
 ): Promise<boolean> {
   try {
-    const favoritesRef = collection(db, "favorites");
-    const q = query(
-      favoritesRef,
-      where("userId", "==", userId),
-      where("eventId", "==", eventId),
-    );
+    const isFavorited = await prisma.favorite.findFirst({
+      where: { eventId: eventId },
+      select: {
+        userId: true,
+      },
+    });
 
-    const querySnapshot = await getDocs(q);
-    return !querySnapshot.empty;
+    return isFavorited?.userId === userId;
   } catch (error) {
     console.error("Erreur lors de la vérification des favoris:", error);
     throw error;

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useAuth } from "@/context/auth-context";
 import { getMovieDetails, getImageUrl, type Movie } from "@/lib/tmdb";
 import { Calendar, Star, Film, Clock, Check } from "lucide-react";
 import { format } from "date-fns";
@@ -15,6 +14,7 @@ import {
 } from "@/lib/db/cinema";
 import Link from "next/link";
 import Image from "next/image";
+import { authClient } from "@/lib/auth/auth-client";
 
 const AVAILABLE_MOVIES = [27205, 155, 680];
 
@@ -25,7 +25,8 @@ const ROOM_CONFIG = {
 };
 
 export default function CinemaManagement() {
-  const { user } = useAuth();
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
   const [movies, setMovies] = useState<Movie[]>([]);
   const [rooms, setRooms] = useState<CinemaRoom[]>([]);
   // const [loading, setLoading] = useState(true);
@@ -249,6 +250,8 @@ export default function CinemaManagement() {
                             ?.title || ""
                         }
                         className="rounded-lg shadow-lg w-full h-48 object-cover"
+                        width={500}
+                        height={750}
                       />
                       <div className="space-y-2">
                         <p className="font-semibold">
@@ -365,6 +368,8 @@ export default function CinemaManagement() {
                   src={getImageUrl(movie.poster_path, "w500")}
                   alt={movie.title}
                   className="rounded-lg shadow-lg w-full h-64 object-cover"
+                  width={500}
+                  height={750}
                 />
                 <div className="space-y-4">
                   <h5 className="text-xl font-bold tracking-tight text-gray-900">

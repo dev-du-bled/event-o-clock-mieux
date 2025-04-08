@@ -86,6 +86,8 @@ export function EventCard({ event, onClick }: EventCardProps) {
             src={event.images[0]}
             alt={event.title}
             className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+            width={400}
+            height={200}
           />
         ) : (
           <div className="w-full h-full bg-gray-200 flex items-center justify-center">

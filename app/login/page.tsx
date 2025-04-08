@@ -7,17 +7,15 @@
  */
 
 import { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "@/lib/firebase";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Mail, Lock, AlertCircle } from "lucide-react";
+import { authClient } from "@/lib/auth/auth-client";
 
 /**
  * @brief Login component
  * @details Manages user authentication including:
  *          - Email/password validation
- *          - Firebase authentication
  *          - Error handling
  *          - Redirect after successful login
  *
@@ -33,16 +31,25 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    setLoading(true);
 
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      router.push("/");
-    } catch {
-      setError("Email ou mot de passe incorrect");
-    } finally {
-      setLoading(false);
-    }
+    await authClient.signIn.email(
+      {
+        email,
+        password,
+      },
+      {
+        onRequest() {
+          setLoading(true);
+        },
+        onSuccess() {
+          router.push("/");
+        },
+        onError(ctx) {
+          setError(ctx.error.message || "Erreur lors de la connexion");
+          setLoading(false);
+        },
+      },
+    );
   };
 
   return (
@@ -111,15 +118,6 @@ export default function Login() {
                 />
               </div>
             </div>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <Link
-              href="/forgot-password"
-              className="text-sm text-primary hover:text-primary/80 focus:outline-none"
-            >
-              Mot de passe oublié ?
-            </Link>
           </div>
 
           <div>

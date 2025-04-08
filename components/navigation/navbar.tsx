@@ -12,10 +12,10 @@ import {
   Film,
   ShoppingCart,
 } from "lucide-react";
-import { useAuth } from "@/context/auth-context";
-import { auth } from "@/lib/firebase";
 import { CartItem } from "@/lib/db/cinema";
 import Image from "next/image";
+import { authClient } from "@/lib/auth/auth-client";
+import { useRouter } from "next/navigation";
 
 /**
  * Navbar component that include menu
@@ -23,12 +23,25 @@ import Image from "next/image";
  * -setCartItemsCount: to set cart items count to parameter value
  * -setInterval: to check the cart count regularly
  */
+
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const { user, userProfile } = useAuth();
+  const { data: session } = authClient.useSession();
   const [cartItemsCount, setCartItemsCount] = useState(0);
+  const router = useRouter();
 
-  const displayName = userProfile?.displayName || "Mon profil";
+  const displayName = session?.user.name || "Mon profil";
+  const user = session?.user;
+
+  const logout = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/login");
+        },
+      },
+    });
+  };
 
   useEffect(() => {
     const updateCartCount = () => {
@@ -141,9 +154,9 @@ export function Navbar() {
                   href="/profile"
                   className="flex items-center px-4 py-2 text-gray-600 hover:text-primary transition-colors"
                 >
-                  {userProfile?.photoURL ? (
+                  {user.image ? (
                     <Image
-                      src={userProfile.photoURL}
+                      src={user.image}
                       alt="Photo de profil"
                       className="w-8 h-8 rounded-full mr-2 object-cover"
                       height={32}
@@ -173,7 +186,7 @@ export function Navbar() {
               </>
             ) : (
               <button
-                onClick={() => auth.signOut()}
+                onClick={logout}
                 className="px-4 py-2 text-gray-600 hover:text-primary transition-colors"
               >
                 Déconnexion
@@ -246,11 +259,13 @@ export function Navbar() {
                     className="text-gray-600 hover:text-primary transition-colors"
                   >
                     <span className="flex items-center">
-                      {userProfile?.photoURL ? (
+                      {user.image ? (
                         <Image
-                          src={userProfile.photoURL}
+                          src={user.image}
                           alt="Photo de profil"
                           className="w-6 h-6 rounded-full mr-2 object-cover"
+                          height={24}
+                          width={24}
                         />
                       ) : (
                         <User className="w-5 h-5 mr-1" />
@@ -288,7 +303,7 @@ export function Navbar() {
                 </>
               ) : (
                 <button
-                  onClick={() => auth.signOut()}
+                  onClick={logout}
                   className="text-gray-600 hover:text-primary transition-colors text-left"
                 >
                   Déconnexion

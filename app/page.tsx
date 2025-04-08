@@ -7,7 +7,6 @@
  */
 import { useState, useEffect } from "react";
 import { getAllEvents, type Event } from "@/lib/db/events";
-import { useAuth } from "@/context/auth-context";
 import {
   addToFavorites,
   removeFromFavorites,
@@ -18,6 +17,7 @@ import { EventModal } from "@/components/events/event-modal";
 import { useRouter } from "next/navigation";
 import { Search, MapPin } from "lucide-react";
 import Link from "next/link";
+import { authClient } from "@/lib/auth/auth-client";
 
 interface CityFeature {
   properties: {
@@ -39,7 +39,8 @@ interface CityFeature {
  */
 export default function Home() {
   const router = useRouter();
-  const { user } = useAuth();
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
   const [featuredEvents, setFeaturedEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
@@ -71,7 +72,7 @@ export default function Home() {
     async function checkFavorite() {
       if (user && selectedEvent?.id) {
         try {
-          const favorite = await isEventFavorite(user.uid, selectedEvent.id);
+          const favorite = await isEventFavorite(user.id, selectedEvent.id);
           setIsFavorite(favorite);
         } catch (err) {
           console.error("Erreur lors de la vérification des favoris:", err);
@@ -88,9 +89,9 @@ export default function Home() {
     setFavoriteLoading(true);
     try {
       if (isFavorite) {
-        await removeFromFavorites(user.uid, selectedEvent.id);
+        await removeFromFavorites(user.id, selectedEvent.id);
       } else {
-        await addToFavorites(user.uid, selectedEvent.id);
+        await addToFavorites(user.id, selectedEvent.id);
       }
       setIsFavorite(!isFavorite);
     } catch (err) {

@@ -7,7 +7,6 @@
  */
 
 import React, { useEffect, useState } from "react";
-import { useAuth } from "@/context/auth-context";
 import { getUserFavorites } from "@/lib/db/favorites";
 import { getAllEvents, type Event } from "@/lib/db/events";
 import Link from "next/link";
@@ -18,6 +17,7 @@ import {
   removeFromFavorites,
   isEventFavorite,
 } from "@/lib/db/favorites";
+import { authClient } from "@/lib/auth/auth-client";
 
 /**
  * @brief Favorites management component
@@ -30,7 +30,8 @@ import {
  * @returns React component for favorites page
  */
 export default function Favorites() {
-  const { user } = useAuth();
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -44,7 +45,7 @@ export default function Favorites() {
       if (!user) return;
 
       try {
-        const favoriteIds = await getUserFavorites(user.uid);
+        const favoriteIds = await getUserFavorites(user.id);
         const allEvents = await getAllEvents();
         const favoriteEvents = allEvents.filter((event) =>
           favoriteIds.includes(event.id!),
@@ -65,7 +66,7 @@ export default function Favorites() {
     async function checkFavorite() {
       if (user && selectedEvent?.id) {
         try {
-          const favorite = await isEventFavorite(user.uid, selectedEvent.id);
+          const favorite = await isEventFavorite(user.id, selectedEvent.id);
           setIsFavorite(favorite);
         } catch (err) {
           console.error("Erreur lors de la vérification des favoris:", err);
@@ -84,11 +85,11 @@ export default function Favorites() {
     setFavoriteLoading(true);
     try {
       if (isFavorite) {
-        await removeFromFavorites(user.uid, selectedEvent.id);
+        await removeFromFavorites(user.id, selectedEvent.id);
         // Remove event from list
         setEvents(events.filter((event) => event.id !== selectedEvent.id));
       } else {
-        await addToFavorites(user.uid, selectedEvent.id);
+        await addToFavorites(user.id, selectedEvent.id);
       }
       setIsFavorite(!isFavorite);
     } catch (err) {
