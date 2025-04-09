@@ -1,7 +1,10 @@
+"use client";
+
 import { authClient } from "@/lib/auth/auth-client";
+import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 
-export default function LogOutButton() {
+export default function LogOutButton(props: { className?: string }) {
   const router = useRouter();
 
   const logout = async () => {
@@ -9,6 +12,7 @@ export default function LogOutButton() {
       fetchOptions: {
         onSuccess: () => {
           router.push("/login");
+          router.refresh(); // to update header
         },
       },
     });
@@ -17,7 +21,10 @@ export default function LogOutButton() {
   return (
     <button
       onClick={logout}
-      className="px-4 py-2 text-gray-600 hover:text-primary transition-colors"
+      className={cn(
+        "text-gray-600 hover:text-primary transition-colors cursor-pointer",
+        props.className
+      )}
     >
       Déconnexion
     </button>

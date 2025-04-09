@@ -48,8 +48,10 @@ export default function Login() {
           setError(ctx.error.message || "Erreur lors de la connexion");
           setLoading(false);
         },
-      },
+      }
     );
+
+    router.refresh(); // refresh header
   };
 
   return (
@@ -85,7 +87,7 @@ export default function Login() {
                   type="email"
                   required
                   value={email}
-                  onChange={(e) => {
+                  onChange={e => {
                     setEmail(e.target.value);
                     setError("");
                   }}
@@ -109,7 +111,7 @@ export default function Login() {
                   type="password"
                   required
                   value={password}
-                  onChange={(e) => {
+                  onChange={e => {
                     setPassword(e.target.value);
                     setError("");
                   }}

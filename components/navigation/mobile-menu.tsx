@@ -23,7 +23,7 @@ export default function MobileMenu(props: {
   const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // ferme le menu quand la souris ne clique pas dessus
+    // ferme le menu quand la souris clique en dehors
     const menuHandler = (e: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setIsOpen(false);
@@ -36,10 +36,10 @@ export default function MobileMenu(props: {
   });
 
   return (
-    <div className="md:hidden">
+    <div className="lg:hidden">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="text-gray-600 hover:text-primary"
+        className="flex justify-center text-gray-600 hover:text-primary"
       >
         {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
       </button>
@@ -47,8 +47,7 @@ export default function MobileMenu(props: {
       {/* Menu mobile */}
       {isOpen && (
         <div
-          className="fixed bg-white border left-0 w-full px-4 py-4"
-          style={{ top: "64px" }} // to fix ? top-16 not working skill issue i guess
+          className="fixed bg-white border top-16 left-0 w-full px-4 py-4"
           ref={menuRef}
         >
           <div className="flex flex-col space-y-4">
@@ -140,7 +139,7 @@ export default function MobileMenu(props: {
                 </Link>
               </>
             ) : (
-              <LogOutButton />
+              <LogOutButton className="text-left" />
             )}
           </div>
         </div>

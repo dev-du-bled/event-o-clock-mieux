@@ -1,6 +1,4 @@
-"use client";
-
-import { useState, useEffect } from "react";
+// import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   Calendar,
@@ -10,11 +8,12 @@ import {
   Film,
   ShoppingCart,
 } from "lucide-react";
-import { CartItem } from "@/lib/db/cinema";
+// import { CartItem } from "@/lib/db/cinema";
 import Image from "next/image";
-import { authClient } from "@/lib/auth/auth-client";
 import MobileMenu from "./mobile-menu";
 import LogOutButton from "../auth/logout";
+import { auth } from "@/lib/auth/auth";
+import { headers } from "next/headers";
 
 /**
  * Navbar component that include menu
@@ -23,45 +22,47 @@ import LogOutButton from "../auth/logout";
  * -setInterval: to check the cart count regularly
  */
 
-export function Navbar() {
-  const { data: session } = authClient.useSession();
-  const [cartItemsCount, setCartItemsCount] = useState(0);
+export async function Navbar() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  // const [cartItemsCount, setCartItemsCount] = useState(0);
 
-  const displayName = session?.user.name || "Mon profil";
+  const displayName = session?.user.name;
   const user = session?.user;
 
-  useEffect(() => {
-    const updateCartCount = () => {
-      try {
-        const cart = localStorage.getItem("cinemaCart");
-        if (cart) {
-          const items = JSON.parse(cart) as CartItem[];
-          setCartItemsCount(items.length);
-        } else {
-          setCartItemsCount(0);
-        }
-      } catch (error) {
-        console.error("Erreur lors de la lecture du panier:", error);
-        setCartItemsCount(0);
-      }
-    };
+  // useEffect(() => {
+  //   const updateCartCount = () => {
+  //     try {
+  //       const cart = localStorage.getItem("cinemaCart");
+  //       if (cart) {
+  //         const items = JSON.parse(cart) as CartItem[];
+  //         setCartItemsCount(items.length);
+  //       } else {
+  //         setCartItemsCount(0);
+  //       }
+  //     } catch (error) {
+  //       console.error("Erreur lors de la lecture du panier:", error);
+  //       setCartItemsCount(0);
+  //     }
+  //   };
 
-    updateCartCount();
+  //   updateCartCount();
 
-    const interval = setInterval(updateCartCount, 1000);
+  //   const interval = setInterval(updateCartCount, 1000);
 
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === "cinemaCart") {
-        updateCartCount();
-      }
-    };
-    window.addEventListener("storage", handleStorageChange);
+  //   const handleStorageChange = (e: StorageEvent) => {
+  //     if (e.key === "cinemaCart") {
+  //       updateCartCount();
+  //     }
+  //   };
+  //   window.addEventListener("storage", handleStorageChange);
 
-    return () => {
-      clearInterval(interval);
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, []);
+  //   return () => {
+  //     clearInterval(interval);
+  //     window.removeEventListener("storage", handleStorageChange);
+  //   };
+  // }, []);
 
   return (
     <header className="fixed z-50 w-full border-b border-gray-200 bg-white">
@@ -74,7 +75,7 @@ export function Navbar() {
               Event&apos;O&apos;Clock
             </span>
           </Link>
-          <div className="ml-10 hidden items-center space-x-8 md:flex">
+          <div className="ml-10 hidden items-center space-x-8 lg:!flex ">
             <Link
               href="/events"
               className="hover:text-primary text-gray-600 transition-colors"
@@ -113,7 +114,7 @@ export function Navbar() {
         </nav>
 
         {/* Boutons d'action */}
-        <nav className="hidden items-center space-x-4 md:flex">
+        <nav className="hidden items-center space-x-4 lg:!flex">
           {user && (
             <>
               {/* Panier */}
@@ -122,11 +123,11 @@ export function Navbar() {
                 className="hover:text-primary relative flex items-center px-4 py-2 text-gray-600 transition-colors"
               >
                 <ShoppingCart className="h-5 w-5" />
-                {cartItemsCount > 0 && (
+                {/* {cartItemsCount > 0 && (
                   <span className="bg-primary absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full text-xs text-white">
                     {cartItemsCount}
                   </span>
-                )}
+                )} */}
               </Link>
 
               <Link

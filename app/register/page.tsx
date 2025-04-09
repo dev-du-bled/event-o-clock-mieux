@@ -58,8 +58,10 @@ export default function Register() {
           setError(ctx.error.message || "Erreur lors de la création du compte");
           setLoading(false);
         },
-      },
+      }
     );
+
+    router.refresh(); // refresh header
   };
 
   // if (verificationEmailSent) {
@@ -121,7 +123,7 @@ export default function Register() {
                   type="name"
                   required
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  onChange={e => setName(e.target.value)}
                   className="pl-10 block w-full rounded-lg border border-gray-300 py-2 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                   placeholder="mon nom"
                 />
@@ -142,7 +144,7 @@ export default function Register() {
                   type="email"
                   required
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={e => setEmail(e.target.value)}
                   className="pl-10 block w-full rounded-lg border border-gray-300 py-2 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                   placeholder="vous@exemple.com"
                 />
@@ -163,7 +165,7 @@ export default function Register() {
                   type="password"
                   required
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={e => setPassword(e.target.value)}
                   className="pl-10 block w-full rounded-lg border border-gray-300 py-2 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                   placeholder="••••••••"
                 />
@@ -184,7 +186,7 @@ export default function Register() {
                   type="password"
                   required
                   value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  onChange={e => setConfirmPassword(e.target.value)}
                   className="pl-10 block w-full rounded-lg border border-gray-300 py-2 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                   placeholder="••••••••"
                 />
