@@ -53,6 +53,7 @@ export default function Register() {
         onSuccess() {
           setLoading(false);
           router.push("/");
+          router.refresh(); // refresh header
         },
         onError(ctx) {
           setError(ctx.error.message || "Erreur lors de la création du compte");
@@ -60,8 +61,6 @@ export default function Register() {
         },
       }
     );
-
-    router.refresh(); // refresh header
   };
 
   // if (verificationEmailSent) {
