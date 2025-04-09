@@ -3,8 +3,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import {
-  Menu,
-  X,
   Calendar,
   PlusCircle,
   Heart,
@@ -15,7 +13,8 @@ import {
 import { CartItem } from "@/lib/db/cinema";
 import Image from "next/image";
 import { authClient } from "@/lib/auth/auth-client";
-import { useRouter } from "next/navigation";
+import MobileMenu from "./mobile-menu";
+import LogOutButton from "../auth/logout";
 
 /**
  * Navbar component that include menu
@@ -25,23 +24,11 @@ import { useRouter } from "next/navigation";
  */
 
 export function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
   const { data: session } = authClient.useSession();
   const [cartItemsCount, setCartItemsCount] = useState(0);
-  const router = useRouter();
 
   const displayName = session?.user.name || "Mon profil";
   const user = session?.user;
-
-  const logout = async () => {
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          router.push("/login");
-        },
-      },
-    });
-  };
 
   useEffect(() => {
     const updateCartCount = () => {
@@ -77,242 +64,120 @@ export function Navbar() {
   }, []);
 
   return (
-    <nav className="bg-white border-b border-gray-200 fixed w-full z-50">
-      <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo and navigation  */}
-          <div className="flex items-center">
-            <Link href="/" className="flex items-center">
-              <Calendar className="h-8 w-8 text-primary" />
-              <span className="ml-2 text-xl font-bold">
-                Event&apos;O&apos;Clock
+    <header className="fixed z-50 w-full border-b border-gray-200 bg-white">
+      <div className="flex h-16 items-center justify-between px-4">
+        {/* Logo and navigation  */}
+        <nav className="flex items-center">
+          <Link href="/" className="flex items-center">
+            <Calendar className="text-primary h-8 w-8" />
+            <span className="ml-2 text-xl font-bold">
+              Event&apos;O&apos;Clock
+            </span>
+          </Link>
+          <div className="ml-10 hidden items-center space-x-8 md:flex">
+            <Link
+              href="/events"
+              className="hover:text-primary text-gray-600 transition-colors"
+            >
+              Découvrir
+            </Link>
+            <Link
+              href="/cinema"
+              className="hover:text-primary text-gray-600 transition-colors"
+            >
+              <span className="flex items-center">
+                <Film className="mr-1 h-5 w-5" />
+                Cinéma
               </span>
             </Link>
-            <div className="hidden md:flex items-center ml-10 space-x-8">
-              <Link
-                href="/events"
-                className="text-gray-600 hover:text-primary transition-colors"
-              >
-                Découvrir
-              </Link>
-              <Link
-                href="/cinema"
-                className="text-gray-600 hover:text-primary transition-colors"
-              >
-                <span className="flex items-center">
-                  <Film className="w-5 h-5 mr-1" />
-                  Cinéma
-                </span>
-              </Link>
-              {user && (
-                <>
-                  <Link
-                    href="/my-events"
-                    className="text-gray-600 hover:text-primary transition-colors"
-                  >
-                    Mes événements
-                  </Link>
-                  <Link
-                    href="/favorites"
-                    className="text-gray-600 hover:text-primary transition-colors"
-                  >
-                    <span className="flex items-center">
-                      <Heart className="w-5 h-5 mr-1" />
-                      Favoris
-                    </span>
-                  </Link>
-                </>
-              )}
-            </div>
-          </div>
-
-          {/* Boutons d'action */}
-          <div className="hidden md:flex items-center space-x-4">
             {user && (
               <>
-                {/* Panier */}
                 <Link
-                  href="/cinema/cart"
-                  className="flex items-center px-4 py-2 text-gray-600 hover:text-primary transition-colors relative"
+                  href="/my-events"
+                  className="hover:text-primary text-gray-600 transition-colors"
                 >
-                  <ShoppingCart className="w-5 h-5" />
-                  {cartItemsCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-primary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                      {cartItemsCount}
-                    </span>
-                  )}
-                </Link>
-
-                <Link
-                  href="/create-event"
-                  className="flex items-center px-4 py-2 text-gray-600 hover:text-primary transition-colors"
-                >
-                  <PlusCircle className="w-5 h-5 mr-1" />
-                  Créer un événement
+                  Mes événements
                 </Link>
                 <Link
-                  href="/profile"
-                  className="flex items-center px-4 py-2 text-gray-600 hover:text-primary transition-colors"
-                >
-                  {user.image ? (
-                    <Image
-                      src={user.image}
-                      alt="Photo de profil"
-                      className="w-8 h-8 rounded-full mr-2 object-cover"
-                      height={32}
-                      width={32}
-                    />
-                  ) : (
-                    <User className="w-5 h-5 mr-1" />
-                  )}
-                  <span>{displayName}</span>
-                </Link>
-              </>
-            )}
-            {!user ? (
-              <>
-                <Link
-                  href="/login"
-                  className="px-4 py-2 text-gray-600 hover:text-primary transition-colors"
-                >
-                  Connexion
-                </Link>
-                <Link
-                  href="/register"
-                  className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
-                >
-                  Inscription
-                </Link>
-              </>
-            ) : (
-              <button
-                onClick={logout}
-                className="px-4 py-2 text-gray-600 hover:text-primary transition-colors"
-              >
-                Déconnexion
-              </button>
-            )}
-          </div>
-
-          {/* Bouton menu mobile */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="text-gray-600 hover:text-primary"
-            >
-              {isOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
-            </button>
-          </div>
-        </div>
-
-        {/* Menu mobile */}
-        {isOpen && (
-          <div className="md:hidden py-4">
-            <div className="flex flex-col space-y-4">
-              <Link
-                href="/events"
-                className="text-gray-600 hover:text-primary transition-colors"
-              >
-                Découvrir
-              </Link>
-              <Link
-                href="/cinema"
-                className="text-gray-600 hover:text-primary transition-colors"
-              >
-                <span className="flex items-center">
-                  <Film className="w-5 h-5 mr-1" />
-                  Cinéma
-                </span>
-              </Link>
-              {user && (
-                <>
-                  <Link
-                    href="/my-events"
-                    className="text-gray-600 hover:text-primary transition-colors"
-                  >
-                    Mes événements
-                  </Link>
-                  <Link
-                    href="/favorites"
-                    className="text-gray-600 hover:text-primary transition-colors"
-                  >
-                    <span className="flex items-center">
-                      <Heart className="w-5 h-5 mr-1" />
-                      Favoris
-                    </span>
-                  </Link>
-                  <Link
-                    href="/cinema/cart"
-                    className="text-gray-600 hover:text-primary transition-colors"
-                  >
-                    <span className="flex items-center">
-                      <ShoppingCart className="w-5 h-5 mr-1" />
-                      Panier {cartItemsCount > 0 && `(${cartItemsCount})`}
-                    </span>
-                  </Link>
-                  <Link
-                    href="/profile"
-                    className="text-gray-600 hover:text-primary transition-colors"
-                  >
-                    <span className="flex items-center">
-                      {user.image ? (
-                        <Image
-                          src={user.image}
-                          alt="Photo de profil"
-                          className="w-6 h-6 rounded-full mr-2 object-cover"
-                          height={24}
-                          width={24}
-                        />
-                      ) : (
-                        <User className="w-5 h-5 mr-1" />
-                      )}
-                      <span>{displayName}</span>
-                    </span>
-                  </Link>
-                </>
-              )}
-              {user && (
-                <Link
-                  href="/create-event"
-                  className="text-gray-600 hover:text-primary transition-colors"
+                  href="/favorites"
+                  className="hover:text-primary text-gray-600 transition-colors"
                 >
                   <span className="flex items-center">
-                    <PlusCircle className="w-5 h-5 mr-1" />
-                    Créer un événement
+                    <Heart className="mr-1 h-5 w-5" />
+                    Favoris
                   </span>
                 </Link>
-              )}
-              {!user ? (
-                <>
-                  <Link
-                    href="/login"
-                    className="text-gray-600 hover:text-primary transition-colors"
-                  >
-                    Connexion
-                  </Link>
-                  <Link
-                    href="/register"
-                    className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-center"
-                  >
-                    Inscription
-                  </Link>
-                </>
-              ) : (
-                <button
-                  onClick={logout}
-                  className="text-gray-600 hover:text-primary transition-colors text-left"
-                >
-                  Déconnexion
-                </button>
-              )}
-            </div>
+              </>
+            )}
           </div>
-        )}
+        </nav>
+
+        {/* Boutons d'action */}
+        <nav className="hidden items-center space-x-4 md:flex">
+          {user && (
+            <>
+              {/* Panier */}
+              <Link
+                href="/cinema/cart"
+                className="hover:text-primary relative flex items-center px-4 py-2 text-gray-600 transition-colors"
+              >
+                <ShoppingCart className="h-5 w-5" />
+                {cartItemsCount > 0 && (
+                  <span className="bg-primary absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full text-xs text-white">
+                    {cartItemsCount}
+                  </span>
+                )}
+              </Link>
+
+              <Link
+                href="/create-event"
+                className="hover:text-primary flex items-center px-4 py-2 text-gray-600 transition-colors"
+              >
+                <PlusCircle className="mr-1 h-5 w-5" />
+                Créer un événement
+              </Link>
+              <Link
+                href="/profile"
+                className="hover:text-primary flex items-center px-4 py-2 text-gray-600 transition-colors"
+              >
+                {user.image ? (
+                  <Image
+                    src={user.image}
+                    alt="Photo de profil"
+                    className="mr-2 h-8 w-8 rounded-full object-cover "
+                    height={32}
+                    width={32}
+                  />
+                ) : (
+                  <User className="mr-1 h-5 w-5" />
+                )}
+                <span>{displayName}</span>
+              </Link>
+            </>
+          )}
+          {!user ? (
+            <>
+              <Link
+                href="/login"
+                className="hover:text-primary px-4 py-2 text-gray-600 transition-colors"
+              >
+                Connexion
+              </Link>
+              <Link
+                href="/register"
+                className="bg-primary hover:bg-primary/90 rounded-lg px-4 py-2 text-white transition-colors"
+              >
+                Inscription
+              </Link>
+            </>
+          ) : (
+            <LogOutButton />
+          )}
+        </nav>
+
+        {/* Menu pour mobile */}
+        <MobileMenu user={user} />
       </div>
-    </nav>
+    </header>
   );
 }

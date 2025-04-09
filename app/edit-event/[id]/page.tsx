@@ -5,7 +5,7 @@
  * @brief Event editing page component
  * @details Provides functionality to edit existing events including form handling,
  *          image management, and address validation
- */
+ */ 
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import {
