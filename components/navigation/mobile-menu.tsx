@@ -13,7 +13,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import LogOutButton from "../auth/logout";
+import LogOutButton from "../auth/logout-button";
 
 export default function MobileMenu(props: {
   user: typeof auth.$Infer.Session.user | undefined;

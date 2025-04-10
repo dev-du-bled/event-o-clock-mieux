@@ -11,7 +11,7 @@ import {
 // import { CartItem } from "@/lib/db/cinema";
 import Image from "next/image";
 import MobileMenu from "./mobile-menu";
-import LogOutButton from "../auth/logout";
+import LogOutButton from "../auth/logout-button";
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
 
