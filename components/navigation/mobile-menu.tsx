@@ -36,7 +36,7 @@ export default function MobileMenu(props: {
   });
 
   return (
-    <div className="lg:hidden">
+    <div className="md:hidden">
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="flex justify-center text-gray-600 hover:text-primary"

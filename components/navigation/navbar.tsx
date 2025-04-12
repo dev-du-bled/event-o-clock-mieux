@@ -1,19 +1,11 @@
 // import { useState, useEffect } from "react";
 import Link from "next/link";
-import {
-  Calendar,
-  PlusCircle,
-  Heart,
-  User,
-  Film,
-  ShoppingCart,
-} from "lucide-react";
+import { Calendar, Film, ShoppingCart } from "lucide-react";
 // import { CartItem } from "@/lib/db/cinema";
-import Image from "next/image";
 import MobileMenu from "./mobile-menu";
-import LogOutButton from "../auth/logout-button";
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
+import ProfileMenu from "./profile-menu";
 
 /**
  * Navbar component that include menu
@@ -28,7 +20,6 @@ export async function Navbar() {
   });
   // const [cartItemsCount, setCartItemsCount] = useState(0);
 
-  const displayName = session?.user.name;
   const user = session?.user;
 
   // useEffect(() => {
@@ -75,7 +66,7 @@ export async function Navbar() {
               Event&apos;O&apos;Clock
             </span>
           </Link>
-          <div className="ml-10 hidden items-center space-x-8 lg:!flex ">
+          <div className="ml-10 hidden items-center space-x-8 md:!flex ">
             <Link
               href="/events"
               className="hover:text-primary text-gray-600 transition-colors"
@@ -91,31 +82,12 @@ export async function Navbar() {
                 Cinéma
               </span>
             </Link>
-            {user && (
-              <>
-                <Link
-                  href="/my-events"
-                  className="hover:text-primary text-gray-600 transition-colors"
-                >
-                  Mes événements
-                </Link>
-                <Link
-                  href="/favorites"
-                  className="hover:text-primary text-gray-600 transition-colors"
-                >
-                  <span className="flex items-center">
-                    <Heart className="mr-1 h-5 w-5" />
-                    Favoris
-                  </span>
-                </Link>
-              </>
-            )}
           </div>
         </nav>
 
         {/* Boutons d'action */}
-        <nav className="hidden items-center space-x-4 lg:!flex">
-          {user && (
+        <nav className="hidden items-center space-x-4 md:!flex">
+          {user ? (
             <>
               {/* Panier */}
               <Link
@@ -125,38 +97,13 @@ export async function Navbar() {
                 <ShoppingCart className="h-5 w-5" />
                 {/* {cartItemsCount > 0 && (
                   <span className="bg-primary absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full text-xs text-white">
-                    {cartItemsCount}
-                  </span>
-                )} */}
+                {cartItemsCount}
+                 </span>
+                  )} */}
               </Link>
-
-              <Link
-                href="/create-event"
-                className="hover:text-primary flex items-center px-4 py-2 text-gray-600 transition-colors"
-              >
-                <PlusCircle className="mr-1 h-5 w-5" />
-                Créer un événement
-              </Link>
-              <Link
-                href="/profile"
-                className="hover:text-primary flex items-center px-4 py-2 text-gray-600 transition-colors"
-              >
-                {user.image ? (
-                  <Image
-                    src={user.image}
-                    alt="Photo de profil"
-                    className="mr-2 h-8 w-8 rounded-full object-cover "
-                    height={32}
-                    width={32}
-                  />
-                ) : (
-                  <User className="mr-1 h-5 w-5" />
-                )}
-                <span>{displayName}</span>
-              </Link>
+              <ProfileMenu user={user} />
             </>
-          )}
-          {!user ? (
+          ) : (
             <>
               <Link
                 href="/login"
@@ -171,8 +118,6 @@ export async function Navbar() {
                 Inscription
               </Link>
             </>
-          ) : (
-            <LogOutButton />
           )}
         </nav>
 
