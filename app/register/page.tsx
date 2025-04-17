@@ -16,7 +16,7 @@ export default function RegisterPage() {
 
         <div className="text-center">
           <p className="text-sm text-gray-600">
-            Déjà un compte ?{" "}
+            Déjà un compte ?
             <Link
               href="/login"
               className="font-medium text-primary hover:text-primary/80"

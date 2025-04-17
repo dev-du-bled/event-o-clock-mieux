@@ -33,7 +33,7 @@ export default function Contact() {
       });
     } catch (err) {
       setError(
-        "Une erreur est survenue lors de l'envoi du message. Veuillez réessayer.",
+        "Une erreur est survenue lors de l'envoi du message. Veuillez réessayer."
       );
       console.error("Erreur lors de l'envoi du formulaire:", err);
     } finally {
@@ -89,7 +89,7 @@ export default function Contact() {
                   id="name"
                   required
                   value={formData.name}
-                  onChange={(e) =>
+                  onChange={e =>
                     setFormData({ ...formData, name: e.target.value })
                   }
                   className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
@@ -109,7 +109,7 @@ export default function Contact() {
                   id="email"
                   required
                   value={formData.email}
-                  onChange={(e) =>
+                  onChange={e =>
                     setFormData({ ...formData, email: e.target.value })
                   }
                   className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
@@ -130,7 +130,7 @@ export default function Contact() {
                 id="subject"
                 required
                 value={formData.subject}
-                onChange={(e) =>
+                onChange={e =>
                   setFormData({ ...formData, subject: e.target.value })
                 }
                 className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
@@ -149,7 +149,7 @@ export default function Contact() {
                 id="message"
                 required
                 value={formData.message}
-                onChange={(e) =>
+                onChange={e =>
                   setFormData({ ...formData, message: e.target.value })
                 }
                 rows={6}

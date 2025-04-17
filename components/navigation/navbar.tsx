@@ -94,7 +94,8 @@ export async function Navbar() {
                 href="/cinema/cart"
                 className="hover:text-primary relative flex items-center px-4 py-2 text-gray-600 transition-colors"
               >
-                <ShoppingCart className="h-5 w-5" />
+                <ShoppingCart className="mr-1 h-5 w-5" />
+                Panier
                 {/* {cartItemsCount > 0 && (
                   <span className="bg-primary absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full text-xs text-white">
                 {cartItemsCount}

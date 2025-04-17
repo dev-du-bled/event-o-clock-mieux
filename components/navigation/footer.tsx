@@ -148,7 +148,7 @@ export function Footer() {
               <li>
                 <button
                   onClick={handlePrivacyClick}
-                  className="text-gray-600 hover:text-primary transition-colors"
+                  className="text-start text-gray-600 hover:text-primary transition-colors"
                 >
                   Politique de confidentialité
                 </button>
@@ -156,7 +156,7 @@ export function Footer() {
               <li>
                 <button
                   onClick={handleTermsClick}
-                  className="text-gray-600 hover:text-primary transition-colors"
+                  className="text-start text-gray-600 hover:text-primary transition-colors"
                 >
                   Conditions d&apos;utilisation
                 </button>
@@ -164,7 +164,7 @@ export function Footer() {
               <li>
                 <button
                   onClick={handleCookieClick}
-                  className="text-gray-600 hover:text-primary transition-colors"
+                  className="text-start text-gray-600 hover:text-primary transition-colors"
                 >
                   Politique des cookies
                 </button>

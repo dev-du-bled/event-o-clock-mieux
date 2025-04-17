@@ -1,5 +1,4 @@
 "use client";
-
 /**
  * @file page.tsx
  * @brief FAQ page component

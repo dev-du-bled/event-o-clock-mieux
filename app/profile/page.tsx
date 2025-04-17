@@ -44,7 +44,7 @@ export default function Profile() {
   const [success, setSuccess] = useState("");
   const [displayName, setDisplayName] = useState(user?.name || "");
   const [imagePreview, setImagePreview] = useState<string | null>(
-    user?.image || null,
+    user?.image || null
   );
   const [newImage, setNewImage] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -71,25 +71,25 @@ export default function Profile() {
 
         // Fetch movie details for each booking
         const bookingsWithMovies = await Promise.all(
-          userBookings.map(async (booking) => {
+          userBookings.map(async booking => {
             try {
               const movie = await getMovieDetails(booking.movieId);
               return { ...booking, movie };
             } catch (error) {
               console.error(
                 `Erreur lors de la récupération du film ${booking.movieId}:`,
-                error,
+                error
               );
               return booking;
             }
-          }),
+          })
         );
 
         setBookings(bookingsWithMovies);
       } catch (error) {
         console.error(
           "Erreur lors de la récupération des réservations:",
-          error,
+          error
         );
       } finally {
         setLoadingBookings(false);
@@ -145,7 +145,7 @@ export default function Profile() {
         name: displayName,
       });
 
-      router.refresh();
+      router.refresh(); // refres header
     } catch (err) {
       console.error("Erreur lors de la mise à jour du profil:", err);
       setError("Une erreur est survenue lors de la mise à jour du profil");
@@ -167,7 +167,7 @@ export default function Profile() {
       }
 
       const rooms = await getCinemaRooms();
-      const room = rooms.find((r) => r.name === `Salle ${selectedRoom}`);
+      const room = rooms.find(r => r.name === `Salle ${selectedRoom}`);
 
       if (!room) {
         setError("Salle non trouvée");
@@ -198,7 +198,7 @@ export default function Profile() {
     } catch (err) {
       console.error("Erreur lors de la réinitialisation des salles:", err);
       setError(
-        "Une erreur est survenue lors de la réinitialisation des salles",
+        "Une erreur est survenue lors de la réinitialisation des salles"
       );
     } finally {
       setResettingRooms(false);
@@ -228,7 +228,7 @@ export default function Profile() {
               <div className="text-center">
                 <div
                   onClick={handleImageClick}
-                  className="relative inline-block cursor-pointer group"
+                  className="relative inline-block cursor-pointer group rounded-full"
                 >
                   {imagePreview ? (
                     <div className="w-32 h-32 rounded-full overflow-hidden mx-auto">
@@ -245,7 +245,7 @@ export default function Profile() {
                       <User className="w-16 h-16 text-gray-400" />
                     </div>
                   )}
-                  <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/70 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
                     <Camera className="w-8 h-8 text-white" />
                   </div>
                 </div>
@@ -273,7 +273,7 @@ export default function Profile() {
                   type="text"
                   id="displayName"
                   value={displayName}
-                  onChange={(e) => setDisplayName(e.target.value)}
+                  onChange={e => setDisplayName(e.target.value)}
                   className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                   placeholder="Votre nom d'affichage"
                 />
@@ -334,7 +334,7 @@ export default function Profile() {
                   <Table.HeadCell>Statut</Table.HeadCell>
                 </Table.Head>
                 <Table.Body className="divide-y">
-                  {bookings.map((booking) => (
+                  {bookings.map(booking => (
                     <Table.Row key={booking.id} className="bg-white">
                       <Table.Cell className="whitespace-nowrap font-medium text-gray-900">
                         {booking.movie?.title || `Film #${booking.movieId}`}
@@ -344,7 +344,7 @@ export default function Profile() {
                           `Salle ${booking.roomId.substring(0, 4)}`}
                       </Table.Cell>
                       <Table.Cell>
-                        {booking.seats.map((seat) => (
+                        {booking.seats.map(seat => (
                           <div key={seat.seatId}>
                             {seat.displayId || seat.seatId.substring(0, 8)} (
                             {seat.ticketType} - {seat.price.toFixed(2)} €)
@@ -415,7 +415,7 @@ export default function Profile() {
                   </label>
                   <select
                     value={selectedRoom}
-                    onChange={(e) => setSelectedRoom(e.target.value)}
+                    onChange={e => setSelectedRoom(e.target.value)}
                     className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                   >
                     <option value="1">Salle 1</option>
@@ -431,7 +431,7 @@ export default function Profile() {
                   <input
                     type="text"
                     value={movieId}
-                    onChange={(e) => setMovieId(e.target.value)}
+                    onChange={e => setMovieId(e.target.value)}
                     className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                     placeholder="Ex: 27205 pour Inception"
                   />
@@ -448,7 +448,7 @@ export default function Profile() {
                   <input
                     type="time"
                     value={showtime}
-                    onChange={(e) => setShowtime(e.target.value)}
+                    onChange={e => setShowtime(e.target.value)}
                     className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                   />
                 </div>

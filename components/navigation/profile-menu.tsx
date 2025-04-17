@@ -28,7 +28,7 @@ export default function ProfileMenu(props: {
     return () => document.removeEventListener("mousedown", menuHandler);
   });
 
-  if (!user) return <></>;
+  if (!user) return;
 
   return (
     <div className="relative" ref={menuRef}>
@@ -53,7 +53,7 @@ export default function ProfileMenu(props: {
       </button>
 
       {isOpen && (
-        <div className="absolute z-10 w-60 top-8 right-0 rounded-lg shadow-lg bg-white border">
+        <div className="absolute w-50 top-8 right-0 rounded-lg shadow-lg bg-white border">
           <div className="px-4 py-2 space-y-2">
             <Link
               href="/profile"

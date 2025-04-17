@@ -89,6 +89,7 @@ export default function MobileMenu(props: {
                 >
                   <span className="flex items-center">
                     <ShoppingCart className="w-5 h-5 mr-1" />
+                    Panier
                     {/* Panier {cartItemsCount > 0 && `(${cartItemsCount})`} */}
                   </span>
                 </Link>
