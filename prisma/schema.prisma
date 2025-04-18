@@ -105,11 +105,15 @@ model ContactMessage {
 model Event {
   id                 String      @id @default(uuid())
   title              String
-  startDate          String
-  startTime          String
-  endDate            String
-  endTime            String
-  location           String
+  startDate          DateTime
+  startTime          DateTime
+  endDate            DateTime
+  endTime            DateTime
+  address            String
+  streetNumber       String
+  street             String
+  city               String
+  postalCode         String
   description        String
   images             String[]
   categories         String[]

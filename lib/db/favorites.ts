@@ -1,17 +1,7 @@
 "use server";
 
 import prisma from "../prisma";
-
-/**
- * Interface representing the structure of a Favorite.
- * A Favorite links a user to an event they have marked as a favorite.
- */
-export interface Favorite {
-  id?: string;
-  userId: string;
-  eventId: string;
-  createdAt: Date;
-}
+import { Event } from "@prisma/client";
 
 /**
  * Function to add an event to a user's favorites.
@@ -68,20 +58,21 @@ export async function removeFromFavorites(
  * It queries the 'favorites' collection in Firestore to get all event IDs that the user has favorited.
  *
  * @param userId - The ID of the user whose favorites are to be fetched.
- * @returns An array of event IDs that the user has favorited.
+ * @returns An array of events that the user has favorited.
  */
-export async function getUserFavorites(userId: string): Promise<string[]> {
+export async function getUserFavorites(userId: string): Promise<Event[]> {
   try {
     const favorites = await prisma.favorite.findMany({
       where: {
         userId: userId,
       },
-      select: {
-        eventId: true,
+      include: {
+        event: true,
       },
     });
+    const events = favorites.map((favorite) => favorite.event);
 
-    return favorites.map((favorite) => favorite.eventId);
+    return events;
   } catch (error) {
     console.error("Erreur lors de la récupération des favoris:", error);
     throw error;

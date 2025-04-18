@@ -1,19 +1,7 @@
 "use server";
 
 import prisma from "../prisma";
-
-/**
- * Interface for a ContactMessage, representing the structure of a message
- * that a user submits through the contact form.
- */
-export interface ContactMessage {
-  name: string;
-  email: string;
-  subject: string;
-  message: string;
-  createdAt: Date;
-  status: "PENDING" | "SENT" | "ERROR";
-}
+import { ContactMessage } from "@prisma/client";
 
 /**
  * Function to submit a contact message. It adds the message to Firestore

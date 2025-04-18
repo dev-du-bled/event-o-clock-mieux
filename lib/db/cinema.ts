@@ -1,18 +1,7 @@
 "use server";
 
 import prisma from "../prisma";
-import { TicketType, Prisma } from "@prisma/client";
-
-/**
- * Interface representing a Seat in the cinema.
- * A seat has an ID, row, number, and availability status.
- */
-export interface Seat {
-  id: string;
-  row: string;
-  number: number;
-  isAvailable: boolean;
-}
+import { TicketType, Prisma, CinemaRoom } from "@prisma/client";
 
 /**
  * Interface representing a CartItem (a ticket purchased).
@@ -27,40 +16,22 @@ export interface CartItem {
 }
 
 /**
- * Interface representing a Cinema Room.
- * A room has a name, capacity, optional movie currently showing, and a list of seats.
- */
-export interface CinemaRoom {
-  id?: string;
-  name: string;
-  capacity: number;
-  currentMovie?: {
-    id: number;
-    showtime: string;
-  } | null;
-  seats: Seat[];
-}
-
-/**
  * Function to create a new cinema room in the database.
  *
  * @param roomData - Data for the new cinema room, excluding the ID.
  * @returns The ID of the newly created cinema room.
  */
 export async function createCinemaRoom(
-  roomData: Omit<CinemaRoom, "id">,
+  roomData: Omit<CinemaRoom, "id" | "createdAt" | "updatedAt">,
 ): Promise<string> {
   try {
     const roomRef = await prisma.cinemaRoom.create({
       data: {
-        name: roomData.name,
-        capacity: roomData.capacity,
-        seats: {
-          create: roomData.seats.map((seat) => seat),
-        },
-        ...(roomData.currentMovie
-          ? { currentMovie: roomData.currentMovie }
-          : {}),
+        ...roomData,
+        currentMovie:
+          roomData.currentMovie === null
+            ? Prisma.JsonNull
+            : roomData.currentMovie,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -85,78 +56,65 @@ export async function getCinemaRooms(): Promise<CinemaRoom[]> {
       },
     });
 
-    return rooms.map((room) => ({
-      id: room.id,
-      name: room.name,
-      capacity: room.capacity,
-      currentMovie: room.currentMovie as {
-        id: number;
-        showtime: string;
-      } | null,
-      seats: room.seats.map((seat) => ({
-        id: seat.id,
-        row: seat.row,
-        number: seat.number,
-        isAvailable: seat.isAvailable,
-      })),
-    }));
+    return rooms;
   } catch (error) {
     console.error("Erreur lors de la récupération des salles:", error);
     throw error;
   }
 }
 
+// Seems to be unused so i commented it out to bother with it later :3
 /**
  * Function to update the details of an existing cinema room.
  *
  * @param roomId - The ID of the cinema room to update.
  * @param data - Partial data to update the room.
  */
-export async function updateCinemaRoom(
-  roomId: string,
-  data: Partial<Omit<CinemaRoom, "id">>,
-): Promise<void> {
-  try {
-    const { seats, currentMovie, ...updateRoomData } = data;
-    const updateData: Prisma.CinemaRoomUpdateInput = {
-      ...updateRoomData,
-      updatedAt: new Date(),
-      ...(currentMovie !== undefined
-        ? {
-            currentMovie:
-              currentMovie === null ? Prisma.JsonNull : currentMovie,
-          }
-        : {}),
-    };
+// export async function updateCinemaRoom(
+//   roomId: string,
+//   data: Partial<Omit<CinemaRoom, "id">>,
+// ): Promise<void> {
+//   try {
+//     const { seats, currentMovie, ...updateRoomData } = data;
+//     const updateData: Prisma.CinemaRoomUpdateInput = {
+//       ...updateRoomData,
+//       updatedAt: new Date(),
+//       ...(currentMovie !== undefined
+//         ? {
+//             currentMovie:
+//               currentMovie === null ? Prisma.JsonNull : currentMovie,
+//           }
+//         : {}),
+//     };
 
-    // Handle seats separately if they're included in the update
+//     // Handle seats separately if they're included in the update
 
-    await prisma.cinemaRoom.update({
-      where: { id: roomId },
-      data: updateData,
-    });
+//     await prisma.cinemaRoom.update({
+//       where: { id: roomId },
+//       data: updateData,
+//     });
 
-    // If seats were provided, update them separately
-    if (seats) {
-      // Delete existing seats and create new ones
-      await prisma.$transaction(async (tx) => {
-        await tx.seat.deleteMany({
-          where: { roomId },
-        });
+//     // If seats were provided, update them separately
+//     if (seats) {
+//       // Delete existing seats and create new ones
+//       await prisma.$transaction(async (tx) => {
+//         await tx.seat.deleteMany({
+//           where: { roomId },
+//         });
 
-        await tx.seat.createMany({
-          data: seats.map((seat) => ({
-            ...seat,
-            roomId,
-          })),
-        });
-      });
-    }
-  } catch (error) {
-    console.error("Erreur lors de la mise à jour de la salle:", error);
-    throw error;
-  }
-}
+//         await tx.seat.createMany({
+//           data: seats.map((seat) => ({
+//             ...seat,
+//             roomId,
+//           })),
+//         });
+//       });
+//     }
+//   } catch (error) {
+//     console.error("Erreur lors de la mise à jour de la salle:", error);
+//     throw error;
+//   }
+// }
 
 /**
  * Function to assign a movie to a cinema room.

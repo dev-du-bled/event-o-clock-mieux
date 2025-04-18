@@ -1,42 +1,7 @@
 "use server";
 
 import prisma from "../prisma";
-import { EventStatus } from "@prisma/client";
-
-/**
- * Interface representing the structure of an Event.
- * Each event has properties such as title, dates, time, location, description, images, and other details.
- */
-export interface Event {
-  id?: string;
-  title: string;
-  startDate: string;
-  startTime: string;
-  endDate: string;
-  endTime: string;
-  address: string;
-  streetNumber: string;
-  street: string;
-  city: string;
-  postalCode: string;
-  description: string;
-  images: string[];
-  categories: string[];
-  isPaid: boolean;
-  price: number;
-  organizerWebsite?: string;
-  organizerPhone?: string;
-  createdBy: string;
-  status: EventStatus;
-  isRecurring: boolean;
-  recurringDays: string[];
-  recurringEndDate: string | null;
-  isAccessible: boolean;
-  hasParking: boolean;
-  hasPublicTransport: boolean;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
+import { Event } from "@prisma/client";
 
 /**
  * Function to create a new event.
@@ -49,15 +14,9 @@ export async function createEvent(
   eventData: Omit<Event, "id" | "createdAt" | "updatedAt">,
 ) {
   try {
-    const { address, streetNumber, street, city, postalCode, ...data } =
-      eventData;
-
-    const location = `${address} ${streetNumber} ${street} ${city} ${postalCode}`;
-
     const event = await prisma.event.create({
       data: {
-        ...data,
-        location: location,
+        ...eventData,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -147,4 +106,13 @@ export async function deleteEvent(eventId: string) {
     console.error("Erreur lors de la suppression de l'événement:", error);
     throw error;
   }
+}
+
+/**
+ * Function to format an event into a single string
+ *
+ * @param event - The event object to be formated.
+ */
+export async function formatEvent(event: Event) {
+  return `${event.address} ${event.streetNumber} ${event.street} ${event.city} ${event.postalCode}`;
 }
