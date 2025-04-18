@@ -7,7 +7,6 @@
  */
 
 import { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { User, Camera, Film, Ticket, RefreshCw } from "lucide-react";
 import { uploadProfileImage } from "@/lib/storage";
 import {
@@ -38,7 +37,6 @@ export default function Profile() {
   const { data: session } = authClient.useSession();
   const user = session?.user;
 
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -144,8 +142,6 @@ export default function Profile() {
         image: photoURL,
         name: displayName,
       });
-
-      router.refresh(); // refres header
     } catch (err) {
       console.error("Erreur lors de la mise à jour du profil:", err);
       setError("Une erreur est survenue lors de la mise à jour du profil");

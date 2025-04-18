@@ -27,7 +27,6 @@ export default function LoginForm() {
         },
         onSuccess() {
           router.push("/");
-          router.refresh(); // refresh header
         },
         onError(ctx) {
           setError(ctx.error.message || "Erreur lors de la connexion");

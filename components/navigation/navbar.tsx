@@ -1,10 +1,8 @@
 // import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Calendar, Film, ShoppingCart } from "lucide-react";
+import { Calendar, Film } from "lucide-react";
 // import { CartItem } from "@/lib/db/cinema";
 import MobileMenu from "./mobile-menu";
-import { auth } from "@/lib/auth/auth";
-import { headers } from "next/headers";
 import ProfileMenu from "./profile-menu";
 
 /**
@@ -15,12 +13,7 @@ import ProfileMenu from "./profile-menu";
  */
 
 export async function Navbar() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
   // const [cartItemsCount, setCartItemsCount] = useState(0);
-
-  const user = session?.user;
 
   // useEffect(() => {
   //   const updateCartCount = () => {
@@ -86,44 +79,12 @@ export async function Navbar() {
         </nav>
 
         {/* Boutons d'action */}
-        <nav className="hidden items-center space-x-4 md:!flex">
-          {user ? (
-            <>
-              {/* Panier */}
-              <Link
-                href="/cinema/cart"
-                className="hover:text-primary relative flex items-center px-4 py-2 text-gray-600 transition-colors"
-              >
-                <ShoppingCart className="mr-1 h-5 w-5" />
-                Panier
-                {/* {cartItemsCount > 0 && (
-                  <span className="bg-primary absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full text-xs text-white">
-                {cartItemsCount}
-                 </span>
-                  )} */}
-              </Link>
-              <ProfileMenu user={user} />
-            </>
-          ) : (
-            <>
-              <Link
-                href="/login"
-                className="hover:text-primary px-4 py-2 text-gray-600 transition-colors"
-              >
-                Connexion
-              </Link>
-              <Link
-                href="/register"
-                className="bg-primary hover:bg-primary/90 rounded-lg px-4 py-2 text-white transition-colors"
-              >
-                Inscription
-              </Link>
-            </>
-          )}
+        <nav className="hidden space-x-4 md:!flex">
+          <ProfileMenu />
         </nav>
 
         {/* Menu pour mobile */}
-        <MobileMenu user={user} />
+        <MobileMenu />
       </div>
     </header>
   );

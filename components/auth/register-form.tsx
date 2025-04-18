@@ -34,7 +34,6 @@ export default function RegisterForm() {
         onSuccess() {
           setLoading(false);
           router.push("/");
-          router.refresh(); // refresh header
         },
         onError(ctx) {
           setError(ctx.error.message || "Erreur lors de la création du compte");

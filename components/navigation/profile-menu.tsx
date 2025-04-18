@@ -1,16 +1,17 @@
 "use client";
 
-import { auth } from "@/lib/auth/auth";
-import { ChevronDown, User } from "lucide-react";
+import { ChevronDown, ShoppingCart, User } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import LogOutButton from "../auth/logout-button";
 import Link from "next/link";
+import { authClient } from "@/lib/auth/auth-client";
 
-export default function ProfileMenu(props: {
-  user: typeof auth.$Infer.Session.user | undefined;
-}) {
-  const { user } = props;
+export default function ProfileMenu() {
+  const { data: session } = authClient.useSession();
+
+  const user = session?.user;
+
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -28,10 +29,38 @@ export default function ProfileMenu(props: {
     return () => document.removeEventListener("mousedown", menuHandler);
   });
 
-  if (!user) return;
+  if (!user)
+    return (
+      <>
+        <Link
+          href="/login"
+          className="hover:text-primary px-4 py-2 text-gray-600 transition-colors"
+        >
+          Connexion
+        </Link>
+        <Link
+          href="/register"
+          className="bg-primary hover:bg-primary/90 rounded-lg px-4 py-2 text-white transition-colors"
+        >
+          Inscription
+        </Link>
+      </>
+    );
 
   return (
-    <div className="relative" ref={menuRef}>
+    <div className="relative items-center flex" ref={menuRef}>
+      <Link
+        href="/cinema/cart"
+        className="hover:text-primary relative flex items-center px-4 py-2 text-gray-600 transition-colors"
+      >
+        <ShoppingCart className="mr-1 h-5 w-5" />
+        Panier
+        {/* {cartItemsCount > 0 && (
+                        <span className="bg-primary absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full text-xs text-white">
+                      {cartItemsCount}
+                       </span>
+                        )} */}
+      </Link>
       <button
         className="group flex text-gray-600 hover:text-primary transition-colors hover:cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}

@@ -1,6 +1,5 @@
 "use client";
 
-import { auth } from "@/lib/auth/auth";
 import {
   Film,
   Heart,
@@ -14,11 +13,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import LogOutButton from "../auth/logout-button";
+import { authClient } from "@/lib/auth/auth-client";
 
-export default function MobileMenu(props: {
-  user: typeof auth.$Infer.Session.user | undefined;
-}) {
-  const { user } = props;
+export default function MobileMenu() {
+  const { data: session } = authClient.useSession();
+
+  const user = session?.user;
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 

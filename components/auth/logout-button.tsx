@@ -12,7 +12,6 @@ export default function LogOutButton(props: { className?: string }) {
       fetchOptions: {
         onSuccess: () => {
           router.push("/login");
-          router.refresh(); // to update header
         },
       },
     });
