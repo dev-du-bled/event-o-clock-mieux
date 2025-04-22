@@ -1,4 +1,4 @@
-import { z } from "better-auth";
+import { z } from "zod";
 
 export const registerFormSchema = z.object({
   email: z.string().email("Adresse email invalide"),

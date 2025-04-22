@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import LogOutButton from "../auth/logout-button";
 import Link from "next/link";
 import { authClient } from "@/lib/auth/auth-client";
+import { Skeleton } from "../ui/skeleton";
 
 export default function ProfileMenu() {
   const { data: session, isPending } = authClient.useSession();
@@ -29,7 +30,15 @@ export default function ProfileMenu() {
     return () => document.removeEventListener("mousedown", menuHandler);
   });
 
-  if (!user && !isPending)
+  if (isPending)
+    return (
+      <div className="flex items-center space-x-2 mr-2">
+        <Skeleton className="h-6 w-6 rounded-full" />
+        <Skeleton className="h-3 w-15" />
+      </div>
+    );
+
+  if (!user)
     return (
       <>
         <Link
@@ -47,7 +56,7 @@ export default function ProfileMenu() {
       </>
     );
 
-  if (user && !isPending)
+  if (user)
     return (
       <div className="relative items-center flex" ref={menuRef}>
         <Link
