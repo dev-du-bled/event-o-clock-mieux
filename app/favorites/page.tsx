@@ -8,15 +8,11 @@
 
 import React, { useEffect, useState } from "react";
 import { getUserFavorites } from "@/lib/db/favorites";
-import { getAllEvents, type Event } from "@/lib/db/events";
+import { getAllEvents } from "@/lib/db/events";
+import { Event } from "@prisma/client";
 import Link from "next/link";
-import { EventCard } from "@/components/events/event-card";
-import { EventModal } from "@/components/events/event-modal";
-import {
-  addToFavorites,
-  removeFromFavorites,
-  isEventFavorite,
-} from "@/lib/db/favorites";
+import { EventDialog } from "@/components/events/event-dialog";
+import { isEventFavorite } from "@/lib/db/favorites";
 import { authClient } from "@/lib/auth/auth-client";
 
 /**
@@ -36,9 +32,7 @@ export default function Favorites() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
-  const [openModal, setOpenModal] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
-  const [favoriteLoading, setFavoriteLoading] = useState(false);
 
   useEffect(() => {
     async function loadFavorites() {
@@ -47,8 +41,8 @@ export default function Favorites() {
       try {
         const favoriteIds = await getUserFavorites(user.id);
         const allEvents = await getAllEvents();
-        const favoriteEvents = allEvents.filter((event) =>
-          favoriteIds.includes(event.id!),
+        const favoriteEvents = allEvents.filter(event =>
+          favoriteIds.includes(event.id!)
         );
         setEvents(favoriteEvents);
       } catch (err) {
@@ -78,26 +72,6 @@ export default function Favorites() {
       checkFavorite();
     }
   }, [user, selectedEvent]);
-
-  const handleFavoriteClick = async () => {
-    if (!user || !selectedEvent?.id) return;
-
-    setFavoriteLoading(true);
-    try {
-      if (isFavorite) {
-        await removeFromFavorites(user.id, selectedEvent.id);
-        // Remove event from list
-        setEvents(events.filter((event) => event.id !== selectedEvent.id));
-      } else {
-        await addToFavorites(user.id, selectedEvent.id);
-      }
-      setIsFavorite(!isFavorite);
-    } catch (err) {
-      console.error("Erreur lors de la gestion des favoris:", err);
-    } finally {
-      setFavoriteLoading(false);
-    }
-  };
 
   // Show login prompt if user is not logged in
   if (!user) {
@@ -144,33 +118,11 @@ export default function Favorites() {
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {events.map((event) => (
-              <EventCard
-                key={event.id}
-                event={event}
-                onClick={() => {
-                  setSelectedEvent(event);
-                  setOpenModal(true);
-                }}
-              />
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {events.map(event => (
+              <EventDialog key={event.id} event={event} variant="default" />
             ))}
           </div>
-        )}
-
-        {/* Event Modal */}
-        {selectedEvent && (
-          <EventModal
-            event={selectedEvent}
-            show={openModal}
-            onClose={() => {
-              setOpenModal(false);
-              setSelectedEvent(null);
-            }}
-            isFavorite={isFavorite}
-            onFavoriteClick={handleFavoriteClick}
-            favoriteLoading={favoriteLoading}
-          />
         )}
       </div>
     </div>

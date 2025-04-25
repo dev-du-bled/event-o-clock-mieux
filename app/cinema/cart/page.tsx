@@ -10,7 +10,7 @@ import {
   Check,
   Trash2,
 } from "lucide-react";
-import { Alert } from "flowbite-react";
+import { Alert } from "@/components/ui/alert";
 import Link from "next/link";
 import { useCartStore } from "@/lib/store/cart";
 import { authClient } from "@/lib/auth/auth-client";
@@ -66,8 +66,8 @@ export default function CinemaCart() {
     try {
       const response = await fetch(
         `https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(
-          query,
-        )}&limit=5`,
+          query
+        )}&limit=5`
       );
       const data = await response.json();
       setAddressSuggestions(data.features || []);
@@ -138,7 +138,7 @@ export default function CinemaCart() {
           acc[item.roomId].push(item);
           return acc;
         },
-        {} as Record<string, typeof cartItems>,
+        {} as Record<string, typeof cartItems>
       );
 
       // create booking for each room
@@ -149,7 +149,7 @@ export default function CinemaCart() {
           userId: user.id,
           roomId,
           movieId: items[0].movieId,
-          seats: items.map((item) => ({
+          seats: items.map(item => ({
             seatId: item.seatId,
             ticketType: item.ticketType,
             price: item.price,
@@ -237,11 +237,9 @@ export default function CinemaCart() {
         <h1 className="text-3xl font-bold mb-8">Panier</h1>
 
         {error && (
-          <Alert color="failure" className="mb-6">
-            <div className="flex items-center gap-2">
-              <AlertCircle className="h-4 w-4" />
-              <span>{error}</span>
-            </div>
+          <Alert variant="destructive" className="mb-6">
+            <AlertCircle className="h-4 w-4" />
+            <span>{error}</span>
           </Alert>
         )}
 
@@ -290,7 +288,7 @@ export default function CinemaCart() {
                     <input
                       type="text"
                       value={streetNumber}
-                      onChange={(e) => setStreetNumber(e.target.value)}
+                      onChange={e => setStreetNumber(e.target.value)}
                       className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                       placeholder="Ex: 12"
                       required
@@ -303,7 +301,7 @@ export default function CinemaCart() {
                     <input
                       type="text"
                       value={street}
-                      onChange={(e) => setStreet(e.target.value)}
+                      onChange={e => setStreet(e.target.value)}
                       className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                       placeholder="Nom de la rue"
                       required
@@ -319,7 +317,7 @@ export default function CinemaCart() {
                     <input
                       type="text"
                       value={city}
-                      onChange={(e) => setCity(e.target.value)}
+                      onChange={e => setCity(e.target.value)}
                       className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                       placeholder="Ville"
                       required
@@ -332,7 +330,7 @@ export default function CinemaCart() {
                     <input
                       type="text"
                       value={postalCode}
-                      onChange={(e) => setPostalCode(e.target.value)}
+                      onChange={e => setPostalCode(e.target.value)}
                       className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                       placeholder="Code postal"
                       required
@@ -356,7 +354,7 @@ export default function CinemaCart() {
                   <input
                     type="text"
                     value={cardNumber}
-                    onChange={(e) =>
+                    onChange={e =>
                       setCardNumber(formatCardNumber(e.target.value))
                     }
                     className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
@@ -373,7 +371,7 @@ export default function CinemaCart() {
                     <input
                       type="text"
                       value={expiryDate}
-                      onChange={(e) =>
+                      onChange={e =>
                         setExpiryDate(formatExpiryDate(e.target.value))
                       }
                       className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
@@ -389,7 +387,7 @@ export default function CinemaCart() {
                     <input
                       type="text"
                       value={cvv}
-                      onChange={(e) =>
+                      onChange={e =>
                         setCvv(e.target.value.replace(/\D/g, "").substr(0, 3))
                       }
                       className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
@@ -406,7 +404,7 @@ export default function CinemaCart() {
                   <input
                     type="text"
                     value={cardName}
-                    onChange={(e) => setCardName(e.target.value)}
+                    onChange={e => setCardName(e.target.value)}
                     className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                     placeholder="JOHN DOE"
                     required

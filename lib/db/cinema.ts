@@ -1,7 +1,7 @@
 "use server";
 
 import prisma from "../prisma";
-import { TicketType, Prisma } from "@prisma/client";
+import { TicketType, Prisma, CinemaRoom as AAA } from "@prisma/client";
 
 /**
  * Interface representing a Seat in the cinema.
@@ -48,7 +48,7 @@ export interface CinemaRoom {
  * @returns The ID of the newly created cinema room.
  */
 export async function createCinemaRoom(
-  roomData: Omit<CinemaRoom, "id">,
+  roomData: Omit<CinemaRoom, "id">
 ): Promise<string> {
   try {
     const roomRef = await prisma.cinemaRoom.create({
@@ -56,7 +56,7 @@ export async function createCinemaRoom(
         name: roomData.name,
         capacity: roomData.capacity,
         seats: {
-          create: roomData.seats.map((seat) => seat),
+          create: roomData.seats.map(seat => seat),
         },
         ...(roomData.currentMovie
           ? { currentMovie: roomData.currentMovie }
@@ -77,7 +77,7 @@ export async function createCinemaRoom(
  *
  * @returns A list of cinema rooms.
  */
-export async function getCinemaRooms(): Promise<CinemaRoom[]> {
+export async function getCinemaRooms(): Promise<AAA[]> {
   try {
     const rooms = await prisma.cinemaRoom.findMany({
       include: {
@@ -85,21 +85,7 @@ export async function getCinemaRooms(): Promise<CinemaRoom[]> {
       },
     });
 
-    return rooms.map((room) => ({
-      id: room.id,
-      name: room.name,
-      capacity: room.capacity,
-      currentMovie: room.currentMovie as {
-        id: number;
-        showtime: string;
-      } | null,
-      seats: room.seats.map((seat) => ({
-        id: seat.id,
-        row: seat.row,
-        number: seat.number,
-        isAvailable: seat.isAvailable,
-      })),
-    }));
+    return rooms;
   } catch (error) {
     console.error("Erreur lors de la récupération des salles:", error);
     throw error;
@@ -114,7 +100,7 @@ export async function getCinemaRooms(): Promise<CinemaRoom[]> {
  */
 export async function updateCinemaRoom(
   roomId: string,
-  data: Partial<Omit<CinemaRoom, "id">>,
+  data: Partial<Omit<CinemaRoom, "id">>
 ): Promise<void> {
   try {
     const { seats, currentMovie, ...updateRoomData } = data;
@@ -139,13 +125,13 @@ export async function updateCinemaRoom(
     // If seats were provided, update them separately
     if (seats) {
       // Delete existing seats and create new ones
-      await prisma.$transaction(async (tx) => {
+      await prisma.$transaction(async tx => {
         await tx.seat.deleteMany({
           where: { roomId },
         });
 
         await tx.seat.createMany({
-          data: seats.map((seat) => ({
+          data: seats.map(seat => ({
             ...seat,
             roomId,
           })),
@@ -168,7 +154,7 @@ export async function updateCinemaRoom(
 export async function assignMovieToRoom(
   roomId: string,
   movieId: number,
-  showtime: string,
+  showtime: string
 ): Promise<void> {
   try {
     await prisma.cinemaRoom.update({
@@ -201,10 +187,10 @@ export async function resetCinemaRooms(): Promise<void> {
           number: seatIndex + 1,
           isAvailable: true,
           roomId: room.id,
-        })),
+        }))
       ).flat();
 
-      await prisma.$transaction(async (tx) => {
+      await prisma.$transaction(async tx => {
         // Delete all existing seats for the room
         await tx.seat.deleteMany({
           where: { roomId: room.id },
@@ -267,23 +253,23 @@ export interface BookingWithDetails extends Booking {
  * @returns The ID of the newly created booking.
  */
 export async function createBooking(
-  bookingData: Omit<Booking, "id" | "createdAt">,
+  bookingData: Omit<Booking, "id" | "createdAt">
 ): Promise<string> {
   try {
     // Use a transaction to ensure all operations succeed or fail together
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async tx => {
       // Check if seat IDs are in the format of row+number (e.g., "A5")
-      const hasRowNumberFormat = bookingData.seats.some((seat) => {
+      const hasRowNumberFormat = bookingData.seats.some(seat => {
         // Check if seat ID follows pattern like "A5", "B3", etc.
         return /^[A-Z]\d+$/.test(seat.seatId);
       });
 
-      let seatIds = bookingData.seats.map((seat) => seat.seatId);
+      let seatIds = bookingData.seats.map(seat => seat.seatId);
       let processedSeats = [...bookingData.seats];
 
       // If using row+number format, convert to actual seat IDs
       if (hasRowNumberFormat) {
-        const seatPromises = bookingData.seats.map(async (seat) => {
+        const seatPromises = bookingData.seats.map(async seat => {
           if (/^[A-Z]\d+$/.test(seat.seatId)) {
             const row = seat.seatId[0]; // First character (e.g., "A")
             const number = parseInt(seat.seatId.substring(1)); // Rest of string as number (e.g., "5" -> 5)
@@ -299,7 +285,7 @@ export async function createBooking(
 
             if (!dbSeat) {
               throw new Error(
-                `Seat ${seat.seatId} not found in room ${bookingData.roomId}`,
+                `Seat ${seat.seatId} not found in room ${bookingData.roomId}`
               );
             }
 
@@ -313,7 +299,7 @@ export async function createBooking(
         });
 
         processedSeats = await Promise.all(seatPromises);
-        seatIds = processedSeats.map((seat) => seat.seatId);
+        seatIds = processedSeats.map(seat => seat.seatId);
       }
 
       // First, verify all seats exist and are available
@@ -326,19 +312,17 @@ export async function createBooking(
 
       // Check if all seats were found
       if (existingSeats.length !== seatIds.length) {
-        const foundIds = existingSeats.map((seat) => seat.id);
-        const missingIds = seatIds.filter((id) => !foundIds.includes(id));
+        const foundIds = existingSeats.map(seat => seat.id);
+        const missingIds = seatIds.filter(id => !foundIds.includes(id));
         throw new Error(`Some seats do not exist: ${missingIds.join(", ")}`);
       }
 
       // Check if all seats are available
-      const unavailableSeats = existingSeats.filter(
-        (seat) => !seat.isAvailable,
-      );
+      const unavailableSeats = existingSeats.filter(seat => !seat.isAvailable);
       if (unavailableSeats.length > 0) {
-        const unavailableIds = unavailableSeats.map((seat) => seat.id);
+        const unavailableIds = unavailableSeats.map(seat => seat.id);
         throw new Error(
-          `Some seats are already booked: ${unavailableIds.join(", ")}`,
+          `Some seats are already booked: ${unavailableIds.join(", ")}`
         );
       }
 
@@ -391,7 +375,7 @@ export async function createBooking(
  * @returns A list of bookings for the user with human-readable details.
  */
 export async function getUserBookings(
-  userId: string,
+  userId: string
 ): Promise<BookingWithDetails[]> {
   try {
     const bookings = await prisma.booking.findMany({
@@ -406,7 +390,7 @@ export async function getUserBookings(
       },
     });
 
-    return bookings.map((booking) => ({
+    return bookings.map(booking => ({
       id: booking.id,
       userId: booking.userId,
       roomId: booking.roomId,
@@ -418,7 +402,7 @@ export async function getUserBookings(
         | "confirmed"
         | "cancelled",
       createdAt: booking.createdAt,
-      seats: booking.seats.map((bookingSeat) => ({
+      seats: booking.seats.map(bookingSeat => ({
         seatId: bookingSeat.seatId,
         displayId: `${bookingSeat.seat.row}${bookingSeat.seat.number}`, // Create human-readable ID
         ticketType: bookingSeat.ticketType.toLowerCase() as

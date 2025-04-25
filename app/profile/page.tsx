@@ -5,7 +5,13 @@
  * @brief User profile management page component
  * @details Handles user profile editing, bookings display and admin cinema management
  */
-
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { useState, useRef, useEffect } from "react";
 import { User, Camera, Film, Ticket, RefreshCw } from "lucide-react";
 import { uploadProfileImage } from "@/lib/storage";
@@ -18,7 +24,7 @@ import {
 } from "@/lib/db/cinema";
 import { getMovieDetails, type Movie } from "@/lib/tmdb";
 import Link from "next/link";
-import { Alert, Table } from "flowbite-react";
+import { Alert } from "@/components/ui/alert";
 import Image from "next/image";
 import { authClient } from "@/lib/auth/auth-client";
 
@@ -322,35 +328,35 @@ export default function Profile() {
               </div>
             ) : (
               <Table>
-                <Table.Head>
-                  <Table.HeadCell>Film</Table.HeadCell>
-                  <Table.HeadCell>Salle</Table.HeadCell>
-                  <Table.HeadCell>Places</Table.HeadCell>
-                  <Table.HeadCell>Total</Table.HeadCell>
-                  <Table.HeadCell>Statut</Table.HeadCell>
-                </Table.Head>
-                <Table.Body className="divide-y">
+                <TableHeader>
+                  <TableRow>
+                    <TableCell>Film</TableCell>
+                    <TableCell>Salle</TableCell>
+                    <TableCell>Places</TableCell>
+                    <TableCell>Total</TableCell>
+                    <TableCell>Statut</TableCell>
+                  </TableRow>
+                </TableHeader>
+                <TableBody className="divide-y">
                   {bookings.map(booking => (
-                    <Table.Row key={booking.id} className="bg-white">
-                      <Table.Cell className="whitespace-nowrap font-medium text-gray-900">
+                    <TableRow key={booking.id} className="bg-white">
+                      <TableCell className="whitespace-nowrap font-medium text-gray-900">
                         {booking.movie?.title || `Film #${booking.movieId}`}
-                      </Table.Cell>
-                      <Table.Cell>
+                      </TableCell>
+                      <TableCell>
                         {booking.roomName ||
                           `Salle ${booking.roomId.substring(0, 4)}`}
-                      </Table.Cell>
-                      <Table.Cell>
+                      </TableCell>
+                      <TableCell>
                         {booking.seats.map(seat => (
                           <div key={seat.seatId}>
                             {seat.displayId || seat.seatId.substring(0, 8)} (
                             {seat.ticketType} - {seat.price.toFixed(2)} €)
                           </div>
                         ))}
-                      </Table.Cell>
-                      <Table.Cell>
-                        {booking.totalAmount.toFixed(2)} €
-                      </Table.Cell>
-                      <Table.Cell>
+                      </TableCell>
+                      <TableCell>{booking.totalAmount.toFixed(2)} €</TableCell>
+                      <TableCell>
                         <span
                           className={`px-2 py-1 rounded-full text-xs font-semibold ${
                             booking.status === "confirmed"
@@ -366,10 +372,10 @@ export default function Profile() {
                               ? "En attente"
                               : "Annulée"}
                         </span>
-                      </Table.Cell>
-                    </Table.Row>
+                      </TableCell>
+                    </TableRow>
                   ))}
-                </Table.Body>
+                </TableBody>
               </Table>
             )}
           </div>
@@ -399,7 +405,7 @@ export default function Profile() {
               </div>
 
               {success && (
-                <Alert color="success" className="mb-4">
+                <Alert variant="success" className="mb-4">
                   {success}
                 </Alert>
               )}

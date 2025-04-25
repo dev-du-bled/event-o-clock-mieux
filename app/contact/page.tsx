@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Send, AlertCircle, CheckCircle2 } from "lucide-react";
-import { Alert } from "flowbite-react";
+import { Alert } from "@/components/ui/alert";
 import { submitContactForm } from "@/lib/db/contact";
 
 export default function Contact() {
@@ -55,7 +55,7 @@ export default function Contact() {
 
         <div className="bg-white rounded-lg shadow-lg p-6">
           {error && (
-            <Alert color="failure" className="mb-4">
+            <Alert variant="destructive" className="mb-4">
               <div className="flex items-center gap-2">
                 <AlertCircle className="h-4 w-4" />
                 <span>{error}</span>
@@ -64,14 +64,12 @@ export default function Contact() {
           )}
 
           {success && (
-            <Alert color="success" className="mb-4">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4" />
-                <span>
-                  Votre message a été envoyé avec succès ! Nous vous répondrons
-                  dans les plus brefs délais.
-                </span>
-              </div>
+            <Alert variant="success" className="mb-4">
+              <CheckCircle2 className="h-4 w-4" />
+              <span>
+                Votre message a été envoyé avec succès ! Nous vous répondrons
+                dans les plus brefs délais.
+              </span>
             </Alert>
           )}
 

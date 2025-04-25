@@ -1,10 +1,11 @@
-import { Modal } from "flowbite-react";
 import { Users, GraduationCap, MapPin } from "lucide-react";
-
-interface AboutModalProps {
-  show: boolean;
-  onClose: () => void;
-}
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
 
 /**
  * Component for displaying an About Us modal.
@@ -12,13 +13,20 @@ interface AboutModalProps {
  * @param show - Boolean indicating if the modal should be displayed.
  * @param onClose - Function to handle closing the modal.
  */
-export function AboutModal({ show, onClose }: AboutModalProps) {
+export function AboutModal() {
   return (
-    <Modal show={show} onClose={onClose} size="2xl">
-      <Modal.Header>
-        <div className="text-2xl font-bold">À propos de nous</div>
-      </Modal.Header>
-      <Modal.Body>
+    <Dialog>
+      <DialogTrigger>
+        <p className="text-gray-600 hover:text-primary transition-colors">
+          À propos
+        </p>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle className="text-2xl font-bold">
+            À propos de nous
+          </DialogTitle>
+        </DialogHeader>
         <div className="space-y-6">
           <div className="flex items-start gap-4">
             <Users className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
@@ -61,15 +69,7 @@ export function AboutModal({ show, onClose }: AboutModalProps) {
             </div>
           </div>
         </div>
-      </Modal.Body>
-      <Modal.Footer>
-        <button
-          onClick={onClose}
-          className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
-        >
-          Fermer
-        </button>
-      </Modal.Footer>
-    </Modal>
+      </DialogContent>
+    </Dialog>
   );
 }

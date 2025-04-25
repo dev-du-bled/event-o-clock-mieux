@@ -1,12 +1,14 @@
-import { Calendar, MapPin, Clock, Repeat } from "lucide-react";
-import { Event } from "@/lib/db/events";
+import { Calendar, MapPin, Clock, Repeat, Edit, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import Image from "next/image";
+import { Event } from "@prisma/client";
+import Link from "next/link";
+import DeleteEventDialog from "./delete-event-dialog";
 
 interface EventCardProps {
   event: Event;
-  onClick: () => void;
+  variant: "default" | "edit";
 }
 
 /**
@@ -17,10 +19,10 @@ interface EventCardProps {
  * @param event - The event object to display.
  * @param onClick - The function triggered when the card is clicked.
  */
-export function EventCard({ event, onClick }: EventCardProps) {
+export function EventCard({ event, variant }: EventCardProps) {
   const formatEventDate = (event: Event) => {
     if (event.isRecurring) {
-      const days = event.recurringDays.map((day) => {
+      const days = event.recurringDays.map(day => {
         switch (day) {
           case "monday":
             return "Lundi";
@@ -66,7 +68,7 @@ export function EventCard({ event, onClick }: EventCardProps) {
     try {
       const startTime = format(
         new Date(`2000-01-01T${event.startTime}`),
-        "HH:mm",
+        "HH:mm"
       );
       const endTime = format(new Date(`2000-01-01T${event.endTime}`), "HH:mm");
       return `${startTime} - ${endTime}`;
@@ -76,11 +78,8 @@ export function EventCard({ event, onClick }: EventCardProps) {
   };
 
   return (
-    <div
-      onClick={onClick}
-      className="cursor-pointer max-w-sm bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300"
-    >
-      <div className="relative h-48 overflow-hidden group">
+    <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">
+      <div className="relative h-50 overflow-hidden group flex">
         {event.images && event.images[0] ? (
           <Image
             src={event.images[0]}
@@ -114,9 +113,9 @@ export function EventCard({ event, onClick }: EventCardProps) {
           </span>
         </div>
       </div>
-      <div className="p-5">
+      <div className="p-5 text-start">
         <h3 className="text-xl font-bold text-gray-900 mb-3">{event.title}</h3>
-        <div className="space-y-2 text-sm text-gray-500 mb-3">
+        <div className="space-y-2 text-sm text-gray-500">
           <div className="flex items-center">
             <MapPin className="w-4 h-4 mr-1" />
             <span>{event.location}</span>
@@ -129,9 +128,23 @@ export function EventCard({ event, onClick }: EventCardProps) {
             )}
             <span>{formatEventDate(event)}</span>
           </div>
-          <div className="flex items-center">
-            <Clock className="w-4 h-4 mr-1" />
-            <span>{formatEventTime(event)}</span>
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center">
+              <Clock className="w-4 h-4 mr-1" />
+              <span>{formatEventTime(event)}</span>
+            </div>
+            {variant === "edit" && (
+              <div className="flex space-x-2 ml-auto">
+                <Link
+                  href={`/edit-event/${event.id}`}
+                  className="p-2 text-gray-600 hover:text-primary transition-colors"
+                  title="Modifier"
+                >
+                  <Edit className="w-5 h-5" />
+                </Link>
+                <DeleteEventDialog event={event} />
+              </div>
+            )}
           </div>
         </div>
       </div>

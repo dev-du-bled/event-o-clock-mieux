@@ -2,12 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { getMovieDetails, getImageUrl, type Movie } from "@/lib/tmdb";
-import { Calendar, Star, Film, Clock, Check } from "lucide-react";
+import { Calendar, Star, Film, Clock } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { Card, Modal, Button } from "flowbite-react";
 import {
-  CinemaRoom,
   getCinemaRooms,
   createCinemaRoom,
   assignMovieToRoom,
@@ -15,6 +13,11 @@ import {
 import Link from "next/link";
 import Image from "next/image";
 import { authClient } from "@/lib/auth/auth-client";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import SeatsCinemaDialog from "@/components/events/seats-cinema-dialog";
+import { CinemaRoom } from "@prisma/client";
+import AssignFilmDialog from "@/components/events/assign-film-dialog";
 
 const AVAILABLE_MOVIES = [27205, 155, 680];
 
@@ -43,7 +46,7 @@ export default function CinemaManagement() {
 
     async function loadData() {
       try {
-        const moviePromises = AVAILABLE_MOVIES.map((id) => getMovieDetails(id));
+        const moviePromises = AVAILABLE_MOVIES.map(id => getMovieDetails(id));
         const movieData = await Promise.all(moviePromises);
         if (isMounted) setMovies(movieData);
 
@@ -61,8 +64,8 @@ export default function CinemaManagement() {
                   number: seatIndex + 1,
                   isAvailable: true,
                   isVIP: ROOM_CONFIG.vipRows.includes(rowIndex),
-                }),
-              ),
+                })
+              )
           ).flat();
 
           for (let i = 1; i <= 3; i++) {
@@ -109,77 +112,12 @@ export default function CinemaManagement() {
   };
 
   const handleSeatClick = (seatId: string) => {
-    setSelectedSeats((prev) => {
+    setSelectedSeats(prev => {
       if (prev.includes(seatId)) {
-        return prev.filter((id) => id !== seatId);
+        return prev.filter(id => id !== seatId);
       }
       return [...prev, seatId];
     });
-  };
-
-  const renderSeatMap = (room: CinemaRoom) => {
-    const rows = Array.from({ length: ROOM_CONFIG.rows }, (_, rowIndex) =>
-      String.fromCharCode(65 + rowIndex),
-    );
-
-    return (
-      <div className="space-y-4">
-        <div className="w-full h-8 bg-gray-300 rounded-lg flex items-center justify-center text-sm text-gray-600">
-          Écran
-        </div>
-
-        {/* Seat */}
-        <div className="grid gap-4">
-          {rows.map((row) => (
-            <div key={row} className="flex justify-center gap-2">
-              <span className="w-6 text-center text-gray-500">{row}</span>
-              {Array.from({ length: ROOM_CONFIG.seatsPerRow }, (_, index) => {
-                const seatId = `${row}${index + 1}`;
-                const seat = room.seats.find((s) => s.id === seatId);
-                const isVIP = ROOM_CONFIG.vipRows.includes(rows.indexOf(row));
-                const isSelected = selectedSeats.includes(seatId);
-                const isAvailable = seat?.isAvailable ?? true;
-
-                return (
-                  <button
-                    key={seatId}
-                    onClick={() => isAvailable && handleSeatClick(seatId)}
-                    disabled={!isAvailable}
-                    className={`w-8 h-8 rounded-t-lg flex items-center justify-center text-sm
-                      ${isVIP ? "bg-purple-100 hover:bg-purple-200" : "bg-gray-100 hover:bg-gray-200"}
-                      ${isSelected ? "bg-green-500 text-white hover:bg-green-600" : ""}
-                      ${!isAvailable ? "bg-gray-300 cursor-not-allowed" : "cursor-pointer"}
-                      transition-colors`}
-                  >
-                    {isSelected ? <Check className="w-4 h-4" /> : index + 1}
-                  </button>
-                );
-              })}
-            </div>
-          ))}
-        </div>
-
-        {/* Légende */}
-        <div className="flex justify-center gap-4 text-sm">
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-gray-100 rounded"></div>
-            <span>Standard</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-purple-100 rounded"></div>
-            <span>VIP</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-green-500 rounded"></div>
-            <span>Sélectionné</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-gray-300 rounded"></div>
-            <span>Occupé</span>
-          </div>
-        </div>
-      </div>
-    );
   };
 
   if (!user) {
@@ -208,27 +146,11 @@ export default function CinemaManagement() {
 
         {/* Movie Room */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {rooms.map((room) => (
+          {rooms.map(room => (
             <Card key={room.id} className="relative">
               <div className="absolute top-4 right-4 space-x-2">
-                <Button
-                  size="sm"
-                  onClick={() => {
-                    setSelectedRoom(room);
-                    setShowSeatMap(true);
-                  }}
-                >
-                  Voir les sièges
-                </Button>
-                <Button
-                  size="sm"
-                  onClick={() => {
-                    setSelectedRoom(room);
-                    setShowModal(true);
-                  }}
-                >
-                  Assigner un film
-                </Button>
+                <SeatsCinemaDialog room={selectedRoom} />
+                <AssignFilmDialog movies={movies} selectedRoom={selectedRoom} />
               </div>
 
               <h5 className="text-xl font-bold tracking-tight text-gray-900 mb-4">
@@ -237,16 +159,16 @@ export default function CinemaManagement() {
 
               {room.currentMovie ? (
                 <div className="space-y-4">
-                  {movies.find((m) => m.id === room.currentMovie?.id) && (
+                  {movies.find(m => m.id === room.currentMovie?.id) && (
                     <>
                       <Image
                         src={getImageUrl(
-                          movies.find((m) => m.id === room.currentMovie?.id)
+                          movies.find(m => m.id === room.currentMovie?.id)
                             ?.poster_path ?? null,
-                          "w500",
+                          "w500"
                         )}
                         alt={
-                          movies.find((m) => m.id === room.currentMovie?.id)
+                          movies.find(m => m.id === room.currentMovie?.id)
                             ?.title || ""
                         }
                         className="rounded-lg shadow-lg w-full h-48 object-cover"
@@ -256,7 +178,7 @@ export default function CinemaManagement() {
                       <div className="space-y-2">
                         <p className="font-semibold">
                           {
-                            movies.find((m) => m.id === room.currentMovie?.id)
+                            movies.find(m => m.id === room.currentMovie?.id)
                               ?.title
                           }
                         </p>
@@ -283,86 +205,13 @@ export default function CinemaManagement() {
           ))}
         </div>
 
-        {/* Modal film */}
-        <Modal show={showModal} onClose={() => setShowModal(false)}>
-          <Modal.Header>Assigner un film à {selectedRoom?.name}</Modal.Header>
-          <Modal.Body>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Film
-                </label>
-                <select
-                  value={selectedMovie || ""}
-                  onChange={(e) => setSelectedMovie(Number(e.target.value))}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2"
-                >
-                  <option value="">Sélectionner un film</option>
-                  {movies.map((movie) => (
-                    <option key={movie.id} value={movie.id}>
-                      {movie.title}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Horaire
-                </label>
-                <input
-                  type="time"
-                  value={showtime}
-                  onChange={(e) => setShowtime(e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2"
-                />
-              </div>
-            </div>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button onClick={handleAssignMovie}>Assigner</Button>
-            <Button color="gray" onClick={() => setShowModal(false)}>
-              Annuler
-            </Button>
-          </Modal.Footer>
-        </Modal>
-
         {/* Modal seatMap */}
-        <Modal
-          show={showSeatMap}
-          onClose={() => {
-            setShowSeatMap(false);
-            setSelectedSeats([]);
-          }}
-          size="xl"
-        >
-          <Modal.Header>Plan des sièges - {selectedRoom?.name}</Modal.Header>
-          <Modal.Body>{selectedRoom && renderSeatMap(selectedRoom)}</Modal.Body>
-          <Modal.Footer>
-            <Button
-              onClick={() => {
-                setShowSeatMap(false);
-                setSelectedSeats([]);
-              }}
-            >
-              Réserver les sièges ({selectedSeats.length})
-            </Button>
-            <Button
-              color="gray"
-              onClick={() => {
-                setShowSeatMap(false);
-                setSelectedSeats([]);
-              }}
-            >
-              Fermer
-            </Button>
-          </Modal.Footer>
-        </Modal>
+        {selectedRoom && <SeatsCinemaDialog room={selectedRoom} />}
 
         <h2 className="text-2xl font-bold mb-4">Films disponibles</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {movies.map((movie) => (
-            <Card key={movie.id}>
+          {movies.map(movie => (
+            <Card key={movie.id} className="p-5">
               <div className="grid grid-cols-1 gap-4">
                 <Image
                   src={getImageUrl(movie.poster_path, "w500")}
@@ -394,7 +243,7 @@ export default function CinemaManagement() {
                   </div>
 
                   <div className="flex flex-wrap gap-2">
-                    {movie.genres.map((genre) => (
+                    {movie.genres.map(genre => (
                       <span
                         key={genre.id}
                         className="bg-gray-100 text-gray-800 text-xs font-medium px-2 py-1 rounded-full"

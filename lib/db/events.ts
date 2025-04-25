@@ -8,7 +8,7 @@ import { EventStatus } from "@prisma/client";
  * Each event has properties such as title, dates, time, location, description, images, and other details.
  */
 export interface Event {
-  id?: string;
+  id: string;
   title: string;
   startDate: string;
   startTime: string;

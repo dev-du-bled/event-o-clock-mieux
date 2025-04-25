@@ -5,7 +5,7 @@
  * @brief Event editing page component
  * @details Provides functionality to edit existing events including form handling,
  *          image management, and address validation
- */ 
+ */
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
 import {
@@ -154,7 +154,7 @@ export default function EditEvent() {
 
   function debounce<T extends (...args: string[]) => void>(
     func: T,
-    wait: number,
+    wait: number
   ): (...args: Parameters<T>) => void {
     let timeout: NodeJS.Timeout;
 
@@ -184,7 +184,7 @@ export default function EditEvent() {
 
     try {
       const response = await fetch(
-        `https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(query)}&limit=5`,
+        `https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(query)}&limit=5`
       );
       const data = await response.json();
       setAddressSuggestions(data.features || []);
@@ -203,13 +203,13 @@ export default function EditEvent() {
 
   const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setFormData((prev) => ({ ...prev, address: value }));
+    setFormData(prev => ({ ...prev, address: value }));
     debouncedSearchAddress(value);
   };
 
   const handleAddressSelect = (feature: AddressFeature) => {
     const { postcode, city, housenumber, street } = feature.properties;
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
       streetNumber: housenumber || "",
       street: street,
@@ -223,17 +223,17 @@ export default function EditEvent() {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const newImages = Array.from(e.target.files);
-      setImages((prev) => [...prev, ...newImages].slice(0, 5));
+      setImages(prev => [...prev, ...newImages].slice(0, 5));
     }
   };
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     if (e.dataTransfer.files) {
-      const newImages = Array.from(e.dataTransfer.files).filter((file) =>
-        file.type.startsWith("image/"),
+      const newImages = Array.from(e.dataTransfer.files).filter(file =>
+        file.type.startsWith("image/")
       );
-      setImages((prev) => [...prev, ...newImages].slice(0, 5));
+      setImages(prev => [...prev, ...newImages].slice(0, 5));
     }
   };
 
@@ -260,7 +260,7 @@ export default function EditEvent() {
 
     if (isRecurring && recurringDays.length === 0) {
       setError(
-        "Veuillez sélectionner au moins un jour de la semaine pour un événement récurrent",
+        "Veuillez sélectionner au moins un jour de la semaine pour un événement récurrent"
       );
       return;
     }
@@ -283,7 +283,7 @@ export default function EditEvent() {
 
       // Upload new images if any
       const newImageUrls = await Promise.all(
-        images.map((image) => uploadEventImage(image, eventID)),
+        images.map(image => uploadEventImage(image, eventID))
       );
 
       // Combine existing and new images
@@ -297,7 +297,7 @@ export default function EditEvent() {
       router.push("/my-events");
     } catch (err) {
       setError(
-        "Une erreur est survenue lors de la modification de l&apos;événement",
+        "Une erreur est survenue lors de la modification de l&apos;événement"
       );
       console.error(err);
     } finally {
@@ -306,11 +306,11 @@ export default function EditEvent() {
   };
 
   const handleRemoveExistingImage = (index: number) => {
-    setExistingImages((prev) => prev.filter((_, i) => i !== index));
+    setExistingImages(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleRemoveNewImage = (index: number) => {
-    setImages((prev) => prev.filter((_, i) => i !== index));
+    setImages(prev => prev.filter((_, i) => i !== index));
   };
 
   if (!user) {
@@ -364,7 +364,7 @@ export default function EditEvent() {
               type="text"
               required
               value={formData.title}
-              onChange={(e) =>
+              onChange={e =>
                 setFormData({ ...formData, title: e.target.value })
               }
               className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
@@ -377,7 +377,7 @@ export default function EditEvent() {
               <input
                 type="checkbox"
                 checked={isRecurring}
-                onChange={(e) => setIsRecurring(e.target.checked)}
+                onChange={e => setIsRecurring(e.target.checked)}
                 className="rounded border-gray-300 text-primary focus:ring-primary"
               />
               <span className="text-sm font-medium text-gray-700">
@@ -393,7 +393,7 @@ export default function EditEvent() {
                     Jours de la semaine *
                   </label>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                    {weekDays.map((day) => (
+                    {weekDays.map(day => (
                       <label
                         key={day.id}
                         className="flex items-center space-x-2"
@@ -401,12 +401,12 @@ export default function EditEvent() {
                         <input
                           type="checkbox"
                           checked={recurringDays.includes(day.id)}
-                          onChange={(e) => {
+                          onChange={e => {
                             if (e.target.checked) {
                               setRecurringDays([...recurringDays, day.id]);
                             } else {
                               setRecurringDays(
-                                recurringDays.filter((d) => d !== day.id),
+                                recurringDays.filter(d => d !== day.id)
                               );
                             }
                           }}
@@ -428,7 +428,7 @@ export default function EditEvent() {
                       type="time"
                       required
                       value={formData.startTime}
-                      onChange={(e) =>
+                      onChange={e =>
                         setFormData({ ...formData, startTime: e.target.value })
                       }
                       className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
@@ -443,7 +443,7 @@ export default function EditEvent() {
                       type="time"
                       required
                       value={formData.endTime}
-                      onChange={(e) =>
+                      onChange={e =>
                         setFormData({ ...formData, endTime: e.target.value })
                       }
                       className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
@@ -466,7 +466,7 @@ export default function EditEvent() {
                     type="date"
                     required={!isRecurring}
                     value={formData.startDate}
-                    onChange={(e) =>
+                    onChange={e =>
                       setFormData({ ...formData, startDate: e.target.value })
                     }
                     className="rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
@@ -475,7 +475,7 @@ export default function EditEvent() {
                     type="time"
                     required={!isRecurring}
                     value={formData.startTime}
-                    onChange={(e) =>
+                    onChange={e =>
                       setFormData({ ...formData, startTime: e.target.value })
                     }
                     className="rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
@@ -492,7 +492,7 @@ export default function EditEvent() {
                     type="date"
                     required={!isRecurring}
                     value={formData.endDate}
-                    onChange={(e) =>
+                    onChange={e =>
                       setFormData({ ...formData, endDate: e.target.value })
                     }
                     className="rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
@@ -501,7 +501,7 @@ export default function EditEvent() {
                     type="time"
                     required={!isRecurring}
                     value={formData.endTime}
-                    onChange={(e) =>
+                    onChange={e =>
                       setFormData({ ...formData, endTime: e.target.value })
                     }
                     className="rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
@@ -545,7 +545,7 @@ export default function EditEvent() {
               <input
                 type="text"
                 value={formData.city}
-                onChange={(e) =>
+                onChange={e =>
                   setFormData({ ...formData, city: e.target.value })
                 }
                 className="rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
@@ -555,7 +555,7 @@ export default function EditEvent() {
               <input
                 type="text"
                 value={formData.postalCode}
-                onChange={(e) =>
+                onChange={e =>
                   setFormData({ ...formData, postalCode: e.target.value })
                 }
                 className="rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
@@ -573,7 +573,7 @@ export default function EditEvent() {
             <textarea
               required
               value={formData.description}
-              onChange={(e) =>
+              onChange={e =>
                 setFormData({ ...formData, description: e.target.value })
               }
               rows={5}
@@ -672,14 +672,14 @@ export default function EditEvent() {
               Catégories *
             </label>
             <div className="flex flex-wrap gap-2">
-              {categories.map((category) => (
+              {categories.map(category => (
                 <button
                   key={category}
                   type="button"
                   onClick={() => {
                     if (selectedCategories.includes(category)) {
                       setSelectedCategories(
-                        selectedCategories.filter((c) => c !== category),
+                        selectedCategories.filter(c => c !== category)
                       );
                     } else {
                       setSelectedCategories([...selectedCategories, category]);
@@ -708,7 +708,7 @@ export default function EditEvent() {
                 <input
                   type="checkbox"
                   checked={formData.isAccessible}
-                  onChange={(e) =>
+                  onChange={e =>
                     setFormData({ ...formData, isAccessible: e.target.checked })
                   }
                   className="rounded border-gray-300 text-primary focus:ring-primary"
@@ -721,7 +721,7 @@ export default function EditEvent() {
                 <input
                   type="checkbox"
                   checked={formData.hasParking}
-                  onChange={(e) =>
+                  onChange={e =>
                     setFormData({ ...formData, hasParking: e.target.checked })
                   }
                   className="rounded border-gray-300 text-primary focus:ring-primary"
@@ -732,7 +732,7 @@ export default function EditEvent() {
                 <input
                   type="checkbox"
                   checked={formData.hasPublicTransport}
-                  onChange={(e) =>
+                  onChange={e =>
                     setFormData({
                       ...formData,
                       hasPublicTransport: e.target.checked,
@@ -775,7 +775,7 @@ export default function EditEvent() {
               <input
                 type="number"
                 value={formData.price}
-                onChange={(e) =>
+                onChange={e =>
                   setFormData({ ...formData, price: e.target.value })
                 }
                 className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
@@ -796,7 +796,7 @@ export default function EditEvent() {
               <input
                 type="url"
                 value={formData.organizerWebsite}
-                onChange={(e) =>
+                onChange={e =>
                   setFormData({ ...formData, organizerWebsite: e.target.value })
                 }
                 className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
@@ -805,7 +805,7 @@ export default function EditEvent() {
               <input
                 type="tel"
                 value={formData.organizerPhone}
-                onChange={(e) =>
+                onChange={e =>
                   setFormData({ ...formData, organizerPhone: e.target.value })
                 }
                 className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"

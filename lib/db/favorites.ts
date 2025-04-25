@@ -23,10 +23,9 @@ export interface Favorite {
  */
 export async function addToFavorites(
   userId: string,
-  eventId: string,
+  eventId: string
 ): Promise<string> {
   try {
-    console.log(eventId, userId);
     const addFavorite = await prisma.favorite.create({
       data: {
         userId,
@@ -51,7 +50,7 @@ export async function addToFavorites(
  */
 export async function removeFromFavorites(
   userId: string,
-  eventId: string,
+  eventId: string
 ): Promise<void> {
   try {
     await prisma.favorite.delete({
@@ -81,7 +80,7 @@ export async function getUserFavorites(userId: string): Promise<string[]> {
       },
     });
 
-    return favorites.map((favorite) => favorite.eventId);
+    return favorites.map(favorite => favorite.eventId);
   } catch (error) {
     console.error("Erreur lors de la récupération des favoris:", error);
     throw error;
@@ -99,7 +98,7 @@ export async function getUserFavorites(userId: string): Promise<string[]> {
  */
 export async function isEventFavorite(
   userId: string,
-  eventId: string,
+  eventId: string
 ): Promise<boolean> {
   try {
     const isFavorited = await prisma.favorite.findFirst({
