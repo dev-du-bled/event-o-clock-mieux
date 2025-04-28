@@ -25,8 +25,6 @@ import {
   Heart,
   Repeat,
 } from "lucide-react";
-import { format } from "date-fns";
-import { fr } from "date-fns/locale";
 import Image from "next/image";
 import { EventCard } from "./event-card";
 import { auth } from "@/lib/auth/auth";
@@ -37,6 +35,7 @@ import {
 } from "@/lib/db/favorites";
 import { useEffect, useState } from "react";
 import { Event } from "@prisma/client";
+import { formatEventDate, formatEventTime } from "@/lib/utils";
 
 interface EventDialogProps {
   user?: typeof auth.$Infer.Session.user;
@@ -76,46 +75,6 @@ export function EventDialog({ event, user, variant }: EventDialogProps) {
     getFavorite();
   }, [user, event.id]);
 
-  const formatEventDate = (event: Event) => {
-    if (event.isRecurring) {
-      const days = event.recurringDays.map(day => {
-        switch (day) {
-          case "monday":
-            return "Lundi";
-          case "tuesday":
-            return "Mardi";
-          case "wednesday":
-            return "Mercredi";
-          case "thursday":
-            return "Jeudi";
-          case "friday":
-            return "Vendredi";
-          case "saturday":
-            return "Samedi";
-          case "sunday":
-            return "Dimanche";
-          default:
-            return "";
-        }
-      });
-      return `Tous les ${days.join(", ")}`;
-    }
-
-    try {
-      const startDate = format(new Date(event.startDate), "PPP", {
-        locale: fr,
-      });
-      const endDate = format(new Date(event.endDate), "PPP", { locale: fr });
-
-      if (startDate === endDate) {
-        return startDate;
-      }
-      return `Du ${startDate} au ${endDate}`;
-    } catch {
-      return "Date non définie";
-    }
-  };
-
   const handleFavoriteClick = async (eventId: string) => {
     if (!user) return;
 
@@ -128,23 +87,6 @@ export function EventDialog({ event, user, variant }: EventDialogProps) {
       setIsFavorite(!isFavorite);
     } catch (err) {
       console.error("Erreur lors de la gestion des favoris:", err);
-    }
-  };
-
-  const formatEventTime = (event: Event) => {
-    if (!event.startTime || !event.endTime) {
-      return "Horaire non défini";
-    }
-
-    try {
-      const startTime = format(
-        new Date(`2000-01-01T${event.startTime}`),
-        "HH:mm"
-      );
-      const endTime = format(new Date(`2000-01-01T${event.endTime}`), "HH:mm");
-      return `${startTime} - ${endTime}`;
-    } catch {
-      return "Horaire non défini";
     }
   };
 
