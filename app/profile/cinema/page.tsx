@@ -10,14 +10,13 @@ import {
   createCinemaRoom,
   assignMovieToRoom,
 } from "@/lib/db/cinema";
-import Link from "next/link";
 import Image from "next/image";
 import { authClient } from "@/lib/auth/auth-client";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import SeatsCinemaDialog from "@/components/events/seats-cinema-dialog";
 import { CinemaRoom } from "@prisma/client";
 import AssignFilmDialog from "@/components/events/assign-film-dialog";
+import NoAuth from "@/components/auth/no-auth";
 
 const AVAILABLE_MOVIES = [27205, 155, 680];
 
@@ -38,8 +37,6 @@ export default function CinemaManagement() {
   const [showModal, setShowModal] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState<number | null>(null);
   const [showtime, setShowtime] = useState("");
-  const [showSeatMap, setShowSeatMap] = useState(false);
-  const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
 
   useEffect(() => {
     let isMounted = true;
@@ -111,30 +108,8 @@ export default function CinemaManagement() {
     }
   };
 
-  const handleSeatClick = (seatId: string) => {
-    setSelectedSeats(prev => {
-      if (prev.includes(seatId)) {
-        return prev.filter(id => id !== seatId);
-      }
-      return [...prev, seatId];
-    });
-  };
-
   if (!user) {
-    return (
-      <div className="min-h-screen bg-gray-50 py-12">
-        <div className="container mx-auto px-4">
-          <div className="bg-white rounded-lg shadow-lg p-6 text-center">
-            <h2 className="text-xl font-semibold mb-4">
-              Vous devez être connecté pour gérer les salles
-            </h2>
-            <Link href="/login" className="text-primary hover:text-primary/80">
-              Se connecter
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
+    return <NoAuth />;
   }
 
   return (

@@ -8,7 +8,7 @@ import Link from "next/link";
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
 import { EventCard } from "@/components/events/event-card";
-import { EventDialog } from "@/components/events/event-dialog";
+import NoAuth from "@/components/auth/no-auth";
 
 /**
  * @brief User events management component
@@ -30,20 +30,7 @@ export default async function MyEvents() {
   const user = session?.user;
 
   if (!user) {
-    return (
-      <div className="min-h-screen bg-gray-50 py-12">
-        <div className="container mx-auto px-4">
-          <div className="bg-white rounded-lg shadow-lg p-6 text-center">
-            <h2 className="text-xl font-semibold mb-4">
-              Vous devez être connecté pour voir vos événements
-            </h2>
-            <Link href="/login" className="text-primary hover:text-primary/80">
-              Se connecter
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
+    return <NoAuth />;
   }
 
   const events = await getUserEvents(user.id);

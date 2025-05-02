@@ -21,7 +21,6 @@ import {
 } from "lucide-react";
 import { createEvent, updateEvent } from "@/lib/db/events";
 import { uploadEventImage } from "@/lib/storage";
-import Link from "next/link";
 import Image from "next/image";
 import AddressFeature from "@/lib/types";
 import { authClient } from "@/lib/auth/auth-client";
@@ -30,6 +29,7 @@ import {
   createEventSchema,
   CreateEventFormData as ZodFormData, // Importer le schéma et le type
 } from "@/schemas/createEvent"; // Assurez-vous que le chemin est correct
+import NoAuth from "@/components/auth/no-auth";
 
 // Helper type pour les erreurs Zod formatées
 type FieldErrors = z.inferFlattenedErrors<
@@ -78,21 +78,7 @@ export default function CreateEvent() {
   });
 
   if (!user) {
-    // ... (code inchangé pour utilisateur non connecté)
-    return (
-      <div className="min-h-screen bg-gray-50 py-12">
-        <div className="container mx-auto px-4">
-          <div className="bg-white rounded-lg shadow-lg p-6 text-center">
-            <h2 className="text-xl font-semibold mb-4">
-              Vous devez être connecté pour créer un événement
-            </h2>
-            <Link href="/login" className="text-primary hover:text-primary/80">
-              Se connecter
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
+    return <NoAuth />;
   }
 
   const categories = [
