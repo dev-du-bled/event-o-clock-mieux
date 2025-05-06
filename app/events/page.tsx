@@ -9,11 +9,10 @@
 import React, { useEffect, useState, Suspense } from "react";
 import { getAllEvents } from "@/lib/db/events";
 import { Event } from "@prisma/client";
-import { MapPin, Search } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { authClient } from "@/lib/auth/auth-client";
-import { CityFeature } from "@/types/types";
 import { EventDialog } from "@/components/events/event-dialog";
+import SearchEvent from "@/components/events/search-event";
 
 /**
  * SearchParamsHandler component to handle URL search parameters
@@ -63,8 +62,6 @@ export default function Events() {
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
   const [location, setLocation] = useState("");
-  const [citySuggestions, setCitySuggestions] = useState<CityFeature[]>([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
 
   useEffect(() => {
     async function loadEvents() {
@@ -81,36 +78,6 @@ export default function Events() {
 
     loadEvents();
   }, []);
-
-  const searchCity = async (query: string) => {
-    if (!query.trim()) {
-      setCitySuggestions([]);
-      setShowSuggestions(false);
-      return;
-    }
-
-    try {
-      const response = await fetch(
-        `https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(query)}&type=municipality&limit=5`
-      );
-      const data = await response.json();
-      setCitySuggestions(data.features || []);
-      setShowSuggestions(true);
-    } catch (error) {
-      console.error("Erreur lors de la recherche de ville:", error);
-    }
-  };
-
-  const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setLocation(value);
-    searchCity(value);
-  };
-
-  const handleCitySelect = (city: string) => {
-    setLocation(city);
-    setShowSuggestions(false);
-  };
 
   const categories = Array.from(
     new Set(events.flatMap(event => event.categories))
@@ -162,44 +129,7 @@ export default function Events() {
 
         <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Rechercher un événement..."
-                value={searchTerm}
-                onChange={e => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary/20 focus:border-primary"
-              />
-            </div>
-            <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Ville"
-                value={location}
-                onChange={handleCityChange}
-                onFocus={() => setShowSuggestions(true)}
-                className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary/20 focus:border-primary"
-              />
-              {showSuggestions && citySuggestions.length > 0 && (
-                <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                  {citySuggestions.map((feature, index) => (
-                    <button
-                      key={index}
-                      type="button"
-                      className="w-full px-4 py-2 text-left hover:bg-gray-50 focus:outline-none focus:bg-gray-50"
-                      onClick={() => handleCitySelect(feature.properties.city)}
-                    >
-                      {feature.properties.city}
-                      <span className="text-sm text-gray-500 ml-2">
-                        ({feature.properties.postcode})
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
+            <SearchEvent />
             <select
               value={selectedCategory}
               onChange={e => setSelectedCategory(e.target.value)}

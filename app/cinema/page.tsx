@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { getMovieDetails, getImageUrl, type Movie } from "@/lib/tmdb";
 import { Film, Clock, Ticket } from "lucide-react";
 import { getCinemaRooms } from "@/lib/db/cinema";
-import Link from "next/link";
 import Image from "next/image";
 import { authClient } from "@/lib/auth/auth-client";
 import { Card } from "@/components/ui/card";

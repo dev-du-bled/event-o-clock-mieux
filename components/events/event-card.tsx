@@ -16,7 +16,7 @@ interface EventCardProps {
  * The card image and category are displayed, and the user can click it for further actions.
  *
  * @param event - The event object to display.
- * @param onClick - The function triggered when the card is clicked.
+ * @param variant - The variant of the card ("default" or "edit").
  */
 export function EventCard({ event, variant }: EventCardProps) {
   return (

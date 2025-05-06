@@ -1,11 +1,15 @@
 "use client";
 
 import { CityFeature } from "@/types/types";
-import { Search, MapPin } from "lucide-react";
+import { MapPin, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function SearchEvent() {
+interface SearchEventProps {
+  variant?: "form";
+}
+
+export default function SearchEvent({ variant }: SearchEventProps) {
   const router = useRouter();
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -53,11 +57,9 @@ export default function SearchEvent() {
     router.push(`/events?${searchParams.toString()}`);
   };
 
-  return (
-    <form
-      onSubmit={handleSearch}
-      className="flex flex-col md:flex-row gap-4 justify-center items-center max-w-3xl mx-auto"
-    >
+  // input de recherche du nom de l'event et de la localisation
+  const inputs = (
+    <>
       <div className="relative w-full md:w-auto flex-1">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
         <input
@@ -96,6 +98,15 @@ export default function SearchEvent() {
           </div>
         )}
       </div>
+    </>
+  );
+
+  return variant === "form" ? (
+    <form
+      onSubmit={handleSearch}
+      className="flex flex-col md:flex-row gap-4 justify-center items-center max-w-3xl mx-auto"
+    >
+      {inputs}
       <button
         type="submit"
         className="w-full md:w-auto px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
@@ -103,5 +114,7 @@ export default function SearchEvent() {
         Rechercher
       </button>
     </form>
+  ) : (
+    inputs
   );
 }

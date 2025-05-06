@@ -4,7 +4,6 @@
  * @details Displays frequently asked questions in an accordion format
  */
 
-import React from "react";
 import {
   Accordion,
   AccordionContent,

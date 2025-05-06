@@ -60,7 +60,7 @@ export default async function Home() {
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
             Trouvez et participez à des événements uniques près de chez vous
           </p>
-          <SearchEvent />
+          <SearchEvent variant="form" />
         </div>
       </section>
 
