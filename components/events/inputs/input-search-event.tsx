@@ -1,19 +1,18 @@
 "use client";
 
+import { useStoreParams } from "@/lib/store/url-params";
 import { CityFeature } from "@/types/types";
 import { MapPin, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-interface SearchEventProps {
+interface InputSearchEventProps {
   variant?: "form";
 }
 
-export default function SearchEvent({ variant }: SearchEventProps) {
+export default function InputSearchEvent({ variant }: InputSearchEventProps) {
   const router = useRouter();
-
-  const [searchTerm, setSearchTerm] = useState("");
-  const [location, setLocation] = useState("");
+  const { search, setSearch, location, setLocation } = useStoreParams();
   const [citySuggestions, setCitySuggestions] = useState<CityFeature[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
@@ -49,24 +48,20 @@ export default function SearchEvent({ variant }: SearchEventProps) {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // Rediriger vers la page découvrir avec les paramètres de recherche
-    const searchParams = new URLSearchParams();
-    if (searchTerm) searchParams.append("search", searchTerm);
-    if (location) searchParams.append("location", location);
 
-    router.push(`/events?${searchParams.toString()}`);
+    router.push(`/events`);
   };
 
   // input de recherche du nom de l'event et de la localisation
   const inputs = (
     <>
-      <div className="relative w-full md:w-auto flex-1">
+      <div className="relative w-full md:w-auto">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
         <input
           type="text"
           placeholder="Rechercher un événement..."
-          value={searchTerm}
-          onChange={e => setSearchTerm(e.target.value)}
+          value={search}
+          onChange={e => setSearch(e.target.value)}
           className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary/20"
         />
       </div>

@@ -11,7 +11,7 @@ import { getUserFavorites } from "@/lib/db/favorites";
 import { getAllEvents } from "@/lib/db/events";
 import { Event } from "@prisma/client";
 import Link from "next/link";
-import { EventDialog } from "@/components/events/event-dialog";
+import { EventDialog } from "@/components/events/dialogs/event-dialog";
 import { isEventFavorite } from "@/lib/db/favorites";
 import { authClient } from "@/lib/auth/auth-client";
 import NoAuth from "@/components/auth/no-auth";

@@ -2,7 +2,7 @@ import { Calendar, MapPin, Clock, Repeat, Edit } from "lucide-react";
 import Image from "next/image";
 import { Event } from "@prisma/client";
 import Link from "next/link";
-import DeleteEventDialog from "./delete-event-dialog";
+import DeleteEventDialog from "./dialogs/delete-event-dialog";
 import { formatEventDate, formatEventTime } from "@/lib/utils";
 
 interface EventCardProps {

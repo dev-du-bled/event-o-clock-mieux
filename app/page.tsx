@@ -4,9 +4,9 @@
  * @details Displays featured events and provides search functionality
  */
 import { getAllEvents } from "@/lib/db/events";
-import { EventDialog } from "@/components/events/event-dialog";
+import { EventDialog } from "@/components/events/dialogs/event-dialog";
 import Link from "next/link";
-import SearchEvent from "@/components/events/search-event";
+import InputSearchEvent from "@/components/events/inputs/input-search-event";
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
 
@@ -29,26 +29,7 @@ export default async function Home() {
   const user = session?.user;
   const events = await getAllEvents();
   const featuredEvents = events.sort(() => 0.5 - Math.random()).slice(0, 4);
-
-  // const [featuredEvents, setFeaturedEvents] = useState<Event[]>([]);
-  // const [loading, setLoading] = useState(true);
-
-  // useEffect(() => {
-  //   async function loadEvents() {
-  //     try {
-  //       const allEvents = await getAllEvents();
-  //       const shuffled = allEvents.sort(() => 0.5 - Math.random());
-  //       setFeaturedEvents(shuffled.slice(0, 4));
-  //     } catch (err) {
-  //       console.error("Erreur lors du chargement des événements:", err);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   }
-
-  //   loadEvents();
-  // }, []);
-
+  
   return (
     <main className="min-h-screen bg-background">
       {/* Hero Section */}
@@ -60,7 +41,7 @@ export default async function Home() {
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
             Trouvez et participez à des événements uniques près de chez vous
           </p>
-          <SearchEvent variant="form" />
+          <InputSearchEvent variant="form" />
         </div>
       </section>
 

@@ -26,7 +26,7 @@ import {
   Repeat,
 } from "lucide-react";
 import Image from "next/image";
-import { EventCard } from "./event-card";
+import { EventCard } from "../event-card";
 import { auth } from "@/lib/auth/auth";
 import {
   addToFavorites,
@@ -61,6 +61,7 @@ export function EventDialog({ event, user, variant }: EventDialogProps) {
 
   useEffect(() => {
     // fetch if event is favorite from db
+    // TODO: not on each card but in parent compo
     const getFavorite = async () => {
       if (user && event.id) {
         try {
