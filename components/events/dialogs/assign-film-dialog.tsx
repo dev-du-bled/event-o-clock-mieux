@@ -1,7 +1,7 @@
 "use client";
 
 import { Movie } from "@/lib/tmdb";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import {
   Dialog,
   DialogContent,
@@ -10,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../ui/dialog";
+} from "../../ui/dialog";
 import { useState } from "react";
 import { CinemaRoom } from "@prisma/client";
 import { assignMovieToRoom } from "@/lib/db/cinema";

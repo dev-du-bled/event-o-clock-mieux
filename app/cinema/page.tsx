@@ -7,7 +7,7 @@ import { getCinemaRooms } from "@/lib/db/cinema";
 import Image from "next/image";
 import { authClient } from "@/lib/auth/auth-client";
 import { Card } from "@/components/ui/card";
-import SeatsCinemaDialog from "@/components/events/seats-cinema-dialog";
+import SeatsCinemaDialog from "@/components/events/dialogs/seats-cinema-dialog";
 import { CinemaRoom } from "@prisma/client";
 import { DEFAULT_PRICES } from "@/types/types";
 import NoAuth from "@/components/auth/no-auth";

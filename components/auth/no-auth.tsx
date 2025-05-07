@@ -6,7 +6,7 @@ export default function NoAuth() {
       <div className="container mx-auto px-4">
         <div className="bg-white rounded-lg shadow-lg p-6 text-center">
           <h2 className="text-xl font-semibold mb-4">
-            Vous devez être connecté pour accéder à votre profil
+            Vous devez être connecté pour accéder à cette page
           </h2>
           <Link href="/login" className="text-primary hover:text-primary/80">
             Se connecter

@@ -9,6 +9,7 @@ import Link from "next/link";
 import InputSearchEvent from "@/components/events/inputs/input-search-event";
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
+import { getUserFavorites } from "@/lib/db/favorites";
 
 /**
  * @brief Homepage component
@@ -27,9 +28,12 @@ export default async function Home() {
   });
 
   const user = session?.user;
+
   const events = await getAllEvents();
+  const favorites = user && (await getUserFavorites(user.id));
+
   const featuredEvents = events.sort(() => 0.5 - Math.random()).slice(0, 4);
-  
+
   return (
     <main className="min-h-screen bg-background">
       {/* Hero Section */}
@@ -61,6 +65,7 @@ export default async function Home() {
             <EventDialog
               key={event.id}
               event={event}
+              favorites={favorites}
               user={user}
               variant="default"
             />

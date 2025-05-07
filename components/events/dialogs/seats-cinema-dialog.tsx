@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { CinemaRoom } from "@prisma/client";
 import { DEFAULT_PRICES, ROOM_CONFIG } from "@/types/types";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 
 interface CinemaDialogProps {
   room: CinemaRoom;

@@ -8,8 +8,8 @@ import { getAllEvents } from "@/lib/db/events";
 import FullInputSearchEvent from "@/components/events/inputs/full-input-search-event";
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
-import SearchEventsCards from "@/components/events/search-events-cards";
-import NoAuth from "@/components/auth/no-auth";
+import FilteredEventsCards from "@/components/events/filtered-events-cards";
+import { getUserFavorites } from "@/lib/db/favorites";
 
 /**
  * @brief Events listing component
@@ -31,11 +31,8 @@ export default async function Events() {
 
   const user = session?.user;
 
-  if (!user) {
-    return <NoAuth />;
-  }
-
   const events = await getAllEvents();
+  const favorites = user && (await getUserFavorites(user.id));
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
@@ -48,7 +45,11 @@ export default async function Events() {
           </div>
         </div>
 
-        <SearchEventsCards user={user} events={events} />
+        <FilteredEventsCards
+          user={user}
+          events={events}
+          favorites={favorites}
+        />
       </div>
     </div>
   );

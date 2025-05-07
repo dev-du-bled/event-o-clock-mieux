@@ -13,9 +13,9 @@ import {
 import Image from "next/image";
 import { authClient } from "@/lib/auth/auth-client";
 import { Card } from "@/components/ui/card";
-import SeatsCinemaDialog from "@/components/events/seats-cinema-dialog";
+import SeatsCinemaDialog from "@/components/events/dialogs/seats-cinema-dialog";
 import { CinemaRoom } from "@prisma/client";
-import AssignFilmDialog from "@/components/events/assign-film-dialog";
+import AssignFilmDialog from "@/components/events/dialogs/assign-film-dialog";
 import NoAuth from "@/components/auth/no-auth";
 
 const AVAILABLE_MOVIES = [27205, 155, 680];

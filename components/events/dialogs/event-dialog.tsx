@@ -28,18 +28,15 @@ import {
 import Image from "next/image";
 import { EventCard } from "../event-card";
 import { auth } from "@/lib/auth/auth";
-import {
-  addToFavorites,
-  isEventFavorite,
-  removeFromFavorites,
-} from "@/lib/db/favorites";
-import { useEffect, useState } from "react";
+import { addToFavorites, removeFromFavorites } from "@/lib/db/favorites";
+import { useState } from "react";
 import { Event } from "@prisma/client";
 import { formatEventDate, formatEventTime } from "@/lib/utils";
 
 interface EventDialogProps {
   user?: typeof auth.$Infer.Session.user;
   event: Event;
+  favorites?: Array<string>;
   variant: "default" | "edit";
 }
 
@@ -56,31 +53,22 @@ interface EventDialogProps {
  * @param favoriteLoading - A boolean flag to indicate if the favorite action is loading.
  * @param showFavoriteButton - A flag to control whether the favorite button is shown.
  */
-export function EventDialog({ event, user, variant }: EventDialogProps) {
-  const [isFavorite, setIsFavorite] = useState(false);
-
-  useEffect(() => {
-    // fetch if event is favorite from db
-    // TODO: not on each card but in parent compo
-    const getFavorite = async () => {
-      if (user && event.id) {
-        try {
-          const favorite = await isEventFavorite(user.id, event.id);
-          setIsFavorite(favorite);
-        } catch (err) {
-          console.error("Erreur lors de la vérification des favoris:", err);
-        }
-      }
-    };
-
-    getFavorite();
-  }, [user, event.id]);
+export function EventDialog({
+  event,
+  favorites,
+  user,
+  variant,
+}: EventDialogProps) {
+  const [isFavorite, setIsFavorite] = useState(
+    favorites && favorites.includes(event.id)
+  );
 
   const handleFavoriteClick = async (eventId: string) => {
-    if (!user) return;
+    if (!user || !favorites) return;
 
+    // TODO: better handling of favorite add
     try {
-      if (isFavorite) {
+      if (isFavorite && favorites.includes(event.id)) {
         await removeFromFavorites(user.id, eventId);
       } else {
         await addToFavorites(user.id, eventId);
@@ -219,7 +207,7 @@ export function EventDialog({ event, user, variant }: EventDialogProps) {
             </div>
           </div>
         </div>
-        {user && (
+        {favorites && (
           <DialogFooter>
             <div className="flex justify-between w-full">
               <button

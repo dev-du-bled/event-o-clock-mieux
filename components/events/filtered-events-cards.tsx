@@ -6,13 +6,15 @@ import { useStoreParams } from "@/lib/store/url-params";
 import { auth } from "@/lib/auth/auth";
 
 interface PropsSearchEventsCards {
-  user: typeof auth.$Infer.Session.user;
+  user?: typeof auth.$Infer.Session.user;
   events: Array<Event>;
+  favorites?: Array<string>;
 }
 
-export default function SearchEventsCards({
+export default function FilteredEventsCards({
   user,
   events,
+  favorites,
 }: PropsSearchEventsCards) {
   const { search, location, category, minPrice, maxPrice, startDate, endDate } =
     useStoreParams();
@@ -64,6 +66,7 @@ export default function SearchEventsCards({
         <EventDialog
           key={event.id}
           event={event}
+          favorites={favorites}
           user={user}
           variant="default"
         />
