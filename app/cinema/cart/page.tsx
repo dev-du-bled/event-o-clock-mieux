@@ -10,7 +10,7 @@ import {
   Check,
   Trash2,
 } from "lucide-react";
-import { Alert } from "@/components/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Link from "next/link";
 import { useCartStore } from "@/lib/store/cart";
 import { authClient } from "@/lib/auth/auth-client";
@@ -227,7 +227,8 @@ export default function CinemaCart() {
         {error && (
           <Alert variant="destructive" className="mb-6">
             <AlertCircle className="h-4 w-4" />
-            <span>{error}</span>
+            <AlertTitle>Erreur</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
 

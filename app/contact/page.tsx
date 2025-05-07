@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { Send, AlertCircle, CheckCircle2 } from "lucide-react";
-import { Alert } from "@/components/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { submitContactForm } from "@/lib/db/contact";
 
 export default function Contact() {
@@ -56,10 +56,9 @@ export default function Contact() {
         <div className="bg-white rounded-lg shadow-lg p-6">
           {error && (
             <Alert variant="destructive" className="mb-4">
-              <div className="flex items-center gap-2">
-                <AlertCircle className="h-4 w-4" />
-                <span>{error}</span>
-              </div>
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Erreur</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
 

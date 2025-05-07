@@ -1,9 +1,10 @@
 "use client";
 
 import { authClient } from "@/lib/auth/auth-client";
-import { AlertCircle, Mail, Lock } from "lucide-react";
+import { Mail, Lock } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -39,10 +40,10 @@ export default function LoginForm() {
   return (
     <form className="mt-6 space-y-6" onSubmit={handleSubmit}>
       {error && (
-        <div className="flex items-center p-4 text-red-800 bg-red-50 rounded-lg">
-          <AlertCircle className="h-5 w-5 mr-2" />
-          <p>{error}</p>
-        </div>
+        <Alert variant="destructive" className="mb-4 p-4">
+          <AlertTitle>Erreur</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
       )}
 
       <div className="space-y-4">

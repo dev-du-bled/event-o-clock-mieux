@@ -1,5 +1,3 @@
-"use client";
-
 /**
  * @file page.tsx
  * @brief User profile management page component
@@ -12,22 +10,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useState, useRef, useEffect } from "react";
-import { User, Camera, Film, Ticket, RefreshCw } from "lucide-react";
-import { uploadProfileImage } from "@/lib/storage";
-import {
-  assignMovieToRoom,
-  getCinemaRooms,
-  getUserBookings,
-  type BookingWithDetails, // Change this import from Booking to BookingWithDetails
-  resetCinemaRooms,
-} from "@/lib/db/cinema";
-import { getMovieDetails, type Movie } from "@/lib/tmdb";
+import { Ticket } from "lucide-react";
+import { getUserBookings } from "@/lib/db/cinema";
+import { getMovieDetails } from "@/lib/tmdb";
 import Link from "next/link";
-import { Alert } from "@/components/ui/alert";
-import Image from "next/image";
-import { authClient } from "@/lib/auth/auth-client";
 import NoAuth from "@/components/auth/no-auth";
+import EditProfile from "@/components/user/edit-profile";
+import FormMoviesManagement from "@/components/events/forms/form-movies-management";
+import { auth } from "@/lib/auth/auth";
+import { headers } from "next/headers";
 
 /**
  * @brief User profile management component
@@ -40,160 +31,36 @@ import NoAuth from "@/components/auth/no-auth";
  *
  * @returns React component for user profile page
  */
-export default function Profile() {
-  const { data: session } = authClient.useSession();
+export default async function Profile() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
   const user = session?.user;
-
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-  const [displayName, setDisplayName] = useState(user?.name || "");
-  const [imagePreview, setImagePreview] = useState<string | null>(
-    user?.image || null
-  );
-  const [newImage, setNewImage] = useState<File | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [bookings, setBookings] = useState<
-    (BookingWithDetails & { movie?: Movie })[]
-  >([]);
-  const [loadingBookings, setLoadingBookings] = useState(true);
-  const [resettingRooms, setResettingRooms] = useState(false);
-
-  // film assignment
-  const [selectedRoom, setSelectedRoom] = useState("1");
-  const [movieId, setMovieId] = useState("");
-  const [showtime, setShowtime] = useState("");
-
-  // Show cinema management for admin users
-  const showCinemaManagement = user?.role === "admin";
-
-  useEffect(() => {
-    async function loadBookings() {
-      if (!user) return;
-
-      try {
-        const userBookings = await getUserBookings(user.id); // TODO: issue here cause db has no relation
-
-        // Fetch movie details for each booking
-        const bookingsWithMovies = await Promise.all(
-          userBookings.map(async booking => {
-            try {
-              const movie = await getMovieDetails(booking.movieId);
-              return { ...booking, movie };
-            } catch (error) {
-              console.error(
-                `Erreur lors de la récupération du film ${booking.movieId}:`,
-                error
-              );
-              return booking;
-            }
-          })
-        );
-
-        setBookings(bookingsWithMovies);
-      } catch (error) {
-        console.error(
-          "Erreur lors de la récupération des réservations:",
-          error
-        );
-      } finally {
-        setLoadingBookings(false);
-      }
-    }
-
-    loadBookings();
-  }, [user]);
 
   if (!user) {
     return <NoAuth />;
   }
 
-  const handleImageClick = () => {
-    fileInputRef.current?.click();
-  };
+  const showCinemaManagement = user.role === "admin";
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      setNewImage(file);
-      setImagePreview(URL.createObjectURL(file));
-    }
-  };
+  const userBookings = await getUserBookings(user.id); // TODO: issue here cause db has no relation
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-
-    try {
-      let photoURL = user.image || "";
-
-      if (newImage) {
-        photoURL = await uploadProfileImage(newImage, user.id);
+  // Fetch movie details for each booking
+  const bookings = await Promise.all(
+    userBookings.map(async booking => {
+      try {
+        const movie = await getMovieDetails(booking.movieId);
+        return { ...booking, movie };
+      } catch (error) {
+        console.error(
+          `Erreur lors de la récupération du film ${booking.movieId}:`,
+          error
+        );
+        return booking;
       }
-
-      await authClient.updateUser({
-        image: photoURL,
-        name: displayName,
-      });
-    } catch (err) {
-      console.error("Erreur lors de la mise à jour du profil:", err);
-      setError("Une erreur est survenue lors de la mise à jour du profil");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleMovieAssignment = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-    setSuccess("");
-
-    try {
-      if (!movieId || !showtime) {
-        setError("Veuillez remplir tous les champs obligatoires");
-        return;
-      }
-
-      const rooms = await getCinemaRooms();
-      const room = rooms.find(r => r.name === `Salle ${selectedRoom}`);
-
-      if (!room) {
-        setError("Salle non trouvée");
-        return;
-      }
-
-      await assignMovieToRoom(room.id!, parseInt(movieId), showtime);
-      setSuccess("Film assigné avec succès !");
-
-      setMovieId("");
-      setShowtime("");
-    } catch (err) {
-      console.error("Erreur lors de l'assignation du film:", err);
-      setError("Une erreur est survenue lors de l'assignation du film");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleResetRooms = async () => {
-    setResettingRooms(true);
-    setError("");
-    setSuccess("");
-
-    try {
-      await resetCinemaRooms();
-      setSuccess("Les salles ont été réinitialisées avec succès !");
-    } catch (err) {
-      console.error("Erreur lors de la réinitialisation des salles:", err);
-      setError(
-        "Une erreur est survenue lors de la réinitialisation des salles"
-      );
-    } finally {
-      setResettingRooms(false);
-    }
-  };
+    })
+  );
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
@@ -207,89 +74,7 @@ export default function Profile() {
               Informations personnelles
             </h2>
 
-            {error && (
-              <div className="mb-4 p-4 bg-red-50 text-red-800 rounded-lg">
-                {error}
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* profile picture */}
-              <div className="text-center">
-                <div
-                  onClick={handleImageClick}
-                  className="relative inline-block cursor-pointer group rounded-full"
-                >
-                  {imagePreview ? (
-                    <div className="w-32 h-32 rounded-full overflow-hidden mx-auto">
-                      <Image
-                        src={imagePreview}
-                        alt="Photo de profil"
-                        className="w-full h-full object-cover"
-                        height={128}
-                        width={128}
-                      />
-                    </div>
-                  ) : (
-                    <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center mx-auto">
-                      <User className="w-16 h-16 text-gray-400" />
-                    </div>
-                  )}
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/70 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Camera className="w-8 h-8 text-white" />
-                  </div>
-                </div>
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleImageChange}
-                  accept="image/*"
-                  className="hidden"
-                />
-                <p className="mt-2 text-sm text-gray-600">
-                  Cliquez pour modifier votre photo de profil
-                </p>
-              </div>
-
-              {/* display name */}
-              <div>
-                <label
-                  htmlFor="displayName"
-                  className="block text-sm font-medium text-gray-700 mb-2"
-                >
-                  Nom d&apos;affichage
-                </label>
-                <input
-                  type="text"
-                  id="displayName"
-                  value={displayName}
-                  onChange={e => setDisplayName(e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                  placeholder="Votre nom d'affichage"
-                />
-              </div>
-
-              {/* Email  */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  value={user.email || ""}
-                  disabled
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2 bg-gray-50 text-gray-500"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loading ? "Mise à jour..." : "Enregistrer les modifications"}
-              </button>
-            </form>
+            <EditProfile user={user} />
           </div>
 
           <div className="bg-white rounded-lg shadow-lg p-6">
@@ -298,11 +83,7 @@ export default function Profile() {
               <h2 className="text-xl font-semibold">Mes réservations</h2>
             </div>
 
-            {loadingBookings ? (
-              <div className="text-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-              </div>
-            ) : bookings.length === 0 ? (
+            {bookings.length === 0 ? (
               <div className="text-center py-8">
                 <p className="text-gray-600">
                   Vous n&apos;avez pas encore de réservations
@@ -371,86 +152,7 @@ export default function Profile() {
           {/* Admin management */}
           {showCinemaManagement && (
             <div className="bg-white rounded-lg shadow-lg p-6">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-2">
-                  <Film className="w-6 h-6" />
-                  <h2 className="text-xl font-semibold">Gestion des films</h2>
-                </div>
-                <button
-                  onClick={handleResetRooms}
-                  disabled={resettingRooms}
-                  className="flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <RefreshCw
-                    className={`w-4 h-4 mr-2 ${
-                      resettingRooms ? "animate-spin" : ""
-                    }`}
-                  />
-                  {resettingRooms
-                    ? "Réinitialisation..."
-                    : "Réinitialiser les salles"}
-                </button>
-              </div>
-
-              {success && (
-                <Alert variant="success" className="mb-4">
-                  {success}
-                </Alert>
-              )}
-
-              <form onSubmit={handleMovieAssignment} className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Salle
-                  </label>
-                  <select
-                    value={selectedRoom}
-                    onChange={e => setSelectedRoom(e.target.value)}
-                    className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                  >
-                    <option value="1">Salle 1</option>
-                    <option value="2">Salle 2</option>
-                    <option value="3">Salle 3</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    ID du film
-                  </label>
-                  <input
-                    type="text"
-                    value={movieId}
-                    onChange={e => setMovieId(e.target.value)}
-                    className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                    placeholder="Ex: 27205 pour Inception"
-                  />
-                  <p className="mt-1 text-sm text-gray-500">
-                    IDs disponibles : 27205 (Inception), 155 (The Dark Knight),
-                    680 (Pulp Fiction)
-                  </p>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Horaire
-                  </label>
-                  <input
-                    type="time"
-                    value={showtime}
-                    onChange={e => setShowtime(e.target.value)}
-                    className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {loading ? "Assignation..." : "Assigner le film"}
-                </button>
-              </form>
+              <FormMoviesManagement />
             </div>
           )}
         </div>
