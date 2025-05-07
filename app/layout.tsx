@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import { Navbar } from "@/components/navigation/navbar";
 import { Footer } from "@/components/navigation/footer";
 import { Toaster } from "sonner";
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,6 +20,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr">
+      <head>
+        {process.env.NODE_ENV === "development" && (
+          <Script src="https://unpkg.com/react-scan/dist/auto.global.js" />
+        )}
+      </head>
       <body className={inter.className}>
         <Navbar />
         <div className="pt-16">{children}</div>
