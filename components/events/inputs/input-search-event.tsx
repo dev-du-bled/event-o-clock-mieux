@@ -81,7 +81,7 @@ export default function InputSearchEvent({ variant }: InputSearchEventProps) {
               <button
                 key={index}
                 type="button"
-                className="w-full px-4 py-2 text-left hover:bg-gray-50 focus:outline-none focus:bg-gray-50"
+                className="w-full px-4 py-2 text-left hover:bg-gray-50 focus:outline-none focus:bg-gray-50 cursor-pointer"
                 onClick={() => handleCitySelect(feature.properties.city)}
               >
                 {feature.properties.city}
@@ -104,7 +104,7 @@ export default function InputSearchEvent({ variant }: InputSearchEventProps) {
       {inputs}
       <button
         type="submit"
-        className="w-full md:w-auto px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+        className="w-full md:w-auto px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors cursor-pointer"
       >
         Rechercher
       </button>

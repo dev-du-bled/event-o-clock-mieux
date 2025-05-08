@@ -66,9 +66,9 @@ export function EventDialog({
   const handleFavoriteClick = async (eventId: string) => {
     if (!user || !favorites) return;
 
-    // TODO: better handling of favorite add
+    // TODO: better handling of favorite add ?
     try {
-      if (isFavorite && favorites.includes(event.id)) {
+      if (isFavorite && favorites.includes(eventId)) {
         await removeFromFavorites(user.id, eventId);
       } else {
         await addToFavorites(user.id, eventId);
@@ -212,7 +212,7 @@ export function EventDialog({
             <div className="flex justify-between w-full">
               <button
                 onClick={() => handleFavoriteClick(event.id)}
-                className={`px-6 py-2 rounded-lg transition-colors flex items-center ${
+                className={`px-6 py-2 rounded-lg transition-colors flex items-center cursor-pointer ${
                   isFavorite
                     ? "bg-red-500 text-white hover:bg-red-600"
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"

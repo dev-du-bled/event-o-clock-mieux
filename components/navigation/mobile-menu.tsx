@@ -56,6 +56,7 @@ export default function MobileMenu() {
         >
           <div className="flex flex-col space-y-4">
             <Link
+              onClick={() => setIsOpen(false)}
               href="/events"
               className="text-gray-600 hover:text-primary transition-colors"
             >
@@ -65,6 +66,7 @@ export default function MobileMenu() {
               </span>
             </Link>
             <Link
+              onClick={() => setIsOpen(false)}
               href="/cinema"
               className="text-gray-600 hover:text-primary transition-colors"
             >
@@ -76,6 +78,7 @@ export default function MobileMenu() {
             {user && (
               <>
                 <Link
+                  onClick={() => setIsOpen(false)}
                   href="/my-events"
                   className="text-gray-600 hover:text-primary transition-colors"
                 >
@@ -85,6 +88,7 @@ export default function MobileMenu() {
                   </span>
                 </Link>
                 <Link
+                  onClick={() => setIsOpen(false)}
                   href="/create-event"
                   className="text-gray-600 hover:text-primary transition-colors"
                 >
@@ -94,6 +98,7 @@ export default function MobileMenu() {
                   </span>
                 </Link>
                 <Link
+                  onClick={() => setIsOpen(false)}
                   href="/favorites"
                   className="text-gray-600 hover:text-primary transition-colors"
                 >
@@ -103,6 +108,7 @@ export default function MobileMenu() {
                   </span>
                 </Link>
                 <Link
+                  onClick={() => setIsOpen(false)}
                   href="/cinema/cart"
                   className="text-gray-600 hover:text-primary transition-colors"
                 >
@@ -113,6 +119,7 @@ export default function MobileMenu() {
                   </span>
                 </Link>
                 <Link
+                  onClick={() => setIsOpen(false)}
                   href="/profile"
                   className="text-gray-600 hover:text-primary transition-colors"
                 >
@@ -136,6 +143,7 @@ export default function MobileMenu() {
             {!user ? (
               <>
                 <Link
+                  onClick={() => setIsOpen(false)}
                   href="/login"
                   className="text-gray-600 hover:text-primary transition-colors"
                 >
@@ -145,6 +153,7 @@ export default function MobileMenu() {
                   </span>
                 </Link>
                 <Link
+                  onClick={() => setIsOpen(false)}
                   href="/register"
                   className="text-gray-600 hover:text-primary transition-colors"
                 >
@@ -155,7 +164,10 @@ export default function MobileMenu() {
                 </Link>
               </>
             ) : (
-              <LogOutButton className="text-left" />
+              <LogOutButton
+                onClick={() => setIsOpen(false)}
+                className="text-left"
+              />
             )}
           </div>
         </div>
