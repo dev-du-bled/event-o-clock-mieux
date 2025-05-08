@@ -1,6 +1,14 @@
 "use client";
 
-import { ChevronDown, ShoppingCart, User } from "lucide-react";
+import {
+  ChevronDown,
+  Heart,
+  PlusCircle,
+  ShoppingCart,
+  Tag,
+  User,
+  UserCircle2,
+} from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import LogOutButton from "../auth/logout-button";
@@ -91,33 +99,52 @@ export default function ProfileMenu() {
       </button>
 
       {isOpen && (
-        <div className="absolute w-50 top-10 right-0 rounded-lg shadow-lg bg-white border">
+        <div className="absolute w-55 top-10 right-0 rounded-lg shadow-lg bg-white border">
           <div className="px-4 py-2 space-y-2">
             <Link
+              onClick={() => setIsOpen(false)}
               href="/profile"
               className="flex items-center hover:text-primary text-gray-600 transition-colors"
             >
-              Mon Profil
+              <span className="flex items-center">
+                <UserCircle2 className="w-5 h-5 mr-1" />
+                Mon Profil
+              </span>
             </Link>
             <Link
+              onClick={() => setIsOpen(false)}
               href="/create-event"
-              className="flex items-center hover:text-primary text-gray-600 transition-colors"
+              className="flex items-center hover:text-primary text-gra() => setIsOpen(false)y-600 transition-colors"
             >
-              Créer un événement
+              <span className="flex items-center">
+                <PlusCircle className="w-5 h-5 mr-1" />
+                Créer un événement
+              </span>
             </Link>
             <Link
+              onClick={() => setIsOpen(false)}
               href="/my-events"
               className="flex items-center hover:text-primary text-gray-600 transition-colors"
             >
-              Mes événements
+              <span className="flex items-center">
+                <Tag className="mr-1 h-5 w-5" />
+                Mes événements
+              </span>
             </Link>
             <Link
+              onClick={() => setIsOpen(false)}
               href="/favorites"
               className="flex items-center hover:text-primary text-gray-600 transition-colors"
             >
-              Favoris
+              <span className="flex items-center">
+                <Heart className="w-5 h-5 mr-1" />
+                Favoris
+              </span>
             </Link>
-            <LogOutButton className="flex w-full" />
+            <LogOutButton
+              onClick={() => setIsOpen(false)}
+              className="flex w-full"
+            />
           </div>
         </div>
       )}

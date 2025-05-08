@@ -5,7 +5,15 @@ import { cn } from "@/lib/utils";
 import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-export default function LogOutButton(props: { className?: string }) {
+interface LogOutButtonProps {
+  className?: string;
+  onClick?: () => void;
+}
+
+export default function LogOutButton({
+  className,
+  onClick,
+}: LogOutButtonProps) {
   const router = useRouter();
 
   const logout = async () => {
@@ -18,12 +26,17 @@ export default function LogOutButton(props: { className?: string }) {
     });
   };
 
+  const buttonClick = () => {
+    logout();
+    if (onClick) onClick();
+  };
+
   return (
     <button
-      onClick={logout}
+      onClick={buttonClick}
       className={cn(
         "text-gray-600 hover:text-primary transition-colors cursor-pointer",
-        props.className
+        className
       )}
     >
       <span className="flex items-center">
