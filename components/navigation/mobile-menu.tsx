@@ -1,11 +1,15 @@
 "use client";
 
 import {
+  Clipboard,
   Film,
   Heart,
+  LogIn,
   Menu,
   PlusCircle,
   ShoppingCart,
+  Tag,
+  Ticket,
   User,
   X,
 } from "lucide-react";
@@ -55,7 +59,10 @@ export default function MobileMenu() {
               href="/events"
               className="text-gray-600 hover:text-primary transition-colors"
             >
-              Découvrir
+              <span className="flex items-center">
+                <Ticket className="mr-1 h-5 w-5" />
+                Découvrir
+              </span>
             </Link>
             <Link
               href="/cinema"
@@ -72,7 +79,19 @@ export default function MobileMenu() {
                   href="/my-events"
                   className="text-gray-600 hover:text-primary transition-colors"
                 >
-                  Mes événements
+                  <span className="flex items-center">
+                    <Tag className="mr-1 h-5 w-5" />
+                    Mes événements
+                  </span>
+                </Link>
+                <Link
+                  href="/create-event"
+                  className="text-gray-600 hover:text-primary transition-colors"
+                >
+                  <span className="flex items-center">
+                    <PlusCircle className="w-5 h-5 mr-1" />
+                    Créer un événement
+                  </span>
                 </Link>
                 <Link
                   href="/favorites"
@@ -112,16 +131,6 @@ export default function MobileMenu() {
                     <span>{user.name}</span>
                   </span>
                 </Link>
-
-                <Link
-                  href="/create-event"
-                  className="text-gray-600 hover:text-primary transition-colors"
-                >
-                  <span className="flex items-center">
-                    <PlusCircle className="w-5 h-5 mr-1" />
-                    Créer un événement
-                  </span>
-                </Link>
               </>
             )}
             {!user ? (
@@ -130,13 +139,19 @@ export default function MobileMenu() {
                   href="/login"
                   className="text-gray-600 hover:text-primary transition-colors"
                 >
-                  Connexion
+                  <span className="flex items-center">
+                    <LogIn className="mr-1 h-5 w-5" />
+                    Connexion
+                  </span>
                 </Link>
                 <Link
                   href="/register"
                   className="text-gray-600 hover:text-primary transition-colors"
                 >
-                  Inscription
+                  <span className="flex items-center">
+                    <Clipboard className="mr-1 h-5 w-5" />
+                    Inscription
+                  </span>
                 </Link>
               </>
             ) : (

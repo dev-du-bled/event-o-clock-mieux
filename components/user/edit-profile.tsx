@@ -61,10 +61,7 @@ export default function EditProfile({ user }: EditProfileProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {error && (
-        <Alert
-          variant="destructive"
-          className="mb-4 p-4 bg-red-50 text-red-800 rounded-lg"
-        >
+        <Alert variant="destructive" className="mb-4 p-4">
           <AlertTitle>Erreur</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>

@@ -1,6 +1,6 @@
 // import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Calendar, Film } from "lucide-react";
+import { Calendar, Film, Ticket } from "lucide-react";
 // import { CartItem } from "@/lib/db/cinema";
 import MobileMenu from "./mobile-menu";
 import ProfileMenu from "./profile-menu";
@@ -64,7 +64,10 @@ export async function Navbar() {
               href="/events"
               className="hover:text-primary text-gray-600 transition-colors"
             >
-              Découvrir
+              <span className="flex items-center">
+                <Ticket className="mr-1 h-5 w-5" />
+                Découvrir
+              </span>
             </Link>
             <Link
               href="/cinema"

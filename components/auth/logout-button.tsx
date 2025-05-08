@@ -2,6 +2,7 @@
 
 import { authClient } from "@/lib/auth/auth-client";
 import { cn } from "@/lib/utils";
+import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function LogOutButton(props: { className?: string }) {
@@ -25,7 +26,10 @@ export default function LogOutButton(props: { className?: string }) {
         props.className
       )}
     >
-      Déconnexion
+      <span className="flex items-center">
+        <LogOut className="mr-1 h-5 w-5" />
+        Déconnexion
+      </span>
     </button>
   );
 }
