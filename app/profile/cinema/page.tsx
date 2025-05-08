@@ -210,7 +210,7 @@ export default function CinemaManagement() {
                       </span>
                     </div>
                     <div className="flex items-center">
-                      <Star className="w-4 h-4 mr-1 text-yellow-400" />
+                      <Star className="w-4 h-4 mr-1 text-yellow-400 fill-yellow-400" />
                       <span className="text-sm">
                         {movie.vote_average.toFixed(1)}/10
                       </span>
