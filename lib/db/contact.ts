@@ -1,7 +1,7 @@
 "use server";
 
 import prisma from "../prisma";
-import { ContactMessage } from "@prisma/client";
+import { ContactMessage, ContactStatus } from "@prisma/client";
 
 /**
  * Function to submit a contact message. It adds the message to Firestore
@@ -18,7 +18,7 @@ export async function submitContactForm(
       data: {
         ...data,
         createdAt: new Date(),
-        status: "PENDING",
+        status: ContactStatus.pending,
       },
     });
 

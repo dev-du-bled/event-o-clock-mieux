@@ -8,9 +8,9 @@ datasource db {
 }
 
 enum ContactStatus {
-  PENDING
-  SENT
-  ERROR
+  pending
+  sent
+  error
 }
 
 enum Role {
@@ -19,20 +19,21 @@ enum Role {
 }
 
 enum EventStatus {
-  DRAFT
-  PUBLISHED
+  draft
+  published
 }
 
 enum BookingStatus {
-  PENDING
-  CONFIRMED
-  CANCELLED
+  pending
+  confirmed
+  cancelled
+  past
 }
 
 enum TicketType {
-  CHILD
-  ADULT
-  STUDENT
+  child
+  admin
+  student
 }
 
 model Session {
@@ -99,7 +100,7 @@ model ContactMessage {
   subject   String
   message   String
   createdAt DateTime      @default(now())
-  status    ContactStatus @default(PENDING)
+  status    ContactStatus @default(pending)
 }
 
 model Event {
@@ -122,7 +123,7 @@ model Event {
   organizerWebsite   String?
   organizerPhone     String?
   createdBy          String
-  status             EventStatus @default(DRAFT)
+  status             EventStatus @default(draft)
   isRecurring        Boolean     @default(false)
   recurringDays      String[]
   recurringEndDate   String?
@@ -149,61 +150,40 @@ model Favorite {
 }
 
 model CinemaRoom {
-  id           String   @id @default(uuid())
+  id           String @id @default(uuid())
   name         String
   capacity     Int
   currentMovie Json? // Storing movie ID and showtime as JSON
-  seats        Seat[]
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
 
-  // Relations
-  bookings Booking[]
-}
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-model Seat {
-  id          String  @id @default(uuid())
-  row         String
-  number      Int
-  isAvailable Boolean @default(true)
-  roomId      String // Foreign key to CinemaRoom
-
-  // Relations
-  room         CinemaRoom    @relation(fields: [roomId], references: [id], onDelete: Cascade)
-  bookingSeats BookingSeat[]
-
-  // Ensure seat numbers are unique within a room
-  @@unique([roomId, row, number])
+  seats Seat[]
 }
 
 model Booking {
-  id          String        @id @default(uuid())
-  userId      String
-  roomId      String
+  id     String @id @default(uuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
   movieId     Int
   totalAmount Float
   createdAt   DateTime      @default(now())
-  status      BookingStatus @default(PENDING)
+  status      BookingStatus @default(pending)
 
-  // Relations
-  user  User          @relation(fields: [userId], references: [id])
-  room  CinemaRoom    @relation(fields: [roomId], references: [id])
-  seats BookingSeat[]
+  seats Seat[]
 }
 
-model BookingSeat {
-  id         String     @id @default(uuid())
-  bookingId  String
-  seatId     String
-  ticketType TicketType
-  price      Float
+model Seat {
+  id        String @id @default(uuid())
+  seatLabel String
 
-  // Relations
-  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
-  seat    Seat    @relation(fields: [seatId], references: [id])
+  // relations
+  room   CinemaRoom @relation(fields: [roomId], references: [id])
+  roomId String
 
-  // Each seat can only be booked once per booking
-  @@unique([bookingId, seatId])
+  booking   Booking? @relation(fields: [bookingId], references: [id])
+  bookingId String?
 }
 
 model Verification {
