@@ -30,7 +30,6 @@ export default async function Home() {
   const user = session?.user;
 
   const events = await getAllEvents();
-  const favorites = user && (await getUserFavorites(user.id));
 
   const featuredEvents = events.sort(() => 0.5 - Math.random()).slice(0, 4);
 
@@ -65,7 +64,6 @@ export default async function Home() {
             <EventDialog
               key={event.id}
               event={event}
-              favorites={favorites}
               user={user}
               variant="default"
             />

@@ -54,7 +54,7 @@ export default async function Favorites() {
             />
           ))
         ) : (
-          <p>No favorites founds</p>
+          <p>Aucun Favoris</p>
         )}
       </div>
     </div>

@@ -54,7 +54,12 @@ export async function removeFromFavorites(
 ): Promise<void> {
   try {
     await prisma.favorite.delete({
-      where: { userId_eventId: { userId: userId, eventId: eventId } },
+      where: {
+        userId_eventId: {
+          userId: userId,
+          eventId: eventId,
+        },
+      },
     });
   } catch (error) {
     console.error("Erreur lors de la suppression des favoris:", error);

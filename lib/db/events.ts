@@ -46,7 +46,7 @@ export interface Event {
  * @returns The ID of the newly created event document.
  */
 export async function createEvent(
-  eventData: Omit<Event, "id" | "createdAt" | "updatedAt">,
+  eventData: Omit<Event, "id" | "createdAt" | "updatedAt">
 ) {
   try {
     const { address, streetNumber, street, city, postalCode, ...data } =
@@ -115,7 +115,7 @@ export async function getUserEvents(userId: string) {
  */
 export async function updateEvent(
   eventId: string,
-  eventData: Partial<Omit<Event, "id" | "createdAt" | "createdBy">>,
+  eventData: Partial<Omit<Event, "id" | "createdAt" | "createdBy">>
 ) {
   try {
     await prisma.event.update({

@@ -28,15 +28,18 @@ import {
 import Image from "next/image";
 import { EventCard } from "../event-card";
 import { auth } from "@/lib/auth/auth";
-import { addToFavorites, removeFromFavorites } from "@/lib/db/favorites";
-import { useState } from "react";
+import {
+  addToFavorites,
+  isEventFavorite,
+  removeFromFavorites,
+} from "@/lib/db/favorites";
+import { useEffect, useState } from "react";
 import { Event } from "@prisma/client";
 import { formatEventDate, formatEventTime } from "@/lib/utils";
 
 interface EventDialogProps {
   user?: typeof auth.$Infer.Session.user;
   event: Event;
-  favorites?: Array<string>;
   variant: "default" | "edit";
 }
 
@@ -53,27 +56,26 @@ interface EventDialogProps {
  * @param favoriteLoading - A boolean flag to indicate if the favorite action is loading.
  * @param showFavoriteButton - A flag to control whether the favorite button is shown.
  */
-export function EventDialog({
-  event,
-  favorites,
-  user,
-  variant,
-}: EventDialogProps) {
-  const [isFavorite, setIsFavorite] = useState(
-    favorites && favorites.includes(event.id)
-  );
+export function EventDialog({ event, user, variant }: EventDialogProps) {
+  const [isFavorite, setIsFavorite] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!user) return;
+
+    isEventFavorite(user.id, event.id).then(is => setIsFavorite(is));
+  }, [event.id, user]);
 
   const handleFavoriteClick = async (eventId: string) => {
-    if (!user || !favorites) return;
+    if (!user) return;
 
-    // TODO: better handling of favorite add ?
     try {
-      if (isFavorite && favorites.includes(eventId)) {
-        await removeFromFavorites(user.id, eventId);
+      if (isFavorite) {
+        console.log("favoris");
+        removeFromFavorites(user.id, eventId).then(() => setIsFavorite(false));
       } else {
-        await addToFavorites(user.id, eventId);
+        console.log("pas favoris");
+        addToFavorites(user.id, eventId).then(() => setIsFavorite(true));
       }
-      setIsFavorite(!isFavorite);
     } catch (err) {
       console.error("Erreur lors de la gestion des favoris:", err);
     }
@@ -207,7 +209,7 @@ export function EventDialog({
             </div>
           </div>
         </div>
-        {favorites && (
+        {user && (
           <DialogFooter>
             <div className="flex justify-between w-full">
               <button
