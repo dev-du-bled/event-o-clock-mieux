@@ -24,6 +24,7 @@ import {
   Info,
   Heart,
   Repeat,
+  Loader2,
 } from "lucide-react";
 import Image from "next/image";
 import { EventCard } from "../event-card";
@@ -58,6 +59,7 @@ interface EventDialogProps {
  */
 export function EventDialog({ event, user, variant }: EventDialogProps) {
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
+  const [loading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (!user) return;
@@ -69,15 +71,18 @@ export function EventDialog({ event, user, variant }: EventDialogProps) {
     if (!user) return;
 
     try {
+      setIsLoading(true);
       if (isFavorite) {
-        console.log("favoris");
-        removeFromFavorites(user.id, eventId).then(() => setIsFavorite(false));
+        await removeFromFavorites(user.id, eventId);
+        setIsFavorite(false);
       } else {
-        console.log("pas favoris");
-        addToFavorites(user.id, eventId).then(() => setIsFavorite(true));
+        await addToFavorites(user.id, eventId);
+        setIsFavorite(true);
       }
     } catch (err) {
       console.error("Erreur lors de la gestion des favoris:", err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -215,15 +220,30 @@ export function EventDialog({ event, user, variant }: EventDialogProps) {
               <button
                 onClick={() => handleFavoriteClick(event.id)}
                 className={`px-6 py-2 rounded-lg transition-colors flex items-center cursor-pointer ${
-                  isFavorite
-                    ? "bg-red-500 text-white hover:bg-red-600"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  loading
+                    ? "bg-gray-100  text-gray-700"
+                    : isFavorite
+                      ? "bg-red-500 text-white hover:bg-red-600"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
+                disabled={loading}
               >
-                <Heart
-                  className={`w-5 h-5 mr-2 ${isFavorite ? "fill-current" : ""}`}
-                />
-                {isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
+                {loading ? (
+                  <>
+                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                    Chargement...
+                  </>
+                ) : isFavorite ? (
+                  <>
+                    <Heart className="w-5 h-5 mr-2 fill-white" />
+                    Retirer des favoris
+                  </>
+                ) : (
+                  <>
+                    <Heart className="w-5 h-5 mr-2" />
+                    Ajouter aux favoris
+                  </>
+                )}
               </button>
             </div>
           </DialogFooter>
