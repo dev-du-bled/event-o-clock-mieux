@@ -15,16 +15,8 @@ import Link from "next/link";
 import { useCartStore } from "@/lib/store/cart";
 import { authClient } from "@/lib/auth/auth-client";
 import NoAuth from "@/components/auth/no-auth";
-
-interface AddressFeature {
-  properties: {
-    label: string;
-    postcode: string;
-    city: string;
-    housenumber?: string;
-    street: string;
-  };
-}
+import { searchAddress } from "@/lib/utils";
+import { AddressFeature } from "@/types/types";
 
 export default function CinemaCart() {
   const { data: session } = authClient.useSession();
@@ -57,31 +49,10 @@ export default function CinemaCart() {
   const [cvv, setCvv] = useState("");
   const [cardName, setCardName] = useState("");
 
-  const searchAddress = async (query: string) => {
-    if (!query.trim()) {
-      setAddressSuggestions([]);
-      setShowSuggestions(false);
-      return;
-    }
-
-    try {
-      const response = await fetch(
-        `https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(
-          query
-        )}&limit=5`
-      );
-      const data = await response.json();
-      setAddressSuggestions(data.features || []);
-      setShowSuggestions(true);
-    } catch (error) {
-      console.error("Erreur lors de la recherche d'adresse:", error);
-    }
-  };
-
   const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setAddressInput(value);
-    searchAddress(value);
+    searchAddress(value, setAddressSuggestions, setShowSuggestions);
   };
 
   const handleAddressSelect = (feature: AddressFeature) => {

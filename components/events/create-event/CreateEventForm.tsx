@@ -18,6 +18,7 @@ import EventSchedulingForm from "./fields/EventSchedulingForm";
 import EventLocationForm from "./fields/EventLocationForm";
 import EventImageUpload from "./fields/EventImageUpload";
 import EventFinancialsAndContactForm from "./fields/EventFinancialsAndContactForm";
+import { searchAddress } from "@/lib/utils";
 
 // Helper type pour les erreurs Zod formatées
 type FieldErrors = z.inferFlattenedErrors<
@@ -116,46 +117,11 @@ export default function CreateEventForm() {
     { id: "sunday", label: "Dimanche" },
   ];
 
-  function debounce<T extends (...args: string[]) => void>(
-    func: T,
-    wait: number
-  ): (...args: Parameters<T>) => void {
-    let timeout: NodeJS.Timeout;
-    return function executedFunction(...args: Parameters<T>) {
-      const later = () => {
-        clearTimeout(timeout);
-        func(...args);
-      };
-      clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
-    };
-  }
-
-  const searchAddress = async (query: string) => {
-    if (!query.trim()) {
-      setAddressSuggestions([]);
-      setShowSuggestions(false);
-      return;
-    }
-    try {
-      const response = await fetch(
-        `https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(query)}&limit=5`
-      );
-      const data = await response.json();
-      setAddressSuggestions(data.features || []);
-      setShowSuggestions(true);
-    } catch (error) {
-      console.error("Erreur lors de la recherche d'adresse:", error);
-    }
-  };
-
-  const debouncedSearchAddress = debounce(searchAddress, 300);
-
   const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setFormData(prev => ({ ...prev, address: value }));
     setFormErrors(prev => ({ ...prev, address: undefined }));
-    debouncedSearchAddress(value);
+    searchAddress(value, setAddressSuggestions, setShowSuggestions);
   };
 
   const handleAddressSelect = (feature: AddressFeature) => {

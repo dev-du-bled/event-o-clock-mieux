@@ -3,6 +3,7 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
+import { AddressFeature } from "@/types/types";
 
 /**
  * A utility function to combine class names conditionally and merge conflicting Tailwind CSS classes.
@@ -14,6 +15,12 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+/**
+ * Format the event date to a readable format in French
+ *
+ * @param event - The event to format
+ * @returns The formatted event date
+ */
 export function formatEventDate(event: Event) {
   if (event.isRecurring) {
     const days = event.recurringDays.map(day => {
@@ -53,6 +60,12 @@ export function formatEventDate(event: Event) {
   }
 }
 
+/**
+ * Format the event time to a readable format in French
+ *
+ * @param event - The event to format
+ * @returns The formatted event time
+ */
 export function formatEventTime(event: Event) {
   if (!event.startTime || !event.endTime) {
     return "Horaire non défini";
@@ -69,3 +82,35 @@ export function formatEventTime(event: Event) {
     return "Horaire non défini";
   }
 }
+
+/**
+ * Search for an address using the API-Adresse Data Gouv API
+ *
+ * @param query - The query to search for
+ * @param setAddressSuggestions - The function to set the address suggestions
+ * @param setShowSuggestions - The function to set the show suggestions
+ */
+export const searchAddress = async (
+  query: string,
+  setAddressSuggestions: (suggestions: AddressFeature[]) => void,
+  setShowSuggestions: (show: boolean) => void
+) => {
+  if (!query.trim()) {
+    setAddressSuggestions([]);
+    setShowSuggestions(false);
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      `https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(
+        query
+      )}&limit=5`
+    );
+    const data = await response.json();
+    setAddressSuggestions(data.features || []);
+    setShowSuggestions(true);
+  } catch (error) {
+    console.error("Erreur lors de la recherche d'adresse:", error);
+  }
+};
