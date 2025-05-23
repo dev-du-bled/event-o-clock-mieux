@@ -148,13 +148,6 @@ export default async function Profile() {
               </Table>
             )}
           </div>
-
-          {/* Admin management */}
-          {showCinemaManagement && (
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <FormMoviesManagement />
-            </div>
-          )}
         </div>
       </div>
     </div>

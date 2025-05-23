@@ -8,6 +8,7 @@ import {
   Tag,
   User,
   UserCircle2,
+  LockKeyhole,
 } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
@@ -15,6 +16,7 @@ import LogOutButton from "../auth/logout-button";
 import Link from "next/link";
 import { authClient } from "@/lib/auth/auth-client";
 import { Skeleton } from "../ui/skeleton";
+import { Role } from "@prisma/client";
 
 export default function ProfileMenu() {
   const { data: session, isPending } = authClient.useSession();
@@ -141,6 +143,19 @@ export default function ProfileMenu() {
                 Favoris
               </span>
             </Link>
+            {user.role == Role.admin && (
+              <Link
+                onClick={() => setIsOpen(false)}
+                href="/administration"
+                className="flex items-center hover:text-primary text-gray-600 transition-colors"
+              >
+                <span className="flex items-center">
+                  <LockKeyhole className="w-5 h-5 mr-1" />
+                  Administration
+                </span>
+              </Link>
+            )}
+
             <LogOutButton
               onClick={() => setIsOpen(false)}
               className="flex w-full"

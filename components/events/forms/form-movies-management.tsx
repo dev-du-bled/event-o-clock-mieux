@@ -70,7 +70,7 @@ export default function FormMoviesManagement() {
   };
 
   return (
-    <>
+    <div className="p-4 bg-secondary rounded-2xl min-w-0">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
           <Film className="w-6 h-6" />
@@ -154,6 +154,6 @@ export default function FormMoviesManagement() {
           {loading ? "Assignation..." : "Assigner le film"}
         </button>
       </form>
-    </>
+    </div>
   );
 }
