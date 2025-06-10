@@ -16,7 +16,7 @@ import { getMovieDetails } from "@/lib/tmdb";
 import Link from "next/link";
 import NoAuth from "@/components/auth/no-auth";
 import EditProfile from "@/components/user/edit-profile";
-import FormMoviesManagement from "@/components/events/forms/form-movies-management";
+import FormMoviesManagement from "@/components/administration/forms/form-movies-management";
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
 

@@ -1,4 +1,5 @@
-import FormMoviesManagement from "@/components/events/forms/form-movies-management";
+import FormMoviesManagement from "@/components/administration/forms/form-movies-management";
+import FormRoomsManagement from "@/components/administration/forms/form-rooms-management";
 import NotFound from "../not-found";
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
@@ -19,6 +20,7 @@ export default async function Admin() {
   return (
     <div className="flex justify-center flex-1 gap-8 p-8 ">
       <FormMoviesManagement />
+      <FormRoomsManagement />
     </div>
   );
 }
