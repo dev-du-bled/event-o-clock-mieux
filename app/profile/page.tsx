@@ -16,7 +16,6 @@ import { getMovieDetails } from "@/lib/tmdb";
 import Link from "next/link";
 import NoAuth from "@/components/auth/no-auth";
 import EditProfile from "@/components/user/edit-profile";
-import FormMoviesManagement from "@/components/administration/forms/form-movies-management";
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
 
@@ -41,8 +40,6 @@ export default async function Profile() {
   if (!user) {
     return <NoAuth />;
   }
-
-  const showCinemaManagement = user.role === "admin";
 
   const userBookings = await getUserBookings(user.id); // TODO: issue here cause db has no relation
 
