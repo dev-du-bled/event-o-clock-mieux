@@ -47,7 +47,7 @@ export default function EventForm({
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
     eventData.categories || []
   );
-  const [isPaid, setIsPaid] = useState(false);
+  const [isPaid, setIsPaid] = useState(eventData.isPaid);
   const [addressSuggestions, setAddressSuggestions] = useState<
     AddressFeature[]
   >([]);
