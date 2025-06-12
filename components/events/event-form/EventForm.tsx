@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { AlertCircle } from "lucide-react";
-import { createEvent, updateEvent } from "@/lib/db/events";
+import { createEvent, EventDataType, updateEvent } from "@/lib/db/events";
 import { uploadEventImage } from "@/lib/storage";
 import AddressFeature from "@/lib/types";
 import { authClient } from "@/lib/auth/auth-client";
@@ -25,7 +25,17 @@ type FieldErrors = z.inferFlattenedErrors<
   typeof createEventSchema
 >["fieldErrors"];
 
-export default function CreateEventForm() {
+interface EventFormProps {
+  type: "create" | "update";
+  eventId?: string;
+  eventData: EventDataType;
+}
+
+export default function EventForm({
+  type,
+  eventId,
+  eventData,
+}: EventFormProps) {
   const { data: session } = authClient.useSession();
   const user = session?.user;
 
@@ -34,39 +44,27 @@ export default function CreateEventForm() {
   const [error, setError] = useState(""); // Pour les erreurs générales/API
   const [formErrors, setFormErrors] = useState<FieldErrors>({}); // Pour les erreurs Zod
   const [images, setImages] = useState<File[]>([]);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(
+    eventData.categories || []
+  );
   const [isPaid, setIsPaid] = useState(false);
   const [addressSuggestions, setAddressSuggestions] = useState<
     AddressFeature[]
   >([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const addressInputRef = useRef<HTMLInputElement>(null);
-  const [isRecurring, setIsRecurring] = useState(false);
+  const [isRecurring, setIsRecurring] = useState(
+    eventData.isRecurring || false
+  );
   const [recurringDays, setRecurringDays] = useState<
     ZodFormData["recurringDays"]
-  >([]);
+  >((eventData.recurringDays as ZodFormData["recurringDays"]) || []);
 
-  const [formData, setFormData] = useState({
-    title: "",
-    startDate: "",
-    startTime: "",
-    endDate: "",
-    endTime: "",
-    address: "",
-    city: "",
-    postalCode: "",
-    description: "",
-    price: "",
-    organizerWebsite: "",
-    organizerPhone: "",
-    isAccessible: false,
-    hasParking: false,
-    hasPublicTransport: false,
-  });
+  const [formData, setFormData] = useState(eventData);
 
   useEffect(() => {
     if (!isPaid) {
-      setFormData(prev => ({ ...prev, price: "" }));
+      setFormData(prev => ({ ...prev, price: 0 }));
       setFormErrors(prevErrors => {
         const newErrors = { ...prevErrors };
         delete newErrors.price;
@@ -176,7 +174,7 @@ export default function CreateEventForm() {
       isPaid,
       isRecurring,
       recurringDays: isRecurring ? recurringDays : [],
-      price: isPaid ? formData.price : undefined,
+      price: isPaid ? formData.price.toString() : undefined,
     };
 
     const validationResult = createEventSchema.safeParse(dataToValidate);
@@ -203,16 +201,24 @@ export default function CreateEventForm() {
         createdBy: user.id,
         images: [],
         status: "PUBLISHED" as const,
-        streetNumber: "",
-        street: "",
         recurringEndDate: null,
+        organizerWebsite: validatedData.organizerWebsite || "",
+        organizerPhone: validatedData.organizerPhone || "",
       };
 
-      const eventId = await createEvent(eventData);
-      const imageUrls = await Promise.all(
-        images.map(image => uploadEventImage(image, eventId))
-      );
-      await updateEvent(eventId, { images: imageUrls });
+      if (type === "create") {
+        const eventId = await createEvent(eventData);
+        const imageUrls = await Promise.all(
+          images.map(image => uploadEventImage(image, eventId))
+        );
+        await updateEvent(eventId, { images: imageUrls });
+      } else if (eventId) {
+        const imageUrls = await Promise.all(
+          images.map(image => uploadEventImage(image, eventId))
+        );
+        await updateEvent(eventId, { ...eventData, images: imageUrls });
+      }
+
       router.push("/my-events");
     } catch (err) {
       setError(
@@ -355,9 +361,9 @@ export default function CreateEventForm() {
       <EventFinancialsAndContactForm
         isPaid={isPaid}
         setIsPaid={setIsPaid}
-        price={formData.price}
+        price={formData.price.toString()}
         setPrice={newPrice =>
-          setFormData(prev => ({ ...prev, price: newPrice }))
+          setFormData(prev => ({ ...prev, price: parseInt(newPrice) }))
         }
         clearPriceError={() =>
           setFormErrors(prev => ({ ...prev, price: undefined }))
@@ -384,7 +390,9 @@ export default function CreateEventForm() {
         disabled={loading}
         className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
       >
-        {loading ? "Création en cours..." : "Créer l'événement"}
+        {loading
+          ? `${type === "create" ? "Création" : "Mise à jour"} en cours...`
+          : `${type === "create" ? "Créer" : "Mettre à jour"} l'événement`}
       </button>
     </form>
   );

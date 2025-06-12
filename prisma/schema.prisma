@@ -109,14 +109,16 @@ model Event {
   startTime          String
   endDate            String
   endTime            String
-  location           String
+  address            String
+  city               String
+  postalCode         String
   description        String
   images             String[]
   categories         String[]
   isPaid             Boolean     @default(false)
   price              Float       @default(0)
-  organizerWebsite   String?
-  organizerPhone     String?
+  organizerWebsite   String
+  organizerPhone     String
   createdBy          String
   status             EventStatus @default(DRAFT)
   isRecurring        Boolean     @default(false)
