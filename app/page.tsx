@@ -9,7 +9,6 @@ import Link from "next/link";
 import InputSearchEvent from "@/components/events/inputs/input-search-event";
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
-import { getUserFavorites } from "@/lib/db/favorites";
 
 /**
  * @brief Homepage component

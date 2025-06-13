@@ -18,7 +18,7 @@ import EventSchedulingForm from "./fields/EventSchedulingForm";
 import EventLocationForm from "./fields/EventLocationForm";
 import EventImageUpload from "./fields/EventImageUpload";
 import EventFinancialsAndContactForm from "./fields/EventFinancialsAndContactForm";
-import { searchAddress } from "@/lib/utils";
+import { Base64ToFile, searchAddress } from "@/lib/utils";
 
 // Helper type pour les erreurs Zod formatées
 type FieldErrors = z.inferFlattenedErrors<
@@ -45,7 +45,7 @@ export default function EventForm({
   const [formErrors, setFormErrors] = useState<FieldErrors>({}); // Pour les erreurs Zod
   const [images, setImages] = useState<File[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
-    eventData.categories || []
+    eventData.categories
   );
   const [isPaid, setIsPaid] = useState(eventData.isPaid);
   const [addressSuggestions, setAddressSuggestions] = useState<
@@ -53,14 +53,26 @@ export default function EventForm({
   >([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const addressInputRef = useRef<HTMLInputElement>(null);
-  const [isRecurring, setIsRecurring] = useState(
-    eventData.isRecurring || false
-  );
+  const [isRecurring, setIsRecurring] = useState(eventData.isRecurring);
   const [recurringDays, setRecurringDays] = useState<
     ZodFormData["recurringDays"]
-  >((eventData.recurringDays as ZodFormData["recurringDays"]) || []);
+  >(eventData.recurringDays as ZodFormData["recurringDays"]);
 
   const [formData, setFormData] = useState(eventData);
+
+  useEffect(() => {
+    if (eventData.images.length > 0) {
+      const loadImages = async () => {
+        const imagesFile = await Promise.all(
+          eventData.images.map(async (img, i) => {
+            return await Base64ToFile(img, `image-${i}`);
+          })
+        );
+        setImages(imagesFile);
+      };
+      loadImages();
+    }
+  }, [eventData.images]);
 
   useEffect(() => {
     if (!isPaid) {

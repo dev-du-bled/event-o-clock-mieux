@@ -114,3 +114,20 @@ export const searchAddress = async (
     console.error("Erreur lors de la recherche d'adresse:", error);
   }
 };
+
+/**
+ * Convert a base 64 image string to File object
+ * @param fileString the bae 64 string image
+ * @param fileName the File name
+ * @returns the File from base 64 string
+ */
+export async function Base64ToFile(
+  fileString: string,
+  fileName: string
+): Promise<File> {
+  const data = await fetch(fileString);
+
+  const blob = await data.blob();
+
+  return new File([blob], fileName, { type: "image/webp" });
+}
