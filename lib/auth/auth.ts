@@ -13,5 +13,4 @@ export const auth = betterAuth({
     autoSignIn: true,
     requireEmailVerification: false,
   },
-  account: {},
 });
