@@ -20,7 +20,7 @@ interface EventCardProps {
  */
 export function EventCard({ event, variant }: EventCardProps) {
   return (
-    <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">
+    <div className="h-full bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300">
       <div className="relative h-50 overflow-hidden group flex">
         {event.images && event.images[0] ? (
           <Image
@@ -36,14 +36,16 @@ export function EventCard({ event, variant }: EventCardProps) {
           </div>
         )}
         <div className="absolute top-4 left-4">
-          {event.categories.map((category, index) => (
-            <span
-              key={index}
-              className="bg-primary text-white text-sm font-semibold px-3 py-1 rounded-full mr-2"
-            >
-              {category}
+          {event.categories.length > 0 && (
+            <span className="bg-primary text-white text-sm font-semibold px-3 py-1 rounded-full">
+              {event.categories[0]}
+              {event.categories.length > 1 && (
+                <span className="ml-1 opacity-75">
+                  +{event.categories.length - 1}
+                </span>
+              )}
             </span>
-          ))}
+          )}
         </div>
         <div className="absolute top-4 right-4">
           <span
@@ -60,7 +62,7 @@ export function EventCard({ event, variant }: EventCardProps) {
         <div className="space-y-2 text-sm text-gray-500">
           <div className="flex items-center">
             <MapPin className="w-4 h-4 mr-1" />
-            <span>{event.location}</span>
+            <span>{`${event.address} ${event.city} ${event.postalCode}`}</span>
           </div>
           <div className="flex items-center">
             {event.isRecurring ? (

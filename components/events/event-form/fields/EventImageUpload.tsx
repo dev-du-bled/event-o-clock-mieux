@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { Upload } from "lucide-react";
+import { Upload, X } from "lucide-react";
 
 interface EventImageUploadProps {
   images: File[];
@@ -51,7 +51,7 @@ const EventImageUpload: React.FC<EventImageUploadProps> = ({
             <div key={index} className="relative">
               <Image
                 src={URL.createObjectURL(image)}
-                alt={`Preview ${index + 1}`}
+                alt={`Preview ${index}`}
                 width={100}
                 height={100}
                 className="h-20 w-20 object-cover rounded-lg"
@@ -59,10 +59,10 @@ const EventImageUpload: React.FC<EventImageUploadProps> = ({
               <button
                 type="button"
                 onClick={() => removeImage(index)}
-                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 text-xs leading-none hover:bg-red-600"
-                aria-label={`Supprimer l\'image ${index + 1}`}
+                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center hover:bg-red-600 hover:cursor-pointer"
+                aria-label={`Supprimer l'image ${index + 1}`}
               >
-                ×
+                <X size={12} />
               </button>
             </div>
           ))}

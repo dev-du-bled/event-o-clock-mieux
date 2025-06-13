@@ -91,163 +91,187 @@ export function EventDialog({ event, user, variant }: EventDialogProps) {
       <DialogTrigger className="cursor-pointer">
         <EventCard event={event} variant={variant} />
       </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle className="text-2xl font-bold">
-            {event.title}
-          </DialogTitle>
-        </DialogHeader>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="h-[300px] rounded-lg overflow-hidden">
-            {event.images && event.images.length > 0 ? (
-              <Carousel>
-                <CarouselContent>
-                  {event.images.map((img, index) => (
-                    <CarouselItem key={`${event.id} image-${index}`}>
-                      <Image
-                        src={img}
-                        alt={event.title}
-                        className="w-full h-full object-cover"
-                        width={500}
-                        height={300}
-                      />
-                    </CarouselItem>
+      <DialogContent className="max-w-4xl w-[95vw] max-h-[95vh] sm:max-h-[90vh] p-0 overflow-hidden">
+        <div className="flex flex-col h-full max-h-[95vh] sm:max-h-[90vh]">
+          <DialogHeader className="px-4 sm:px-6 py-4 border-b shrink-0">
+            <DialogTitle className="text-xl sm:text-2xl font-bold pr-8">
+              {event.title}
+            </DialogTitle>
+          </DialogHeader>
+
+          <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4">
+            <div className="flex flex-col space-y-6">
+              {/* Image Section */}
+              <div className="w-full">
+                <div className="overflow-hidden">
+                  {event.images && event.images.length > 0 ? (
+                    <Carousel>
+                      <CarouselContent>
+                        {event.images.map((img, index) => (
+                          <CarouselItem key={`${event.id} image-${index}`}>
+                            <div className="relative w-full h-64 sm:h-80">
+                              <Image
+                                src={img}
+                                alt={event.title}
+                                fill
+                                className="object-cover object-center rounded-lg"
+                              />
+                            </div>
+                          </CarouselItem>
+                        ))}
+                      </CarouselContent>
+                      <CarouselPrevious className="left-2" />
+                      <CarouselNext className="right-2" />
+                    </Carousel>
+                  ) : (
+                    <div className="w-full h-64 sm:h-80 bg-gray-200 flex items-center justify-center">
+                      <Calendar className="w-12 h-12 text-gray-400" />
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Content Section */}
+              <div className="space-y-4 sm:space-y-6">
+                {/* Categories and Price */}
+                <div className="flex flex-wrap gap-2">
+                  {event.categories.map((category, index) => (
+                    <span
+                      key={index}
+                      className="bg-primary text-white text-xs sm:text-sm font-semibold px-2 sm:px-3 py-1 rounded-full"
+                    >
+                      {category}
+                    </span>
                   ))}
-                </CarouselContent>
-                <CarouselPrevious />
-                <CarouselNext />
-              </Carousel>
-            ) : (
-              <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                <Calendar className="w-12 h-12 text-gray-400" />
+                  <span
+                    className={`${event.isPaid ? "bg-primary" : "bg-green-500"} text-white text-xs sm:text-sm font-semibold px-2 sm:px-3 py-1 rounded-full`}
+                  >
+                    {event.isPaid ? `${event.price} €` : "Gratuit"}
+                  </span>
+                </div>
+
+                {/* Date, Time, Location */}
+                <div className="space-y-2 sm:space-y-3">
+                  <div className="flex items-center text-gray-600 text-sm sm:text-base">
+                    {event.isRecurring ? (
+                      <Repeat className="w-4 h-4 sm:w-5 sm:h-5 mr-2 shrink-0" />
+                    ) : (
+                      <Calendar className="w-4 h-4 sm:w-5 sm:h-5 mr-2 shrink-0" />
+                    )}
+                    <span className="break-words">
+                      {formatEventDate(event)}
+                    </span>
+                  </div>
+                  <div className="flex items-center text-gray-600 text-sm sm:text-base">
+                    <Clock className="w-4 h-4 sm:w-5 sm:h-5 mr-2 shrink-0" />
+                    <span>{formatEventTime(event)}</span>
+                  </div>
+                  <div className="flex items-start text-gray-600 text-sm sm:text-base">
+                    <MapPin className="w-4 h-4 sm:w-5 sm:h-5 mr-2 mt-0.5 shrink-0" />
+                    <span className="break-words">{`${event.address} ${event.city} ${event.postalCode}`}</span>
+                  </div>
+                </div>
+
+                {/* Description */}
+                <div>
+                  <div className="text-base sm:text-lg font-semibold mb-2">
+                    Description
+                  </div>
+                  <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
+                    {event.description}
+                  </p>
+                </div>
+
+                {/* Contact Info */}
+                {(event.organizerPhone || event.organizerWebsite) && (
+                  <div className="space-y-2 sm:space-y-3">
+                    <div className="text-base sm:text-lg font-semibold">
+                      Contact
+                    </div>
+                    {event.organizerPhone && (
+                      <div className="flex items-center text-gray-600 text-sm sm:text-base">
+                        <Phone className="w-4 h-4 sm:w-5 sm:h-5 mr-2 shrink-0" />
+                        <a
+                          href={`tel:${event.organizerPhone}`}
+                          className="hover:text-primary break-all"
+                        >
+                          {event.organizerPhone}
+                        </a>
+                      </div>
+                    )}
+                    {event.organizerWebsite && (
+                      <div className="flex items-center text-gray-600 text-sm sm:text-base">
+                        <Globe className="w-4 h-4 sm:w-5 sm:h-5 mr-2 shrink-0" />
+                        <a
+                          href={event.organizerWebsite}
+                          target="_blank"
+                          className="hover:text-primary break-all"
+                        >
+                          {event.organizerWebsite}
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Practical Information */}
+                <div className="space-y-2 sm:space-y-3">
+                  <div className="text-base sm:text-lg font-semibold">
+                    Informations pratiques
+                  </div>
+                  <div className="flex items-start text-gray-600 text-sm sm:text-base">
+                    <Info className="w-4 h-4 sm:w-5 sm:h-5 mr-2 mt-1 shrink-0" />
+                    <ul className="list-disc list-inside space-y-1">
+                      {event.isAccessible && (
+                        <li>Accessible aux personnes à mobilité réduite</li>
+                      )}
+                      {event.hasParking && <li>Parking disponible</li>}
+                      {event.hasPublicTransport && (
+                        <li>Transport en commun à proximité</li>
+                      )}
+                    </ul>
+                  </div>
+                </div>
               </div>
-            )}
+            </div>
           </div>
 
-          <div className="space-y-6">
-            <div className="flex flex-wrap gap-2">
-              {event.categories.map((category, index) => (
-                <span
-                  key={index}
-                  className="bg-primary text-white text-sm font-semibold px-3 py-1 rounded-full"
+          {/* Footer - Fixed at bottom */}
+          {user && (
+            <DialogFooter className="px-4 sm:px-6 py-4 border-t shrink-0 bg-white">
+              <div className="flex justify-center sm:justify-start w-full">
+                <button
+                  onClick={() => handleFavoriteClick(event.id)}
+                  className={`px-4 sm:px-6 py-2 sm:py-3 rounded-lg transition-colors flex items-center cursor-pointer text-sm sm:text-base w-full sm:w-auto justify-center ${
+                    loading
+                      ? "bg-gray-100 text-gray-700"
+                      : isFavorite
+                        ? "bg-red-500 text-white hover:bg-red-600"
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+                  disabled={loading}
                 >
-                  {category}
-                </span>
-              ))}
-              <span
-                className={`${event.isPaid ? "bg-primary" : "bg-green-500"} text-white text-sm font-semibold px-3 py-1 rounded-full`}
-              >
-                {event.isPaid ? `${event.price} €` : "Gratuit"}
-              </span>
-            </div>
-
-            <div className="space-y-2">
-              <div className="flex items-center text-gray-600">
-                {event.isRecurring ? (
-                  <Repeat className="w-5 h-5 mr-2" />
-                ) : (
-                  <Calendar className="w-5 h-5 mr-2" />
-                )}
-                <span>{formatEventDate(event)}</span>
-              </div>
-              <div className="flex items-center text-gray-600">
-                <Clock className="w-5 h-5 mr-2" />
-                <span>{formatEventTime(event)}</span>
-              </div>
-              <div className="flex items-center text-gray-600">
-                <MapPin className="w-5 h-5 mr-2" />
-                <span>{event.location}</span>
-              </div>
-            </div>
-
-            <div>
-              <div className="text-lg font-semibold mb-2">Description</div>
-              <p className="text-gray-600">{event.description}</p>
-            </div>
-
-            {(event.organizerPhone || event.organizerWebsite) && (
-              <div className="space-y-2">
-                <div className="text-lg font-semibold">Contact</div>
-                {event.organizerPhone && (
-                  <div className="flex items-center text-gray-600">
-                    <Phone className="w-5 h-5 mr-2" />
-                    <a
-                      href={`tel:${event.organizerPhone}`}
-                      className="hover:text-primary"
-                    >
-                      {event.organizerPhone}
-                    </a>
-                  </div>
-                )}
-                {event.organizerWebsite && (
-                  <div className="flex items-center text-gray-600">
-                    <Globe className="w-5 h-5 mr-2" />
-                    <a
-                      href={event.organizerWebsite}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:text-primary"
-                    >
-                      {event.organizerWebsite}
-                    </a>
-                  </div>
-                )}
-              </div>
-            )}
-
-            <div className="space-y-2">
-              <div className="text-lg font-semibold">
-                Informations pratiques
-              </div>
-              <div className="flex items-start text-gray-600">
-                <Info className="w-5 h-5 mr-2 mt-1 flex-shrink-0" />
-                <ul className="list-disc list-inside space-y-1">
-                  {event.isAccessible && (
-                    <li>Accessible aux personnes à mobilité réduite</li>
+                  {loading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 mr-2 animate-spin" />
+                      Chargement...
+                    </>
+                  ) : isFavorite ? (
+                    <>
+                      <Heart className="w-4 h-4 sm:w-5 sm:h-5 mr-2 fill-white" />
+                      Retirer des favoris
+                    </>
+                  ) : (
+                    <>
+                      <Heart className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                      Ajouter aux favoris
+                    </>
                   )}
-                  {event.hasParking && <li>Parking disponible</li>}
-                  {event.hasPublicTransport && (
-                    <li>Transport en commun à proximité</li>
-                  )}
-                </ul>
+                </button>
               </div>
-            </div>
-          </div>
+            </DialogFooter>
+          )}
         </div>
-        {user && (
-          <DialogFooter>
-            <div className="flex justify-between w-full">
-              <button
-                onClick={() => handleFavoriteClick(event.id)}
-                className={`px-6 py-2 rounded-lg transition-colors flex items-center cursor-pointer ${
-                  loading
-                    ? "bg-gray-100  text-gray-700"
-                    : isFavorite
-                      ? "bg-red-500 text-white hover:bg-red-600"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-                disabled={loading}
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                    Chargement...
-                  </>
-                ) : isFavorite ? (
-                  <>
-                    <Heart className="w-5 h-5 mr-2 fill-white" />
-                    Retirer des favoris
-                  </>
-                ) : (
-                  <>
-                    <Heart className="w-5 h-5 mr-2" />
-                    Ajouter aux favoris
-                  </>
-                )}
-              </button>
-            </div>
-          </DialogFooter>
-        )}
       </DialogContent>
     </Dialog>
   );

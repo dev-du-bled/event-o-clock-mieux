@@ -14,7 +14,6 @@ interface PropsSearchEventsCards {
 export default function FilteredEventsCards({
   user,
   events,
-  favorites,
 }: PropsSearchEventsCards) {
   const { search, location, category, minPrice, maxPrice, startDate, endDate } =
     useStoreParams();
@@ -27,7 +26,8 @@ export default function FilteredEventsCards({
 
     const matchesLocation =
       !location ||
-      event.location.toLowerCase().includes(location.toLowerCase());
+      event.address.toLowerCase().includes(location.toLowerCase()) ||
+      event.city.toLowerCase().includes(location.toLowerCase());
 
     const matchesCategory = !category || event.categories.includes(category);
 
@@ -66,7 +66,6 @@ export default function FilteredEventsCards({
         <EventDialog
           key={event.id}
           event={event}
-          favorites={favorites}
           user={user}
           variant="default"
         />
