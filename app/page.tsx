@@ -33,7 +33,7 @@ export default async function Home() {
   const featuredEvents = events.sort(() => 0.5 - Math.random()).slice(0, 4);
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen">
       {/* Hero Section */}
       <section className="relative h-[600px] flex items-center justify-center bg-gradient-to-r from-primary/10 to-primary/5">
         <div className="container px-4 mx-auto text-center">
@@ -49,8 +49,10 @@ export default async function Home() {
 
       {/* Featured Events Section */}
       <section className="py-16 container px-4 mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-3xl font-bold">Événements à la une</h2>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+          <h2 className="text-2xl sm:text-3xl font-bold">
+            Événements à la une
+          </h2>
           <Link
             href="/events"
             className="px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"

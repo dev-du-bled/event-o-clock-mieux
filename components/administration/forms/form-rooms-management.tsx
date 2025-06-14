@@ -79,7 +79,7 @@ export default async function FormRoomsManagement() {
               >
                 <Dialog>
                   <DialogTrigger>
-                    <Button variant={"destructive"}>
+                    <Button variant={"destructive"} size={"icon"}>
                       <Trash />
                     </Button>
                   </DialogTrigger>
@@ -107,7 +107,7 @@ export default async function FormRoomsManagement() {
                   </DialogContent>
                 </Dialog>
 
-                <Button variant={"outline"}>
+                <Button variant={"outline"} size={"icon"}>
                   <Pencil />
                 </Button>
               </TableCell>

@@ -42,20 +42,20 @@ export default async function Favorites() {
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="container mx-auto px-4">
         <h1 className="text-3xl font-bold mb-8">Mes favoris</h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
-        {favoritesEvents.length !== 0 ? (
-          favoritesEvents.map(event => (
-            <EventDialog
-              key={event.id}
-              event={event}
-              favorites={favorites}
-              user={user}
-              variant="default"
-            />
-          ))
-        ) : (
-          <p>Aucun Favoris</p>
-        )}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {favoritesEvents.length !== 0 ? (
+            favoritesEvents.map(event => (
+              <EventDialog
+                key={event.id}
+                event={event}
+                user={user}
+                variant="default"
+              />
+            ))
+          ) : (
+            <p>Aucun Favoris</p>
+          )}
+        </div>
       </div>
     </div>
   );

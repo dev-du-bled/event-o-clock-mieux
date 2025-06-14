@@ -103,7 +103,7 @@ export function EventDialog({ event, user, variant }: EventDialogProps) {
             <div className="flex flex-col space-y-6">
               {/* Image Section */}
               <div className="w-full">
-                <div className="overflow-hidden">
+                <div className="overflow-hidden rounded-lg">
                   {event.images && event.images.length > 0 ? (
                     <Carousel>
                       <CarouselContent>
@@ -113,7 +113,8 @@ export function EventDialog({ event, user, variant }: EventDialogProps) {
                               <Image
                                 src={img}
                                 alt={event.title}
-                                fill
+                                width={800}
+                                height={450}
                                 className="object-cover object-center rounded-lg"
                               />
                             </div>

@@ -179,10 +179,10 @@ export default function CinemaCart() {
               Votre panier est vide
             </h2>
             <Link
-              href="/cinema"
+              href="/events"
               className="inline-block px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
             >
-              Voir les films
+              Voir les évènements
             </Link>
           </div>
         </div>

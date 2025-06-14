@@ -4,6 +4,7 @@ import NotFound from "../not-found";
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
 import { Role } from "@prisma/client";
+import NotAuthorized from "@/components/auth/not-authorized";
 
 export default async function Admin() {
   const session = await auth.api.getSession({
@@ -11,16 +12,24 @@ export default async function Admin() {
   });
 
   const user = session?.user;
-  const isAdmin = user?.role == Role.admin;
+  const isAdmin = user?.role === Role.admin;
 
-  if (!user || !isAdmin) {
+  if (!isAdmin) {
+    return <NotAuthorized />;
+  } else if (!user) {
     return <NotFound />;
   }
 
   return (
-    <div className="flex justify-center flex-1 gap-8 p-8 ">
-      <FormMoviesManagement />
-      <FormRoomsManagement />
+    <div className="p-4 sm:p-6 lg:p-8 min-h-screen">
+      <div className="flex flex-col xl:flex-row justify-center gap-4 sm:gap-6 lg:gap-8 max-w-4xl xl:max-w-7xl mx-auto">
+        <div className="w-full xl:w-1/2">
+          <FormMoviesManagement />
+        </div>
+        <div className="w-full xl:w-1/2">
+          <FormRoomsManagement />
+        </div>
+      </div>
     </div>
   );
 }
