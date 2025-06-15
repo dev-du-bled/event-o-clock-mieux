@@ -12,7 +12,7 @@ import {
   DialogTrigger,
 } from "../../ui/dialog";
 import { Event } from "@prisma/client";
-import { deleteEvent } from "@/lib/db/events";
+import { deleteEventAction } from "@/server/actions/events";
 import { toast } from "sonner";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -30,21 +30,32 @@ export default function DeleteEventDialog({ event }: DeleteEventDialogProps) {
     setLoading(true);
 
     try {
-      await deleteEvent(event.id).then(() => {
+      const result = await deleteEventAction(event.id);
+
+      if (result.success) {
         toast("Succès", {
           description: `L'évènement "${event.title}" a été supprimé avec succès.`,
         });
         // ferme le dialog si succès
         setOpen(false);
-      });
-    } catch {
-      toast("Error", {
+        router.refresh();
+      } else {
+        toast("Erreur", {
+          description:
+            result.message ||
+            `Erreur lors de la suppression de l'évènement "${event.title}".`,
+          closeButton: true,
+        });
+      }
+    } catch (error) {
+      console.error("Erreur lors de la suppression:", error);
+      toast("Erreur", {
         description: `Erreur lors de la suppression de l'évènement "${event.title}".`,
         closeButton: true,
       });
     }
+
     setLoading(false);
-    router.refresh();
   };
 
   return (

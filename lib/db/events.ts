@@ -6,32 +6,6 @@ import prisma from "../prisma";
 export type EventDataType = Omit<Event, "id" | "createdAt" | "updatedAt">;
 
 /**
- * Function to create a new event.
- * Adds the event details to Firestore and returns the document ID of the newly created event.
- *
- * @param eventData - The details of the event to be created (excluding id, createdAt, and updatedAt)
- * @returns The ID of the newly created event document.
- */
-export async function createEvent(eventData: EventDataType) {
-  try {
-    const event = await prisma.event.create({
-      data: {
-        ...eventData,
-        prices: eventData.prices
-          ? eventData.prices.filter(price => price !== null)
-          : undefined,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      },
-    });
-    return event.id;
-  } catch (error) {
-    console.error("Erreur lors de la création de l'événement:", error);
-    throw error;
-  }
-}
-
-/**
  * Function to fetch all published events.
  * Queries Firestore to get events where the status is 'published'.
  *
@@ -77,52 +51,6 @@ export async function getEventById(eventId: string) {
     return event;
   } catch (error) {
     console.error("Erreur lors de la récupération de l'événement:", error);
-    throw error;
-  }
-}
-
-/**
- * Function to update an existing event.
- * Updates the specified event document with new data.
- *
- * @param eventId - The ID of the event to be updated.
- * @param eventData - The updated event data (some properties may be omitted).
- */
-export async function updateEvent(
-  eventId: string,
-  eventData: Partial<EventDataType>
-) {
-  try {
-    await prisma.event.update({
-      data: {
-        ...eventData,
-        prices: eventData.prices
-          ? eventData.prices.filter(price => price !== null)
-          : undefined,
-        updatedAt: new Date(),
-      },
-      where: {
-        id: eventId,
-      },
-    });
-  } catch (error) {
-    console.error("Erreur lors de la mise à jour de l'événement:", error);
-    throw error;
-  }
-}
-
-/**
- * Function to delete an event and its associated resources.
- * Deletes the event document from Firestore, removes images from the database ,
- * and deletes any associated favorites.
- *
- * @param eventId - The ID of the event to be deleted.
- */
-export async function deleteEvent(eventId: string) {
-  try {
-    await prisma.event.delete({ where: { id: eventId } });
-  } catch (error) {
-    console.error("Erreur lors de la suppression de l'événement:", error);
     throw error;
   }
 }

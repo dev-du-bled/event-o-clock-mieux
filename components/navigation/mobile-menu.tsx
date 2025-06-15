@@ -28,6 +28,28 @@ export default function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
+  const [canManageEvents, setCanManageEvents] = useState(false);
+
+  useEffect(() => {
+    const checkPermissions = async () => {
+      if (user) {
+        try {
+          const result = await authClient.admin.hasPermission({
+            permission: { event: ["create"] },
+          });
+          setCanManageEvents(result.data?.success || false);
+        } catch (error) {
+          console.error("Erreur vérification permissions:", error);
+          setCanManageEvents(false);
+        }
+      } else {
+        setCanManageEvents(false);
+      }
+    };
+
+    checkPermissions();
+  }, [user]);
+
   useEffect(() => {
     // ferme le menu quand la souris clique en dehors
     const menuHandler = (e: MouseEvent) => {
@@ -79,7 +101,8 @@ export default function MobileMenu() {
             </Link>
             {user && (
               <>
-                {user.role === Role.organizer && (
+                {/* Liens pour les organisateurs - basé sur les permissions */}
+                {canManageEvents && (
                   <>
                     <Link
                       onClick={() => setIsOpen(false)}
@@ -171,6 +194,7 @@ export default function MobileMenu() {
               </>
             ) : (
               <>
+                {/* Lien admin - garde la vérification de rôle pour l'admin */}
                 {user.role === Role.admin && (
                   <Link
                     onClick={() => setIsOpen(false)}

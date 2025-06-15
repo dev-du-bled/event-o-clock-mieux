@@ -2,6 +2,9 @@ import React from "react";
 import EventForm from "@/components/events/event-form/EventForm";
 import { EventStatus } from "@prisma/client";
 import { EventDataType } from "@/lib/db/events";
+import NotAuthorized from "@/components/auth/not-authorized";
+import { auth } from "@/lib/auth/auth";
+import { headers } from "next/headers";
 
 const data: EventDataType = {
   address: "",
@@ -30,7 +33,19 @@ const data: EventDataType = {
   hasPublicTransport: false,
 };
 
-export default function CreateEventPage() {
+export default async function CreateEventPage() {
+  // Vérification des permissions avec Better Auth
+  const result = await auth.api.userHasPermission({
+    headers: await headers(),
+    body: {
+      permission: { event: ["create"] },
+    },
+  });
+
+  if (!result.success) {
+    return <NotAuthorized />;
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="container mx-auto px-4 max-w-3xl">

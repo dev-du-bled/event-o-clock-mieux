@@ -1,10 +1,13 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { AlertCircle } from "lucide-react";
-import { createEvent, EventDataType, updateEvent } from "@/lib/db/events";
-import { uploadEventImage } from "@/lib/storage";
+import { EventDataType } from "@/lib/db/events";
+import {
+  createEventAction,
+  updateEventAction,
+  redirectAfterSuccess,
+} from "@/server/actions/events";
 import AddressFeature from "@/lib/types";
 import { authClient } from "@/lib/auth/auth-client";
 import { z } from "zod";
@@ -19,7 +22,6 @@ import EventLocationForm from "./fields/EventLocationForm";
 import EventImageUpload from "./fields/EventImageUpload";
 import EventFinancialsAndContactForm from "./fields/EventFinancialsAndContactForm";
 import { Base64ToFile, searchAddress } from "@/lib/utils";
-import { EventStatus } from "@prisma/client";
 
 // Helper type pour les erreurs Zod formatées
 type FieldErrors = z.inferFlattenedErrors<
@@ -40,7 +42,6 @@ export default function EventForm({
   const { data: session } = authClient.useSession();
   const user = session?.user;
 
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(""); // Pour les erreurs générales/API
   const [formErrors, setFormErrors] = useState<FieldErrors>({}); // Pour les erreurs Zod
@@ -176,6 +177,16 @@ export default function EventForm({
     e.preventDefault();
   };
 
+  // Convertir les images en base64
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = error => reject(error);
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) {
@@ -210,33 +221,41 @@ export default function EventForm({
 
     try {
       const validatedData = validationResult.data;
-      const eventData = {
-        ...validatedData,
-        startDate: validatedData.startDate || "",
-        endDate: validatedData.endDate || "",
-        prices: validatedData.isPaid ? validatedData.prices : [],
-        createdBy: user.id,
-        images: [],
-        status: EventStatus.PUBLISHED,
-        recurringEndDate: null,
-        organizerWebsite: validatedData.organizerWebsite || "",
-        organizerPhone: validatedData.organizerPhone || "",
-      };
+
+      // Convertir les images en base64
+      const base64Images = await Promise.all(
+        images.map(image => fileToBase64(image))
+      );
 
       if (type === "create") {
-        const eventId = await createEvent(eventData);
-        const imageUrls = await Promise.all(
-          images.map(image => uploadEventImage(image, eventId))
-        );
-        await updateEvent(eventId, { images: imageUrls });
-      } else if (eventId) {
-        const imageUrls = await Promise.all(
-          images.map(image => uploadEventImage(image, eventId))
-        );
-        await updateEvent(eventId, { ...eventData, images: imageUrls });
-      }
+        const result = await createEventAction(validatedData, base64Images);
 
-      router.push("/my-events");
+        if (!result.success) {
+          if (result.errors) {
+            setFormErrors(result.errors);
+          }
+          setError(result.message || "Erreur lors de la création");
+          return;
+        }
+
+        await redirectAfterSuccess("/my-events");
+      } else if (eventId) {
+        const result = await updateEventAction(
+          eventId,
+          validatedData,
+          base64Images
+        );
+
+        if (!result.success) {
+          if (result.errors) {
+            setFormErrors(result.errors);
+          }
+          setError(result.message || "Erreur lors de la mise à jour");
+          return;
+        }
+
+        await redirectAfterSuccess("/my-events");
+      }
     } catch (err) {
       setError(
         "Une erreur est survenue lors de la création de l'événement. Veuillez réessayer."

@@ -23,6 +23,28 @@ export default function ProfileMenu() {
 
   const user = session?.user;
 
+  const [canManageEvents, setCanManageEvents] = useState(false);
+
+  useEffect(() => {
+    const checkPermissions = async () => {
+      if (user) {
+        try {
+          const result = await authClient.admin.hasPermission({
+            permission: { event: ["create"] },
+          });
+          setCanManageEvents(result.data?.success || false);
+        } catch (error) {
+          console.error("Erreur vérification permissions:", error);
+          setCanManageEvents(false);
+        }
+      } else {
+        setCanManageEvents(false);
+      }
+    };
+
+    checkPermissions();
+  }, [user]);
+
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -113,12 +135,14 @@ export default function ProfileMenu() {
                 Mon Profil
               </span>
             </Link>
-            {user.role === Role.organizer && (
+
+            {/* Liens pour les organisateurs - basé sur les permissions */}
+            {canManageEvents && (
               <>
                 <Link
                   onClick={() => setIsOpen(false)}
                   href="/create-event"
-                  className="flex items-center hover:text-primary text-gra() => setIsOpen(false)y-600 transition-colors"
+                  className="flex items-center hover:text-primary text-gray-600 transition-colors"
                 >
                   <span className="flex items-center">
                     <PlusCircle className="w-5 h-5 mr-1" />
@@ -137,6 +161,7 @@ export default function ProfileMenu() {
                 </Link>
               </>
             )}
+
             <Link
               onClick={() => setIsOpen(false)}
               href="/favorites"
@@ -147,6 +172,8 @@ export default function ProfileMenu() {
                 Favoris
               </span>
             </Link>
+
+            {/* Lien admin - garde la vérification de rôle pour l'admin */}
             {user.role === Role.admin && (
               <Link
                 onClick={() => setIsOpen(false)}
