@@ -30,10 +30,10 @@ import Image from "next/image";
 import { EventCard } from "../event-card";
 import { auth } from "@/lib/auth/auth";
 import {
-  addToFavorites,
-  isEventFavorite,
-  removeFromFavorites,
-} from "@/lib/db/favorites";
+  addToFavoritesAction,
+  isEventFavoriteAction,
+  removeFromFavoritesAction,
+} from "@/server/actions/favorites";
 import { useEffect, useState } from "react";
 import { Event } from "@prisma/client";
 import { formatEventDate, formatEventTime } from "@/lib/utils";
@@ -63,7 +63,11 @@ export function EventDialog({ event, user }: EventDialogProps) {
   useEffect(() => {
     if (!user) return;
 
-    isEventFavorite(user.id, event.id).then(is => setIsFavorite(is));
+    isEventFavoriteAction(event.id).then(result => {
+      if (result.success && typeof result.data === "boolean") {
+        setIsFavorite(result.data);
+      }
+    });
   }, [event.id, user]);
 
   const handleFavoriteClick = async (eventId: string) => {
@@ -72,11 +76,22 @@ export function EventDialog({ event, user }: EventDialogProps) {
     try {
       setIsLoading(true);
       if (isFavorite) {
-        await removeFromFavorites(user.id, eventId);
-        setIsFavorite(false);
+        const result = await removeFromFavoritesAction(eventId);
+        if (result.success) {
+          setIsFavorite(false);
+        } else {
+          console.error(
+            "Erreur lors de la suppression des favoris:",
+            result.message
+          );
+        }
       } else {
-        await addToFavorites(user.id, eventId);
-        setIsFavorite(true);
+        const result = await addToFavoritesAction(eventId);
+        if (result.success) {
+          setIsFavorite(true);
+        } else {
+          console.error("Erreur lors de l'ajout aux favoris:", result.message);
+        }
       }
     } catch (err) {
       console.error("Erreur lors de la gestion des favoris:", err);

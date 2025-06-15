@@ -9,7 +9,7 @@ import NoAuth from "@/components/auth/no-auth";
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
 import { getAllEvents } from "@/lib/db/events";
-import { getUserFavorites } from "@/lib/db/favorites";
+import { getUserFavorites } from "@/server/actions/favorites";
 
 /**
  * @brief Favorites management component
@@ -33,7 +33,7 @@ export default async function Favorites() {
   }
 
   const events = await getAllEvents();
-  const favorites = user && (await getUserFavorites(user.id));
+  const favorites = await getUserFavorites();
   const favoritesEvents = events.filter(event => {
     if (favorites.includes(event.id)) return event;
   });
@@ -45,12 +45,7 @@ export default async function Favorites() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {favoritesEvents.length !== 0 ? (
             favoritesEvents.map(event => (
-              <EventDialog
-                key={event.id}
-                event={event}
-                user={user}
-                variant="default"
-              />
+              <EventDialog key={event.id} event={event} user={user} />
             ))
           ) : (
             <p>Aucun Favoris</p>

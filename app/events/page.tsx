@@ -9,7 +9,7 @@ import FullInputSearchEvent from "@/components/events/inputs/full-input-search-e
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
 import FilteredEventsCards from "@/components/events/filtered-events-cards";
-import { getUserFavorites } from "@/lib/db/favorites";
+import { getUserFavorites } from "@/server/actions/favorites";
 
 /**
  * @brief Events listing component
@@ -32,7 +32,7 @@ export default async function Events() {
   const user = session?.user;
 
   const events = await getAllEvents();
-  const favorites = user && (await getUserFavorites(user.id));
+  const favorites = await getUserFavorites();
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
