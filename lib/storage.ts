@@ -14,9 +14,9 @@ const ALLOWED_IMAGE_TYPES = [
 ];
 
 /**
- * Maximum allowed image size (5MB).
+ * Maximum allowed image size (15MB).
  */
-const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_IMAGE_SIZE = 15 * 1024 * 1024; // 15MB
 
 /**
  * Custom error class for image validation errors.
@@ -40,13 +40,13 @@ class ImageValidationError extends Error {
 function validateImage(file: File): boolean {
   if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
     throw new ImageValidationError(
-      "Format de fichier non autorisé. Seuls les formats JPEG, JPG, PNG et WEBP sont acceptés.",
+      "Format de fichier non autorisé. Seuls les formats JPEG, JPG, PNG et WEBP sont acceptés."
     );
   }
 
   if (file.size > MAX_IMAGE_SIZE) {
     throw new ImageValidationError(
-      "L'image est trop volumineuse. La taille maximale autorisée est de 5MB.",
+      "L'image est trop volumineuse. La taille maximale autorisée est de 5MB."
     );
   }
 
@@ -65,7 +65,7 @@ function validateImage(file: File): boolean {
 // TODO: Replace with DB
 export async function uploadEventImage(
   file: File,
-  eventId: string,
+  eventId: string
 ): Promise<string> {
   try {
     validateImage(file);
@@ -111,7 +111,7 @@ export async function uploadEventImage(
  */
 export async function uploadProfileImage(
   file: File,
-  userId: string,
+  userId: string
 ): Promise<string> {
   try {
     validateImage(file);

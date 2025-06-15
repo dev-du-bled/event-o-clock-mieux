@@ -4,6 +4,7 @@ import {
   Clipboard,
   Film,
   Heart,
+  LockKeyhole,
   LogIn,
   Menu,
   PlusCircle,
@@ -18,6 +19,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import LogOutButton from "../auth/logout-button";
 import { authClient } from "@/lib/auth/auth-client";
+import { Role } from "@prisma/client";
 
 export default function MobileMenu() {
   const { data: session } = authClient.useSession();
@@ -77,26 +79,30 @@ export default function MobileMenu() {
             </Link>
             {user && (
               <>
-                <Link
-                  onClick={() => setIsOpen(false)}
-                  href="/my-events"
-                  className="text-gray-600 hover:text-primary transition-colors"
-                >
-                  <span className="flex items-center">
-                    <Tag className="mr-1 h-5 w-5" />
-                    Mes événements
-                  </span>
-                </Link>
-                <Link
-                  onClick={() => setIsOpen(false)}
-                  href="/create-event"
-                  className="text-gray-600 hover:text-primary transition-colors"
-                >
-                  <span className="flex items-center">
-                    <PlusCircle className="w-5 h-5 mr-1" />
-                    Créer un événement
-                  </span>
-                </Link>
+                {user.role === Role.organizer && (
+                  <>
+                    <Link
+                      onClick={() => setIsOpen(false)}
+                      href="/my-events"
+                      className="text-gray-600 hover:text-primary transition-colors"
+                    >
+                      <span className="flex items-center">
+                        <Tag className="mr-1 h-5 w-5" />
+                        Mes événements
+                      </span>
+                    </Link>
+                    <Link
+                      onClick={() => setIsOpen(false)}
+                      href="/create-event"
+                      className="text-gray-600 hover:text-primary transition-colors"
+                    >
+                      <span className="flex items-center">
+                        <PlusCircle className="w-5 h-5 mr-1" />
+                        Créer un événement
+                      </span>
+                    </Link>
+                  </>
+                )}
                 <Link
                   onClick={() => setIsOpen(false)}
                   href="/favorites"
@@ -164,10 +170,24 @@ export default function MobileMenu() {
                 </Link>
               </>
             ) : (
-              <LogOutButton
-                onClick={() => setIsOpen(false)}
-                className="text-left"
-              />
+              <>
+                {user.role === Role.admin && (
+                  <Link
+                    onClick={() => setIsOpen(false)}
+                    href="/administration"
+                    className="flex items-center hover:text-primary text-gray-600 transition-colors"
+                  >
+                    <span className="flex items-center">
+                      <LockKeyhole className="w-5 h-5 mr-1" />
+                      Administration
+                    </span>
+                  </Link>
+                )}
+                <LogOutButton
+                  onClick={() => setIsOpen(false)}
+                  className="text-left"
+                />
+              </>
             )}
           </div>
         </div>

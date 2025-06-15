@@ -7,6 +7,8 @@ import AddressFeature from "@/lib/types";
 
 interface EventLocationFormProps {
   // Address props
+  place: string;
+  setPlace: (place: string) => void;
   address: string;
   handleAddressChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   addressInputRef: React.RefObject<HTMLInputElement>;
@@ -28,6 +30,7 @@ interface EventLocationFormProps {
 
   // Error props
   formErrors: {
+    place?: string[];
     address?: string[];
     city?: string[];
     postalCode?: string[];
@@ -39,6 +42,8 @@ interface EventLocationFormProps {
 }
 
 const EventLocationForm: React.FC<EventLocationFormProps> = ({
+  place,
+  setPlace,
   address,
   handleAddressChange,
   addressInputRef,
@@ -67,6 +72,20 @@ const EventLocationForm: React.FC<EventLocationFormProps> = ({
           <MapPin className="inline-block w-4 h-4 mr-2" />
           Adresse de l&apos;événement *
         </label>
+        <input
+          id="place"
+          name="place"
+          type="text"
+          value={place}
+          onChange={e => setPlace(e.target.value)}
+          className={`w-full rounded-lg border ${
+            formErrors.place ? "border-red-500" : "border-gray-300"
+          } px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary`}
+          placeholder="Lieu de l'événement"
+          required
+          aria-invalid={!!formErrors.place}
+          aria-describedby={formErrors.place ? "place-error" : undefined}
+        />
         <div className="relative">
           <input
             id="address"

@@ -14,6 +14,28 @@ const validWeekDays = [
   "sunday",
 ] as const;
 
+export const priceSchema = z.object({
+  type: z.string().trim().min(1, { message: "Le type est requis" }),
+  price: z
+    .string()
+    .trim()
+    .min(1, { message: "Le prix est requis" })
+    .refine(
+      val => {
+        const priceAsNumber = Number(val);
+        return !isNaN(priceAsNumber) && priceAsNumber >= 0;
+      },
+      {
+        message: "Le prix doit être un nombre positif supérieur ou égal à zéro",
+      }
+    )
+    .refine(val => /^\d+(\.\d{1,2})?$/.test(val.replace(",", ".")), {
+      message: "Format de prix invalide (ex: 10.50)",
+    }),
+});
+
+export type Price = z.infer<typeof priceSchema>;
+
 export const createEventSchema = z
   .object({
     title: z.string().trim().min(1, { message: "Le titre est requis" }),
@@ -32,6 +54,7 @@ export const createEventSchema = z
     startTime: z.string().regex(timeRegex, "Format d'heure invalide (HH:MM)"),
     endTime: z.string().regex(timeRegex, "Format d'heure invalide (HH:MM)"),
 
+    place: z.string().trim().min(1, { message: "Le lieu est requis" }),
     address: z.string().trim().min(1, { message: "L'adresse est requise" }),
     city: z.string().trim().min(1, { message: "La ville est requise" }),
     postalCode: z
@@ -52,7 +75,7 @@ export const createEventSchema = z
     hasPublicTransport: z.boolean().default(false),
 
     isPaid: z.boolean(),
-    price: z.string().optional(),
+    prices: z.array(priceSchema).default([]),
 
     isRecurring: z.boolean(),
     recurringDays: z.array(z.enum(validWeekDays)).optional().default([]),
@@ -72,28 +95,26 @@ export const createEventSchema = z
   })
   .superRefine((data, ctx) => {
     if (data.isPaid) {
-      if (!data.price || data.price.trim() === "") {
+      if (!data.prices || data.prices.length === 0) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: "Le prix est requis pour un événement payant",
-          path: ["price"],
+          message: "Au moins un prix est requis pour un événement payant",
+          path: ["prices"],
         });
-      } else {
-        const priceAsNumber = Number(data.price);
-        if (isNaN(priceAsNumber) || priceAsNumber < 0) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "Le prix doit être un nombre positif ou zéro",
-            path: ["price"],
-          });
-        } else if (!/^\d+(\.\d{1,2})?$/.test(data.price.replace(",", "."))) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "Format de prix invalide (ex: 10.50)",
-            path: ["price"],
+      }
+
+      data.prices.forEach((price, index) => {
+        const result = priceSchema.safeParse(price);
+        if (!result.success) {
+          result.error.issues.forEach(issue => {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: issue.message,
+              path: ["prices", index, ...(issue.path || [])],
+            });
           });
         }
-      }
+      });
     }
 
     if (data.isRecurring) {

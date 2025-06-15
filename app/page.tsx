@@ -4,11 +4,9 @@
  * @details Displays featured events and provides search functionality
  */
 import { getAllEvents } from "@/lib/db/events";
-import { EventDialog } from "@/components/events/dialogs/event-dialog";
 import Link from "next/link";
 import InputSearchEvent from "@/components/events/inputs/input-search-event";
-import { auth } from "@/lib/auth/auth";
-import { headers } from "next/headers";
+import { EventCard } from "@/components/events/event-card";
 
 /**
  * @brief Homepage component
@@ -22,20 +20,14 @@ import { headers } from "next/headers";
  * @returns React component for homepage
  */
 export default async function Home() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  const user = session?.user;
-
   const events = await getAllEvents();
 
-  const featuredEvents = events.sort(() => 0.5 - Math.random()).slice(0, 4);
+  const featuredEvents = events.sort(() => 0.5 - Math.random()).slice(0, 5);
 
   return (
     <main className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative h-[600px] flex items-center justify-center bg-gradient-to-r from-primary/10 to-primary/5">
+      <section className="h-[600px] flex items-center justify-center bg-gradient-to-r from-primary/10 to-primary/5">
         <div className="container px-4 mx-auto text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
             Découvrez des événements exceptionnels
@@ -60,14 +52,9 @@ export default async function Home() {
             Voir tous les événements
           </Link>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {featuredEvents.map(event => (
-            <EventDialog
-              key={event.id}
-              event={event}
-              user={user}
-              variant="default"
-            />
+            <EventCard key={event.id} event={event} />
           ))}
         </div>
       </section>

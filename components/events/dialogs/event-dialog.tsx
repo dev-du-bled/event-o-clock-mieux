@@ -41,7 +41,6 @@ import { formatEventDate, formatEventTime } from "@/lib/utils";
 interface EventDialogProps {
   user?: typeof auth.$Infer.Session.user;
   event: Event;
-  variant: "default" | "edit";
 }
 
 /**
@@ -57,7 +56,7 @@ interface EventDialogProps {
  * @param favoriteLoading - A boolean flag to indicate if the favorite action is loading.
  * @param showFavoriteButton - A flag to control whether the favorite button is shown.
  */
-export function EventDialog({ event, user, variant }: EventDialogProps) {
+export function EventDialog({ event, user }: EventDialogProps) {
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [loading, setIsLoading] = useState<boolean>(false);
 
@@ -89,12 +88,12 @@ export function EventDialog({ event, user, variant }: EventDialogProps) {
   return (
     <Dialog>
       <DialogTrigger className="cursor-pointer">
-        <EventCard event={event} variant={variant} />
+        <EventCard event={event} />
       </DialogTrigger>
       <DialogContent className="max-w-4xl w-[95vw] max-h-[95vh] sm:max-h-[90vh] p-0 overflow-hidden">
         <div className="flex flex-col h-full max-h-[95vh] sm:max-h-[90vh]">
           <DialogHeader className="px-4 sm:px-6 py-4 border-b shrink-0">
-            <DialogTitle className="text-xl sm:text-2xl font-bold pr-8">
+            <DialogTitle className="text-xl sm:text-2xl font-bold">
               {event.title}
             </DialogTitle>
           </DialogHeader>
@@ -102,34 +101,32 @@ export function EventDialog({ event, user, variant }: EventDialogProps) {
           <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4">
             <div className="flex flex-col space-y-6">
               {/* Image Section */}
-              <div className="w-full">
-                <div className="overflow-hidden rounded-lg">
-                  {event.images && event.images.length > 0 ? (
-                    <Carousel>
-                      <CarouselContent>
-                        {event.images.map((img, index) => (
-                          <CarouselItem key={`${event.id} image-${index}`}>
-                            <div className="relative w-full h-64 sm:h-80">
-                              <Image
-                                src={img}
-                                alt={event.title}
-                                width={800}
-                                height={450}
-                                className="object-cover object-center rounded-lg"
-                              />
-                            </div>
-                          </CarouselItem>
-                        ))}
-                      </CarouselContent>
-                      <CarouselPrevious className="left-2" />
-                      <CarouselNext className="right-2" />
-                    </Carousel>
-                  ) : (
-                    <div className="w-full h-64 sm:h-80 bg-gray-200 flex items-center justify-center">
-                      <Calendar className="w-12 h-12 text-gray-400" />
-                    </div>
-                  )}
-                </div>
+              <div className="overflow-hidden rounded-lg">
+                {event.images && event.images.length > 0 ? (
+                  <Carousel>
+                    <CarouselContent>
+                      {event.images.map((img, index) => (
+                        <CarouselItem key={`${event.id} image-${index}`}>
+                          <div className="relative w-full h-64 sm:h-80">
+                            <Image
+                              src={img}
+                              alt={event.title}
+                              width={800}
+                              height={450}
+                              className="object-cover object-center rounded-lg"
+                            />
+                          </div>
+                        </CarouselItem>
+                      ))}
+                    </CarouselContent>
+                    <CarouselPrevious className="left-2" />
+                    <CarouselNext className="right-2" />
+                  </Carousel>
+                ) : (
+                  <div className="w-full h-64 sm:h-80 bg-gray-200 flex items-center justify-center">
+                    <Calendar className="w-12 h-12 text-gray-400" />
+                  </div>
+                )}
               </div>
 
               {/* Content Section */}
@@ -147,7 +144,7 @@ export function EventDialog({ event, user, variant }: EventDialogProps) {
                   <span
                     className={`${event.isPaid ? "bg-primary" : "bg-green-500"} text-white text-xs sm:text-sm font-semibold px-2 sm:px-3 py-1 rounded-full`}
                   >
-                    {event.isPaid ? `${event.price} €` : "Gratuit"}
+                    {event.isPaid ? `${event.prices} €` : "Gratuit"}
                   </span>
                 </div>
 

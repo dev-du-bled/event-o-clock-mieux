@@ -19,6 +19,7 @@ import EventLocationForm from "./fields/EventLocationForm";
 import EventImageUpload from "./fields/EventImageUpload";
 import EventFinancialsAndContactForm from "./fields/EventFinancialsAndContactForm";
 import { Base64ToFile, searchAddress } from "@/lib/utils";
+import { EventStatus } from "@prisma/client";
 
 // Helper type pour les erreurs Zod formatées
 type FieldErrors = z.inferFlattenedErrors<
@@ -79,7 +80,7 @@ export default function EventForm({
       setFormData(prev => ({ ...prev, price: 0 }));
       setFormErrors(prevErrors => {
         const newErrors = { ...prevErrors };
-        delete newErrors.price;
+        delete newErrors.prices;
         return newErrors;
       });
     }
@@ -139,12 +140,14 @@ export default function EventForm({
     const fullAddress = `${housenumber ? housenumber + " " : ""}${street}`;
     setFormData(prev => ({
       ...prev,
+      place: feature.properties.label, //TODO: change to correct value
       address: fullAddress,
       city,
       postalCode: postcode,
     }));
     setFormErrors(prev => ({
       ...prev,
+      place: undefined,
       address: undefined,
       city: undefined,
       postalCode: undefined,
@@ -186,7 +189,9 @@ export default function EventForm({
       isPaid,
       isRecurring,
       recurringDays: isRecurring ? recurringDays : [],
-      price: isPaid ? formData.price.toString() : undefined,
+      prices: isPaid
+        ? (formData.prices as { type: string; price: string }[])
+        : [{ type: "normal", price: "0" }],
     };
 
     const validationResult = createEventSchema.safeParse(dataToValidate);
@@ -207,12 +212,12 @@ export default function EventForm({
       const validatedData = validationResult.data;
       const eventData = {
         ...validatedData,
-        startDate: validatedData.startDate!,
-        endDate: validatedData.endDate!,
-        price: validatedData.isPaid ? parseFloat(validatedData.price!) : 0,
+        startDate: validatedData.startDate || "",
+        endDate: validatedData.endDate || "",
+        prices: validatedData.isPaid ? validatedData.prices : [],
         createdBy: user.id,
         images: [],
-        status: "PUBLISHED" as const,
+        status: EventStatus.PUBLISHED,
         recurringEndDate: null,
         organizerWebsite: validatedData.organizerWebsite || "",
         organizerPhone: validatedData.organizerPhone || "",
@@ -322,6 +327,10 @@ export default function EventForm({
       />
 
       <EventLocationForm
+        place={formData.place}
+        setPlace={newPlace =>
+          setFormData(prev => ({ ...prev, place: newPlace }))
+        }
         address={formData.address}
         handleAddressChange={handleAddressChange}
         addressInputRef={addressInputRef}
@@ -373,12 +382,12 @@ export default function EventForm({
       <EventFinancialsAndContactForm
         isPaid={isPaid}
         setIsPaid={setIsPaid}
-        price={formData.price.toString()}
-        setPrice={newPrice =>
-          setFormData(prev => ({ ...prev, price: parseInt(newPrice) }))
+        prices={formData.prices as { type: string; price: string }[]}
+        setPrices={newPrice =>
+          setFormData(prev => ({ ...prev, prices: newPrice }))
         }
-        clearPriceError={() =>
-          setFormErrors(prev => ({ ...prev, price: undefined }))
+        clearPricesError={() =>
+          setFormErrors(prev => ({ ...prev, prices: undefined }))
         }
         organizerWebsite={formData.organizerWebsite}
         setOrganizerWebsite={newWebsite =>

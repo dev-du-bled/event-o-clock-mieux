@@ -17,6 +17,9 @@ export async function createEvent(eventData: EventDataType) {
     const event = await prisma.event.create({
       data: {
         ...eventData,
+        prices: eventData.prices
+          ? eventData.prices.filter(price => price !== null)
+          : undefined,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -93,6 +96,9 @@ export async function updateEvent(
     await prisma.event.update({
       data: {
         ...eventData,
+        prices: eventData.prices
+          ? eventData.prices.filter(price => price !== null)
+          : undefined,
         updatedAt: new Date(),
       },
       where: {

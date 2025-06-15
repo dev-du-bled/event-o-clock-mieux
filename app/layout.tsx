@@ -19,7 +19,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="fr">
+    <html lang="fr" suppressHydrationWarning>
       <head>
         {process.env.NODE_ENV === "development" && (
           <Script src="https://unpkg.com/react-scan/dist/auto.global.js" />

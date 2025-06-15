@@ -82,7 +82,7 @@ export async function Navbar() {
         </nav>
 
         {/* Boutons d'action */}
-        <nav className="hidden space-x-4 md:!flex">
+        <nav className="hidden space-x-4 md:flex">
           <ProfileMenu />
         </nav>
 

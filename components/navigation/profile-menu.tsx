@@ -113,26 +113,30 @@ export default function ProfileMenu() {
                 Mon Profil
               </span>
             </Link>
-            <Link
-              onClick={() => setIsOpen(false)}
-              href="/create-event"
-              className="flex items-center hover:text-primary text-gra() => setIsOpen(false)y-600 transition-colors"
-            >
-              <span className="flex items-center">
-                <PlusCircle className="w-5 h-5 mr-1" />
-                Créer un événement
-              </span>
-            </Link>
-            <Link
-              onClick={() => setIsOpen(false)}
-              href="/my-events"
-              className="flex items-center hover:text-primary text-gray-600 transition-colors"
-            >
-              <span className="flex items-center">
-                <Tag className="mr-1 h-5 w-5" />
-                Mes événements
-              </span>
-            </Link>
+            {user.role === Role.organizer && (
+              <>
+                <Link
+                  onClick={() => setIsOpen(false)}
+                  href="/create-event"
+                  className="flex items-center hover:text-primary text-gra() => setIsOpen(false)y-600 transition-colors"
+                >
+                  <span className="flex items-center">
+                    <PlusCircle className="w-5 h-5 mr-1" />
+                    Créer un événement
+                  </span>
+                </Link>
+                <Link
+                  onClick={() => setIsOpen(false)}
+                  href="/my-events"
+                  className="flex items-center hover:text-primary text-gray-600 transition-colors"
+                >
+                  <span className="flex items-center">
+                    <Tag className="mr-1 h-5 w-5" />
+                    Mes événements
+                  </span>
+                </Link>
+              </>
+            )}
             <Link
               onClick={() => setIsOpen(false)}
               href="/favorites"
@@ -143,7 +147,7 @@ export default function ProfileMenu() {
                 Favoris
               </span>
             </Link>
-            {user.role == Role.admin && (
+            {user.role === Role.admin && (
               <Link
                 onClick={() => setIsOpen(false)}
                 href="/administration"

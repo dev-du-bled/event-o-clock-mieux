@@ -15,6 +15,7 @@ enum ContactStatus {
 
 enum Role {
   user
+  organizer
   admin
 }
 
@@ -109,6 +110,7 @@ model Event {
   startTime          String
   endDate            String
   endTime            String
+  place              String
   address            String
   city               String
   postalCode         String
@@ -116,7 +118,7 @@ model Event {
   images             String[]
   categories         String[]
   isPaid             Boolean     @default(false)
-  price              Float       @default(0)
+  prices             Json[]      @default([]) // [{type: "cat1", price: 25.99}, {type: "cat2", price: 15.50}]
   organizerWebsite   String
   organizerPhone     String
   createdBy          String
