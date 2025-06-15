@@ -83,8 +83,8 @@ export default function EditProfile({ user }: EditProfileProps) {
               />
             </div>
           ) : (
-            <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center mx-auto">
-              <User className="w-16 h-16 text-gray-400" />
+            <div className="w-32 h-32 rounded-full bg-muted flex items-center justify-center mx-auto">
+              <User className="w-16 h-16 text-muted-foreground" />
             </div>
           )}
           <div className="absolute inset-0 flex items-center justify-center bg-black/70 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
@@ -98,7 +98,7 @@ export default function EditProfile({ user }: EditProfileProps) {
           accept="image/*"
           className="hidden"
         />
-        <p className="mt-2 text-sm text-gray-600">
+        <p className="mt-2 text-sm text-muted-foreground">
           Cliquez pour modifier votre photo de profil
         </p>
       </div>
@@ -107,7 +107,7 @@ export default function EditProfile({ user }: EditProfileProps) {
       <div>
         <label
           htmlFor="displayName"
-          className="block text-sm font-medium text-gray-700 mb-2"
+          className="block text-sm font-medium text-foreground mb-2"
         >
           Nom d&apos;affichage
         </label>
@@ -116,28 +116,28 @@ export default function EditProfile({ user }: EditProfileProps) {
           id="displayName"
           value={displayName}
           onChange={e => setDisplayName(e.target.value)}
-          className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
+          className="w-full rounded-lg border border-input bg-background text-foreground px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
           placeholder="Votre nom d'affichage"
         />
       </div>
 
       {/* Email  */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-foreground mb-2">
           Email
         </label>
         <input
           type="email"
           value={user.email || ""}
           disabled
-          className="w-full rounded-lg border border-gray-300 px-4 py-2 bg-gray-50 text-gray-500"
+          className="w-full rounded-lg border border-input px-4 py-2 bg-muted text-muted-foreground"
         />
       </div>
 
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-primary text-white py-2 rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full bg-primary text-primary-foreground py-2 rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {loading ? "Mise à jour..." : "Enregistrer les modifications"}
       </button>

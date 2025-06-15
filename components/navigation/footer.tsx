@@ -39,7 +39,7 @@ const socialIcons = [
  */
 export function Footer() {
   return (
-    <footer className="bg-white border-t border-gray-200">
+    <footer className="bg-background border-t">
       <div className="container mx-auto px-4 py-12">
         {/* Alerts */}
 
@@ -57,7 +57,7 @@ export function Footer() {
                 Event&apos;O&apos;Clock
               </span>
             </div>
-            <p className="mt-4 text-gray-600 max-w-md">
+            <p className="mt-4 text-muted-foreground max-w-md">
               Découvrez et participez à des événements exceptionnels. Notre
               plateforme vous connecte aux meilleurs événements près de chez
               vous.
@@ -66,7 +66,9 @@ export function Footer() {
 
           {/* Links */}
           <div>
-            <h3 className="font-semibold text-gray-900 mb-4">Liens rapides</h3>
+            <h3 className="font-semibold text-foreground mb-4">
+              Liens rapides
+            </h3>
             <ul className="space-y-3">
               <li>
                 <AboutModal />
@@ -74,7 +76,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/contact"
-                  className="text-gray-600 hover:text-primary transition-colors"
+                  className="text-muted-foreground hover:text-primary transition-colors"
                 >
                   Contact
                 </Link>
@@ -82,7 +84,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/faq"
-                  className="text-gray-600 hover:text-primary transition-colors"
+                  className="text-muted-foreground hover:text-primary transition-colors"
                 >
                   FAQ
                 </Link>
@@ -92,7 +94,7 @@ export function Footer() {
 
           {/* Legal */}
           <div>
-            <h3 className="font-semibold text-gray-900 mb-4">Légal</h3>
+            <h3 className="font-semibold text-foreground mb-4">Légal</h3>
             <ul className="space-y-3">
               {toastStrings.map(elt => {
                 return (
@@ -104,7 +106,7 @@ export function Footer() {
                           closeButton: true,
                         })
                       }
-                      className="text-start text-gray-600 hover:text-primary transition-colors"
+                      className="text-start text-muted-foreground hover:text-primary transition-colors"
                     >
                       {elt.title}
                     </button>
@@ -116,9 +118,9 @@ export function Footer() {
         </div>
 
         {/* Barre inférieure */}
-        <div className="mt-12 pt-8 border-t border-gray-200">
+        <div className="mt-12 pt-8 border-t">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-600 text-sm">
+            <p className="text-muted-foreground text-sm">
               © {new Date().getFullYear()} Event&apos;O&apos;Clock. Tous droits
               réservés.
             </p>
@@ -133,7 +135,7 @@ export function Footer() {
                         closeButton: true,
                       })
                     }
-                    className="text-gray-600 hover:text-primary transition-colors"
+                    className="text-muted-foreground hover:text-primary transition-colors"
                   >
                     {icon}
                   </button>

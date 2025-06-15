@@ -49,7 +49,7 @@ export async function Navbar() {
   // }, []);
 
   return (
-    <header className="fixed z-50 w-full border-b border-gray-200 bg-white">
+    <header className="fixed z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex h-16 items-center justify-between px-4">
         {/* Logo and navigation  */}
         <nav className="flex items-center">
@@ -62,7 +62,7 @@ export async function Navbar() {
           <div className="ml-10 hidden items-center space-x-8 md:!flex ">
             <Link
               href="/events"
-              className="hover:text-primary text-gray-600 transition-colors"
+              className="hover:text-primary text-muted-foreground transition-colors"
             >
               <span className="flex items-center">
                 <Ticket className="mr-1 h-5 w-5" />
@@ -71,7 +71,7 @@ export async function Navbar() {
             </Link>
             <Link
               href="/cinema"
-              className="hover:text-primary text-gray-600 transition-colors"
+              className="hover:text-primary text-muted-foreground transition-colors"
             >
               <span className="flex items-center">
                 <Film className="mr-1 h-5 w-5" />

@@ -60,34 +60,36 @@ export default async function Profile() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen bg-background py-12">
       <div className="container mx-auto px-4 max-w-4xl">
-        <h1 className="text-3xl font-bold mb-8">Mon profil</h1>
+        <h1 className="text-3xl font-bold mb-8 text-foreground">Mon profil</h1>
 
         <div className="grid grid-cols-1 gap-8">
           {/* User profile */}
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-xl font-semibold mb-6">
+          <div className="bg-card border border-border rounded-lg shadow-lg p-6">
+            <h2 className="text-xl font-semibold mb-6 text-foreground">
               Informations personnelles
             </h2>
 
             <EditProfile user={user} />
           </div>
 
-          <div className="bg-white rounded-lg shadow-lg p-6">
+          <div className="bg-card border border-border rounded-lg shadow-lg p-6">
             <div className="flex items-center gap-2 mb-6">
-              <Ticket className="w-6 h-6" />
-              <h2 className="text-xl font-semibold">Mes réservations</h2>
+              <Ticket className="w-6 h-6 text-foreground" />
+              <h2 className="text-xl font-semibold text-foreground">
+                Mes réservations
+              </h2>
             </div>
 
             {bookings.length === 0 ? (
               <div className="text-center py-8">
-                <p className="text-gray-600">
+                <p className="text-muted-foreground">
                   Vous n&apos;avez pas encore de réservations
                 </p>
                 <Link
                   href="/cinema"
-                  className="inline-block mt-4 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+                  className="inline-block mt-4 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
                 >
                   Voir les films
                 </Link>
@@ -105,8 +107,8 @@ export default async function Profile() {
                 </TableHeader>
                 <TableBody className="divide-y">
                   {bookings.map(booking => (
-                    <TableRow key={booking.id} className="bg-white">
-                      <TableCell className="whitespace-nowrap font-medium text-gray-900">
+                    <TableRow key={booking.id} className="bg-card">
+                      <TableCell className="whitespace-nowrap font-medium text-foreground">
                         {booking.movie?.title || `Film #${booking.movieId}`}
                       </TableCell>
                       <TableCell>
@@ -126,10 +128,10 @@ export default async function Profile() {
                         <span
                           className={`px-2 py-1 rounded-full text-xs font-semibold ${
                             booking.status === "confirmed"
-                              ? "bg-green-100 text-green-800"
+                              ? "bg-success/10 text-success border border-success/20"
                               : booking.status === "pending"
-                                ? "bg-yellow-100 text-yellow-800"
-                                : "bg-red-100 text-red-800"
+                                ? "bg-primary/10 text-primary border border-primary/20"
+                                : "bg-destructive/10 text-destructive border border-destructive/20"
                           }`}
                         >
                           {booking.status === "confirmed"

@@ -56,36 +56,36 @@ export default function InputSearchEvent({ variant }: InputSearchEventProps) {
   const inputs = (
     <>
       <div className="relative w-full md:w-auto">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
         <input
           type="text"
           placeholder="Rechercher un événement..."
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary/20"
+          className="w-full pl-10 pr-4 py-2 rounded-lg border border-input bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
         />
       </div>
       <div className="relative w-full md:w-auto">
-        <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+        <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
         <input
           type="text"
           placeholder="Ville"
           value={location}
           onChange={handleCityChange}
           onFocus={() => setShowSuggestions(true)}
-          className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary/20"
+          className="w-full pl-10 pr-4 py-2 rounded-lg border border-input bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
         />
         {showSuggestions && citySuggestions.length > 0 && (
-          <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+          <div className="absolute z-10 w-full mt-1 bg-popover border border-border rounded-lg shadow-lg max-h-60 overflow-y-auto">
             {citySuggestions.map((feature, index) => (
               <button
                 key={index}
                 type="button"
-                className="w-full px-4 py-2 text-left hover:bg-gray-50 focus:outline-none focus:bg-gray-50 cursor-pointer"
+                className="w-full px-4 py-2 text-left hover:bg-accent focus:outline-none focus:bg-accent cursor-pointer text-popover-foreground"
                 onClick={() => handleCitySelect(feature.properties.city)}
               >
                 {feature.properties.city}
-                <span className="text-sm text-gray-500 ml-2">
+                <span className="text-sm text-muted-foreground ml-2">
                   {feature.properties.postcode}
                 </span>
               </button>
@@ -104,7 +104,7 @@ export default function InputSearchEvent({ variant }: InputSearchEventProps) {
       {inputs}
       <button
         type="submit"
-        className="w-full md:w-auto px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors cursor-pointer"
+        className="w-full md:w-auto px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors cursor-pointer"
       >
         Rechercher
       </button>

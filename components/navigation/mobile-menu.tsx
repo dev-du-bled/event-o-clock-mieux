@@ -67,7 +67,7 @@ export default function MobileMenu() {
     <div className="md:hidden">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex justify-center text-gray-600 hover:text-primary"
+        className="flex justify-center text-muted-foreground hover:text-primary"
       >
         {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
       </button>
@@ -75,14 +75,14 @@ export default function MobileMenu() {
       {/* Menu mobile */}
       {isOpen && (
         <div
-          className="fixed bg-white border top-16 left-0 w-full px-4 py-4"
+          className="fixed bg-background border top-16 left-0 w-full px-4 py-4"
           ref={menuRef}
         >
           <div className="flex flex-col space-y-4">
             <Link
               onClick={() => setIsOpen(false)}
               href="/events"
-              className="text-gray-600 hover:text-primary transition-colors"
+              className="text-muted-foreground hover:text-primary transition-colors"
             >
               <span className="flex items-center">
                 <Ticket className="mr-1 h-5 w-5" />
@@ -92,7 +92,7 @@ export default function MobileMenu() {
             <Link
               onClick={() => setIsOpen(false)}
               href="/cinema"
-              className="text-gray-600 hover:text-primary transition-colors"
+              className="text-muted-foreground hover:text-primary transition-colors"
             >
               <span className="flex items-center">
                 <Film className="w-5 h-5 mr-1" />
@@ -107,7 +107,7 @@ export default function MobileMenu() {
                     <Link
                       onClick={() => setIsOpen(false)}
                       href="/my-events"
-                      className="text-gray-600 hover:text-primary transition-colors"
+                      className="text-muted-foreground hover:text-primary transition-colors"
                     >
                       <span className="flex items-center">
                         <Tag className="mr-1 h-5 w-5" />
@@ -117,7 +117,7 @@ export default function MobileMenu() {
                     <Link
                       onClick={() => setIsOpen(false)}
                       href="/create-event"
-                      className="text-gray-600 hover:text-primary transition-colors"
+                      className="text-muted-foreground hover:text-primary transition-colors"
                     >
                       <span className="flex items-center">
                         <PlusCircle className="w-5 h-5 mr-1" />
@@ -129,7 +129,7 @@ export default function MobileMenu() {
                 <Link
                   onClick={() => setIsOpen(false)}
                   href="/favorites"
-                  className="text-gray-600 hover:text-primary transition-colors"
+                  className="text-muted-foreground hover:text-primary transition-colors"
                 >
                   <span className="flex items-center">
                     <Heart className="w-5 h-5 mr-1" />
@@ -139,7 +139,7 @@ export default function MobileMenu() {
                 <Link
                   onClick={() => setIsOpen(false)}
                   href="/cinema/cart"
-                  className="text-gray-600 hover:text-primary transition-colors"
+                  className="text-muted-foreground hover:text-primary transition-colors"
                 >
                   <span className="flex items-center">
                     <ShoppingCart className="w-5 h-5 mr-1" />
@@ -150,7 +150,7 @@ export default function MobileMenu() {
                 <Link
                   onClick={() => setIsOpen(false)}
                   href="/profile"
-                  className="text-gray-600 hover:text-primary transition-colors"
+                  className="text-muted-foreground hover:text-primary transition-colors"
                 >
                   <span className="flex items-center">
                     {user.image ? (
@@ -174,7 +174,7 @@ export default function MobileMenu() {
                 <Link
                   onClick={() => setIsOpen(false)}
                   href="/login"
-                  className="text-gray-600 hover:text-primary transition-colors"
+                  className="text-muted-foreground hover:text-primary transition-colors"
                 >
                   <span className="flex items-center">
                     <LogIn className="mr-1 h-5 w-5" />
@@ -184,7 +184,7 @@ export default function MobileMenu() {
                 <Link
                   onClick={() => setIsOpen(false)}
                   href="/register"
-                  className="text-gray-600 hover:text-primary transition-colors"
+                  className="text-muted-foreground hover:text-primary transition-colors"
                 >
                   <span className="flex items-center">
                     <Clipboard className="mr-1 h-5 w-5" />
@@ -199,7 +199,7 @@ export default function MobileMenu() {
                   <Link
                     onClick={() => setIsOpen(false)}
                     href="/administration"
-                    className="flex items-center hover:text-primary text-gray-600 transition-colors"
+                    className="flex items-center hover:text-primary text-muted-foreground transition-colors"
                   >
                     <span className="flex items-center">
                       <LockKeyhole className="w-5 h-5 mr-1" />

@@ -59,9 +59,11 @@ export default async function Cinema() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className="min-h-screen bg-background p-4">
       <div className="container mx-auto max-w-6xl">
-        <h1 className="text-3xl font-bold mb-8">Salles de cinéma</h1>
+        <h1 className="text-3xl font-bold mb-8 text-foreground">
+          Salles de cinéma
+        </h1>
 
         {/* Movie Room */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

@@ -68,7 +68,7 @@ const EventSchedulingForm: React.FC<EventSchedulingFormProps> = ({
             }}
             className="rounded border-gray-300 text-primary focus:ring-primary"
           />
-          <span className="text-sm font-medium text-gray-700">
+          <span className="text-sm font-medium text-foreground">
             <Repeat className="inline-block w-4 h-4 mr-2" />
             Événement récurrent
           </span>

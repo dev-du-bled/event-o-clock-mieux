@@ -36,29 +36,29 @@ export default async function MyEvents() {
   const events = await getUserEvents(user.id);
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen bg-background py-12">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">Mes événements</h1>
+          <h1 className="text-3xl font-bold text-foreground">Mes événements</h1>
           <Link
             href="/create-event"
-            className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+            className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
           >
             Créer un événement
           </Link>
         </div>
 
         {events.length === 0 ? (
-          <div className="bg-white rounded-lg shadow-lg p-6 text-center">
-            <h2 className="text-xl font-semibold mb-4">
+          <div className="bg-card rounded-lg shadow-lg p-6 text-center">
+            <h2 className="text-xl font-semibold mb-4 text-foreground">
               Vous n&apos;avez pas encore créé d&apos;événements
             </h2>
-            <p className="text-gray-600 mb-4">
+            <p className="text-muted-foreground mb-4">
               Commencez par créer votre premier événement !
             </p>
             <Link
               href="/create-event"
-              className="inline-block px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+              className="inline-block px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
             >
               Créer un événement
             </Link>

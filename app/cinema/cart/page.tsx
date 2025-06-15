@@ -147,14 +147,16 @@ export default function CinemaCart() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gray-50 py-12">
+      <div className="min-h-screen bg-background py-12">
         <div className="container mx-auto px-4 max-w-2xl">
-          <div className="bg-white rounded-lg shadow-lg p-8 text-center">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Check className="w-8 h-8 text-green-500" />
+          <div className="bg-card rounded-lg shadow-lg p-8 text-center">
+            <div className="w-16 h-16 bg-success/10 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Check className="w-8 h-8 text-success" />
             </div>
-            <h2 className="text-2xl font-bold mb-4">Réservation confirmée !</h2>
-            <p className="text-gray-600 mb-6">
+            <h2 className="text-2xl font-bold mb-4 text-foreground">
+              Réservation confirmée !
+            </h2>
+            <p className="text-muted-foreground mb-6">
               Votre réservation a été effectuée avec succès. Vous recevrez un
               email de confirmation.
             </p>
@@ -172,10 +174,10 @@ export default function CinemaCart() {
 
   if (cartItems.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 py-12">
+      <div className="min-h-screen bg-background py-12">
         <div className="container mx-auto px-4">
-          <div className="bg-white rounded-lg shadow-lg p-6 text-center">
-            <h2 className="text-xl font-semibold mb-4">
+          <div className="bg-card rounded-lg shadow-lg p-6 text-center">
+            <h2 className="text-xl font-semibold mb-4 text-foreground">
               Votre panier est vide
             </h2>
             <Link
@@ -191,9 +193,9 @@ export default function CinemaCart() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen bg-background py-12">
       <div className="container mx-auto px-4 max-w-4xl">
-        <h1 className="text-3xl font-bold mb-8">Panier</h1>
+        <h1 className="text-3xl font-bold mb-8 text-foreground">Panier</h1>
 
         {error && (
           <Alert variant="destructive" className="mb-6">
@@ -207,30 +209,30 @@ export default function CinemaCart() {
           {/* Form */}
           <div className="space-y-8">
             {/* Adress */}
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <h2 className="text-xl font-semibold mb-4 flex items-center">
+            <div className="bg-card rounded-lg shadow-lg p-6">
+              <h2 className="text-xl font-semibold mb-4 flex items-center text-foreground">
                 <MapPin className="w-5 h-5 mr-2" />
                 Adresse
               </h2>
               <div className="space-y-4">
                 <div className="relative">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-foreground mb-1">
                     Rechercher une adresse
                   </label>
                   <input
                     type="text"
                     value={addressInput}
                     onChange={handleAddressChange}
-                    className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                    className="w-full rounded-lg border border-input bg-background text-foreground px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                     placeholder="Commencez à taper une adresse..."
                   />
                   {showSuggestions && addressSuggestions.length > 0 && (
-                    <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                    <div className="absolute z-10 w-full mt-1 bg-popover border border-border rounded-lg shadow-lg max-h-60 overflow-y-auto">
                       {addressSuggestions.map((feature, index) => (
                         <button
                           key={index}
                           type="button"
-                          className="w-full px-4 py-2 text-left hover:bg-gray-50 focus:outline-none focus:bg-gray-50"
+                          className="w-full px-4 py-2 text-left hover:bg-accent focus:outline-none focus:bg-accent text-popover-foreground"
                           onClick={() => handleAddressSelect(feature)}
                         >
                           {feature.properties.label}
@@ -242,27 +244,27 @@ export default function CinemaCart() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-foreground mb-1">
                       Numéro
                     </label>
                     <input
                       type="text"
                       value={streetNumber}
                       onChange={e => setStreetNumber(e.target.value)}
-                      className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                      className="w-full rounded-lg border border-input bg-background text-foreground px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                       placeholder="Ex: 12"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-foreground mb-1">
                       Rue
                     </label>
                     <input
                       type="text"
                       value={street}
                       onChange={e => setStreet(e.target.value)}
-                      className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                      className="w-full rounded-lg border border-input bg-background text-foreground px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                       placeholder="Nom de la rue"
                       required
                     />
@@ -271,27 +273,27 @@ export default function CinemaCart() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-foreground mb-1">
                       Ville
                     </label>
                     <input
                       type="text"
                       value={city}
                       onChange={e => setCity(e.target.value)}
-                      className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                      className="w-full rounded-lg border border-input bg-background text-foreground px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                       placeholder="Ville"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-foreground mb-1">
                       Code postal
                     </label>
                     <input
                       type="text"
                       value={postalCode}
                       onChange={e => setPostalCode(e.target.value)}
-                      className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                      className="w-full rounded-lg border border-input bg-background text-foreground px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                       placeholder="Code postal"
                       required
                     />
@@ -301,14 +303,14 @@ export default function CinemaCart() {
             </div>
 
             {/* Checkout */}
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <h2 className="text-xl font-semibold mb-4 flex items-center">
+            <div className="bg-card rounded-lg shadow-lg p-6">
+              <h2 className="text-xl font-semibold mb-4 flex items-center text-foreground">
                 <CreditCard className="w-5 h-5 mr-2" />
                 Paiement
               </h2>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-foreground mb-1">
                     Numéro de carte
                   </label>
                   <input
@@ -317,7 +319,7 @@ export default function CinemaCart() {
                     onChange={e =>
                       setCardNumber(formatCardNumber(e.target.value))
                     }
-                    className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                    className="w-full rounded-lg border border-input bg-background text-foreground px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                     placeholder="1234 5678 9012 3456"
                     maxLength={19}
                     required
@@ -325,7 +327,7 @@ export default function CinemaCart() {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-foreground mb-1">
                       Date d&apos;expiration
                     </label>
                     <input
@@ -334,14 +336,14 @@ export default function CinemaCart() {
                       onChange={e =>
                         setExpiryDate(formatExpiryDate(e.target.value))
                       }
-                      className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                      className="w-full rounded-lg border border-input bg-background text-foreground px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                       placeholder="MM/YY"
                       maxLength={5}
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-foreground mb-1">
                       CVV
                     </label>
                     <input
@@ -350,7 +352,7 @@ export default function CinemaCart() {
                       onChange={e =>
                         setCvv(e.target.value.replace(/\D/g, "").substr(0, 3))
                       }
-                      className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                      className="w-full rounded-lg border border-input bg-background text-foreground px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                       placeholder="123"
                       maxLength={3}
                       required
@@ -358,14 +360,14 @@ export default function CinemaCart() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-foreground mb-1">
                     Nom sur la carte
                   </label>
                   <input
                     type="text"
                     value={cardName}
                     onChange={e => setCardName(e.target.value)}
-                    className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                    className="w-full rounded-lg border border-input bg-background text-foreground px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary"
                     placeholder="JOHN DOE"
                     required
                   />
@@ -375,8 +377,8 @@ export default function CinemaCart() {
           </div>
 
           {/* Summary */}
-          <div className="bg-white rounded-lg shadow-lg p-6 h-fit">
-            <h2 className="text-xl font-semibold mb-4 flex items-center">
+          <div className="bg-card rounded-lg shadow-lg p-6 h-fit">
+            <h2 className="text-xl font-semibold mb-4 flex items-center text-foreground">
               <ShoppingCart className="w-5 h-5 mr-2" />
               Récapitulatif
             </h2>
@@ -387,20 +389,20 @@ export default function CinemaCart() {
                   className="flex justify-between items-center group"
                 >
                   <div className="flex-1">
-                    <span className="block">
+                    <span className="block text-foreground">
                       Siège {item.seatId} - {item.ticketType}
                     </span>
-                    <span className="text-sm text-gray-500">
+                    <span className="text-sm text-muted-foreground">
                       Salle {getRoomNumber(item.roomId)}
                     </span>
                   </div>
                   <div className="flex items-center gap-4">
-                    <span className="font-semibold">
+                    <span className="font-semibold text-foreground">
                       {item.price.toFixed(2)} €
                     </span>
                     <button
                       onClick={() => removeItem(item.seatId, item.roomId)}
-                      className="text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>

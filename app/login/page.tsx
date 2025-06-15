@@ -4,10 +4,10 @@ import LoginForm from "@/components/auth/login-form";
 export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12">
-      <div className="max-w-md w-full space-y-6 bg-white p-8 rounded-lg shadow-lg">
+      <div className="max-w-md w-full space-y-6 bg-card p-8 rounded-lg shadow-lg">
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-900">Connexion</h2>
-          <p className="mt-2 text-gray-600">
+          <h2 className="text-3xl font-bold text-foreground">Connexion</h2>
+          <p className="mt-2 text-muted-foreground">
             Bienvenue ! Connectez-vous pour accéder à votre compte.
           </p>
         </div>
@@ -15,7 +15,7 @@ export default function LoginPage() {
         <LoginForm />
 
         <div className="text-center">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-muted-foreground">
             Pas encore de compte ?{" "}
             <Link
               href="/register"

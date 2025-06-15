@@ -18,7 +18,7 @@ export default function CinemaCard({ movies, room }: CinemaCardProps) {
         <SeatsCinemaDialog room={room} />
       </div>
 
-      <h5 className="text-xl font-bold tracking-tight text-gray-900 mb-4">
+      <h5 className="text-xl font-bold tracking-tight text-foreground mb-4">
         {room.name}
       </h5>
 
@@ -43,14 +43,14 @@ export default function CinemaCard({ movies, room }: CinemaCardProps) {
                 <p className="font-semibold">
                   {movies.find(m => m.id === room.currentMovie?.id)?.title}
                 </p>
-                <div className="flex items-center text-sm text-gray-600">
+                <div className="flex items-center text-sm text-muted-foreground">
                   <Clock className="w-4 h-4 mr-1" />
                   <span>{room.currentMovie.showtime}</span>
                 </div>
-                <div className="flex items-center text-sm text-gray-600">
+                <div className="flex items-center text-sm text-muted-foreground">
                   <Ticket className="w-4 h-4 mr-1" />
                   <span>
-                    À partir de
+                    À partir de{" "}
                     {Math.min(
                       DEFAULT_PRICES.child,
                       DEFAULT_PRICES.student,
@@ -64,13 +64,13 @@ export default function CinemaCard({ movies, room }: CinemaCardProps) {
           )}
         </div>
       ) : (
-        <div className="flex items-center justify-center h-48 bg-gray-100 rounded-lg">
-          <Film className="w-12 h-12 text-gray-400" />
+        <div className="flex items-center justify-center h-48 bg-muted rounded-lg">
+          <Film className="w-12 h-12 text-muted-foreground" />
         </div>
       )}
 
       <div className="mt-4">
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-muted-foreground">
           Capacité: {room.capacity} places
         </p>
       </div>

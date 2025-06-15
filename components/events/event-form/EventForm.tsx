@@ -274,11 +274,11 @@ export default function EventForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white rounded-lg shadow-lg p-6 space-y-6"
+      className="bg-card border border-border rounded-lg shadow-lg p-6 space-y-6"
       noValidate
     >
       {error && (
-        <div className="p-4 bg-red-50 text-red-800 rounded-lg flex items-center">
+        <div className="p-4 bg-destructive/10 border border-destructive/20 text-destructive rounded-lg flex items-center">
           <AlertCircle className="mr-2 h-5 w-5" />
           {error}
         </div>
@@ -428,7 +428,7 @@ export default function EventForm({
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+        className="w-full bg-primary text-primary-foreground py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
       >
         {loading
           ? `${type === "create" ? "Création" : "Mise à jour"} en cours...`

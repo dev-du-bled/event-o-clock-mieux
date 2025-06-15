@@ -4,10 +4,10 @@ import RegisterForm from "@/components/auth/register-form";
 export default function RegisterPage() {
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12">
-      <div className="max-w-md w-full space-y-6 bg-white p-8 rounded-lg shadow-lg">
+      <div className="max-w-md w-full space-y-6 bg-card p-8 rounded-lg shadow-lg">
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-900">Inscription</h2>
-          <p className="mt-2 text-gray-600">
+          <h2 className="text-3xl font-bold text-foreground">Inscription</h2>
+          <p className="mt-2 text-muted-foreground">
             Créez votre compte pour rejoindre la communauté.
           </p>
         </div>
@@ -15,7 +15,7 @@ export default function RegisterPage() {
         <RegisterForm />
 
         <div className="text-center">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-muted-foreground">
             Déjà un compte ?
             <Link
               href="/login"

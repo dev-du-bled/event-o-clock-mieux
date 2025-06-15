@@ -138,8 +138,8 @@ export function EventDialog({ event, user }: EventDialogProps) {
                     <CarouselNext className="right-2" />
                   </Carousel>
                 ) : (
-                  <div className="w-full h-64 sm:h-80 bg-gray-200 flex items-center justify-center">
-                    <Calendar className="w-12 h-12 text-gray-400" />
+                  <div className="w-full h-64 sm:h-80 bg-muted flex items-center justify-center">
+                    <Calendar className="w-12 h-12 text-muted-foreground" />
                   </div>
                 )}
               </div>
@@ -165,7 +165,7 @@ export function EventDialog({ event, user }: EventDialogProps) {
 
                 {/* Date, Time, Location */}
                 <div className="space-y-2 sm:space-y-3">
-                  <div className="flex items-center text-gray-600 text-sm sm:text-base">
+                  <div className="flex items-center text-muted-foreground text-sm sm:text-base">
                     {event.isRecurring ? (
                       <Repeat className="w-4 h-4 sm:w-5 sm:h-5 mr-2 shrink-0" />
                     ) : (
@@ -175,11 +175,11 @@ export function EventDialog({ event, user }: EventDialogProps) {
                       {formatEventDate(event)}
                     </span>
                   </div>
-                  <div className="flex items-center text-gray-600 text-sm sm:text-base">
+                  <div className="flex items-center text-muted-foreground text-sm sm:text-base">
                     <Clock className="w-4 h-4 sm:w-5 sm:h-5 mr-2 shrink-0" />
                     <span>{formatEventTime(event)}</span>
                   </div>
-                  <div className="flex items-start text-gray-600 text-sm sm:text-base">
+                  <div className="flex items-start text-muted-foreground text-sm sm:text-base">
                     <MapPin className="w-4 h-4 sm:w-5 sm:h-5 mr-2 mt-0.5 shrink-0" />
                     <span className="break-words">{`${event.address} ${event.city} ${event.postalCode}`}</span>
                   </div>
@@ -190,7 +190,7 @@ export function EventDialog({ event, user }: EventDialogProps) {
                   <div className="text-base sm:text-lg font-semibold mb-2">
                     Description
                   </div>
-                  <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
+                  <p className="text-muted-foreground text-sm sm:text-base leading-relaxed">
                     {event.description}
                   </p>
                 </div>
@@ -202,7 +202,7 @@ export function EventDialog({ event, user }: EventDialogProps) {
                       Contact
                     </div>
                     {event.organizerPhone && (
-                      <div className="flex items-center text-gray-600 text-sm sm:text-base">
+                      <div className="flex items-center text-muted-foreground text-sm sm:text-base">
                         <Phone className="w-4 h-4 sm:w-5 sm:h-5 mr-2 shrink-0" />
                         <a
                           href={`tel:${event.organizerPhone}`}
@@ -213,7 +213,7 @@ export function EventDialog({ event, user }: EventDialogProps) {
                       </div>
                     )}
                     {event.organizerWebsite && (
-                      <div className="flex items-center text-gray-600 text-sm sm:text-base">
+                      <div className="flex items-center text-muted-foreground text-sm sm:text-base">
                         <Globe className="w-4 h-4 sm:w-5 sm:h-5 mr-2 shrink-0" />
                         <a
                           href={event.organizerWebsite}
@@ -232,7 +232,7 @@ export function EventDialog({ event, user }: EventDialogProps) {
                   <div className="text-base sm:text-lg font-semibold">
                     Informations pratiques
                   </div>
-                  <div className="flex items-start text-gray-600 text-sm sm:text-base">
+                  <div className="flex items-start text-muted-foreground text-sm sm:text-base">
                     <Info className="w-4 h-4 sm:w-5 sm:h-5 mr-2 mt-1 shrink-0" />
                     <ul className="list-disc list-inside space-y-1">
                       {event.isAccessible && (
@@ -251,16 +251,16 @@ export function EventDialog({ event, user }: EventDialogProps) {
 
           {/* Footer - Fixed at bottom */}
           {user && (
-            <DialogFooter className="px-4 sm:px-6 py-4 border-t shrink-0 bg-white">
+            <DialogFooter className="px-4 sm:px-6 py-4 border-t shrink-0 bg-background">
               <div className="flex justify-center sm:justify-start w-full">
                 <button
                   onClick={() => handleFavoriteClick(event.id)}
                   className={`px-4 sm:px-6 py-2 sm:py-3 rounded-lg transition-colors flex items-center cursor-pointer text-sm sm:text-base w-full sm:w-auto justify-center ${
                     loading
-                      ? "bg-gray-100 text-gray-700"
+                      ? "bg-muted text-muted-foreground"
                       : isFavorite
                         ? "bg-red-500 text-white hover:bg-red-600"
-                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                        : "bg-muted text-foreground hover:bg-accent"
                   }`}
                   disabled={loading}
                 >

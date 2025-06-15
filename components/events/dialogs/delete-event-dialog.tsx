@@ -71,7 +71,7 @@ export default function DeleteEventDialog({ event }: DeleteEventDialogProps) {
             Confirmer la suppression
           </DialogTitle>
         </DialogHeader>
-        <p className="text-gray-600">
+        <p className="text-muted-foreground">
           Êtes-vous sûr de vouloir supprimer l&apos;événement &quot;
           {event.title}&quot; ? Cette action est irréversible.
         </p>

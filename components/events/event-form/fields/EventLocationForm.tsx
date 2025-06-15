@@ -68,7 +68,7 @@ const EventLocationForm: React.FC<EventLocationFormProps> = ({
     <>
       {/* Address Section */}
       <div className="space-y-4">
-        <label className="block text-sm font-medium text-gray-700">
+        <label className="block text-sm font-medium text-foreground">
           <MapPin className="inline-block w-4 h-4 mr-2" />
           Adresse de l&apos;événement *
         </label>
@@ -79,8 +79,8 @@ const EventLocationForm: React.FC<EventLocationFormProps> = ({
           value={place}
           onChange={e => setPlace(e.target.value)}
           className={`w-full rounded-lg border ${
-            formErrors.place ? "border-red-500" : "border-gray-300"
-          } px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary`}
+            formErrors.place ? "border-destructive" : "border-input"
+          } bg-background px-4 py-2 text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary`}
           placeholder="Lieu de l'événement"
           required
           aria-invalid={!!formErrors.place}
@@ -95,20 +95,20 @@ const EventLocationForm: React.FC<EventLocationFormProps> = ({
             value={address}
             onChange={handleAddressChange}
             className={`w-full rounded-lg border ${
-              formErrors.address ? "border-red-500" : "border-gray-300"
-            } px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary`}
+              formErrors.address ? "border-destructive" : "border-input"
+            } bg-background px-4 py-2 text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary`}
             placeholder="Numéro et nom de la rue"
             autoComplete="off"
             aria-invalid={!!formErrors.address}
             aria-describedby={formErrors.address ? "address-error" : undefined}
           />
           {showSuggestions && addressSuggestions.length > 0 && (
-            <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+            <div className="absolute z-10 w-full mt-1 bg-popover border border-border rounded-lg shadow-lg max-h-60 overflow-y-auto">
               {addressSuggestions.map((feature, index) => (
                 <button
                   key={index}
                   type="button"
-                  className="w-full px-4 py-2 text-left hover:bg-gray-50 focus:outline-none focus:bg-gray-50"
+                  className="w-full px-4 py-2 text-left hover:bg-accent focus:outline-none focus:bg-accent text-foreground"
                   onClick={() => handleAddressSelect(feature)}
                 >
                   {feature.properties.label}
@@ -132,8 +132,8 @@ const EventLocationForm: React.FC<EventLocationFormProps> = ({
                 clearCityError();
               }}
               className={`w-full rounded-lg border ${
-                formErrors.city ? "border-red-500" : "border-gray-300"
-              } px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary`}
+                formErrors.city ? "border-destructive" : "border-input"
+              } bg-background px-4 py-2 text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary`}
               placeholder="Ville"
               required
               aria-invalid={!!formErrors.city}
@@ -154,8 +154,8 @@ const EventLocationForm: React.FC<EventLocationFormProps> = ({
                 clearPostalCodeError();
               }}
               className={`w-full rounded-lg border ${
-                formErrors.postalCode ? "border-red-500" : "border-gray-300"
-              } px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary`}
+                formErrors.postalCode ? "border-destructive" : "border-input"
+              } bg-background px-4 py-2 text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary`}
               placeholder="Code postal"
               required
               maxLength={5}
@@ -173,7 +173,7 @@ const EventLocationForm: React.FC<EventLocationFormProps> = ({
 
       {/* Accessibility Section */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2 mt-4">
+        <label className="block text-sm font-medium text-foreground mb-2 mt-4">
           <Accessibility className="inline-block w-4 h-4 mr-2" />
           Accessibilité
         </label>
@@ -183,9 +183,9 @@ const EventLocationForm: React.FC<EventLocationFormProps> = ({
               type="checkbox"
               checked={isAccessible}
               onChange={e => setIsAccessible(e.target.checked)}
-              className="rounded border-gray-300 text-primary focus:ring-primary"
+              className="rounded border-input text-primary focus:ring-primary"
             />
-            <span className="ml-2 text-sm text-gray-600">
+            <span className="ml-2 text-sm text-muted-foreground">
               Accessible aux personnes à mobilité réduite
             </span>
           </label>
@@ -194,9 +194,9 @@ const EventLocationForm: React.FC<EventLocationFormProps> = ({
               type="checkbox"
               checked={hasParking}
               onChange={e => setHasParking(e.target.checked)}
-              className="rounded border-gray-300 text-primary focus:ring-primary"
+              className="rounded border-input text-primary focus:ring-primary"
             />
-            <span className="ml-2 text-sm text-gray-600">
+            <span className="ml-2 text-sm text-muted-foreground">
               Parking disponible
             </span>
           </label>
@@ -205,9 +205,9 @@ const EventLocationForm: React.FC<EventLocationFormProps> = ({
               type="checkbox"
               checked={hasPublicTransport}
               onChange={e => setHasPublicTransport(e.target.checked)}
-              className="rounded border-gray-300 text-primary focus:ring-primary"
+              className="rounded border-input text-primary focus:ring-primary"
             />
-            <span className="ml-2 text-sm text-gray-600">
+            <span className="ml-2 text-sm text-muted-foreground">
               Transport en commun à proximité
             </span>
           </label>

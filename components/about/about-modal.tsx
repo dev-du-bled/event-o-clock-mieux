@@ -17,7 +17,7 @@ export function AboutModal() {
   return (
     <Dialog>
       <DialogTrigger>
-        <p className="text-gray-600 hover:text-primary transition-colors">
+        <p className="text-muted-foreground hover:text-primary transition-colors">
           À propos
         </p>
       </DialogTrigger>
@@ -32,7 +32,7 @@ export function AboutModal() {
             <Users className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
             <div>
               <h3 className="text-lg font-semibold mb-2">Notre équipe</h3>
-              <p className="text-gray-600">
+              <p className="text-muted-foreground">
                 Nous sommes une équipe de 4 étudiants passionnés par
                 linformatique et le développement web. Actuellement en troisième
                 et dernière année du BUT Informatique, nous mettons nos
@@ -46,7 +46,7 @@ export function AboutModal() {
             <GraduationCap className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
             <div>
               <h3 className="text-lg font-semibold mb-2">Notre formation</h3>
-              <p className="text-gray-600">
+              <p className="text-muted-foreground">
                 Le BUT Informatique nous a permis d&apos;acquérir une solide
                 formation en développement logiciel, gestion de projets et
                 conception d&apos;applications. Cette dernière année est
@@ -60,7 +60,7 @@ export function AboutModal() {
             <MapPin className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
             <div>
               <h3 className="text-lg font-semibold mb-2">Notre localisation</h3>
-              <p className="text-gray-600">
+              <p className="text-muted-foreground">
                 Nous étudions à l&apos;IUT de Nevers, un établissement qui nous
                 offre un environnement propice à l&apos;apprentissage et à
                 l&apos;innovation. La ville de Nevers, avec son dynamisme et sa

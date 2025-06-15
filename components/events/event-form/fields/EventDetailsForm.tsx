@@ -39,7 +39,7 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
       <div>
         <label
           htmlFor="title"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium text-foreground mb-1"
         >
           Titre de l&apos;événement *
         </label>
@@ -51,8 +51,8 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
           value={titleValue}
           onChange={onTitleChange}
           className={`w-full rounded-lg border ${
-            titleError ? "border-red-500" : "border-gray-300"
-          } px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary`}
+            titleError ? "border-destructive" : "border-input"
+          } bg-background px-4 py-2 text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary`}
           placeholder="Ex: Concert de Jazz au Parc"
           aria-invalid={!!titleError}
           aria-describedby={titleError ? "title-error" : undefined}
@@ -66,7 +66,7 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
       <div>
         <label
           htmlFor="description"
-          className="block text-sm font-medium text-gray-700 mb-1"
+          className="block text-sm font-medium text-foreground mb-1"
         >
           Description détaillée *
         </label>
@@ -78,8 +78,8 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
           onChange={onDescriptionChange}
           rows={5}
           className={`w-full rounded-lg border ${
-            descriptionError ? "border-red-500" : "border-gray-300"
-          } px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary`}
+            descriptionError ? "border-destructive" : "border-input"
+          } bg-background px-4 py-2 text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary`}
           placeholder="Décrivez votre événement en détail..."
           aria-invalid={!!descriptionError}
           aria-describedby={descriptionError ? "description-error" : undefined}
@@ -91,7 +91,7 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
 
       {/* Categories Selection */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-foreground mb-2">
           <Tag className="inline-block w-4 h-4 mr-2" />
           Catégories *
         </label>
@@ -116,11 +116,11 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
               }}
               className={`px-3 py-1 rounded-full text-sm transition-colors ${
                 selectedCategories.includes(category)
-                  ? "bg-primary text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground"
               } ${
                 categoriesError && selectedCategories.length === 0
-                  ? "ring-2 ring-offset-1 ring-red-500"
+                  ? "ring-2 ring-offset-1 ring-destructive"
                   : ""
               }`}
             >

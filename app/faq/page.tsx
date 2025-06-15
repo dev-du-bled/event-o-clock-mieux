@@ -20,22 +20,24 @@ import {
 
 export default function FAQ() {
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-background py-8">
       <div className="container mx-auto px-4 max-w-3xl">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-4">Foire aux questions</h1>
-          <p className="text-gray-600">
+          <h1 className="text-4xl font-bold mb-4 text-foreground">
+            Foire aux questions
+          </h1>
+          <p className="text-muted-foreground">
             Trouvez les réponses aux questions les plus fréquemment posées sur
             notre plateforme.
           </p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
+        <div className="bg-card rounded-lg shadow-lg p-6 mb-8">
           <Accordion type="single" collapsible>
             {/* General */}
             <AccordionItem value="general">
               <AccordionTrigger>Comment créer un compte ?</AccordionTrigger>
-              <AccordionContent className="text-gray-600">
+              <AccordionContent className="text-muted-foreground">
                 Pour créer un compte, cliquez sur le bouton
                 &quot;Inscription&quot; dans le menu principal. Remplissez le
                 formulaire avec votre adresse email et choisissez un mot de
@@ -47,7 +49,7 @@ export default function FAQ() {
             {/* Event */}
             <AccordionItem value="create-event">
               <AccordionTrigger>Comment créer un événement ?</AccordionTrigger>
-              <AccordionContent className="text-gray-600">
+              <AccordionContent className="text-muted-foreground">
                 Pour créer un événement, vous devez d&apos;abord être connecté à
                 votre compte. Ensuite, cliquez sur le bouton &quot;Créer un
                 événement&quot; dans le menu principal ou sur votre tableau de
@@ -61,7 +63,7 @@ export default function FAQ() {
               <AccordionTrigger>
                 Comment modifier ou supprimer un événement ?
               </AccordionTrigger>
-              <AccordionContent className="text-gray-600">
+              <AccordionContent className="text-muted-foreground">
                 Vous pouvez gérer vos événements depuis la section &quot;Mes
                 événements&quot;. Pour chaque événement, vous trouverez des
                 options pour le modifier ou le supprimer. Seul le créateur de
@@ -73,7 +75,7 @@ export default function FAQ() {
               <AccordionTrigger>
                 Comment créer un événement récurrent ?
               </AccordionTrigger>
-              <AccordionContent className="text-gray-600">
+              <AccordionContent className="text-muted-foreground">
                 Lors de la création d&apos;un événement, cochez l&apos;option
                 &quot;vénement récurrent&quot;. Vous pourrez alors sélectionner
                 les jours de la semaine où l&apos;événement se répète et définir
@@ -87,7 +89,7 @@ export default function FAQ() {
               <AccordionTrigger>
                 J&apos;ai oublié mon mot de passe, que faire ?
               </AccordionTrigger>
-              <AccordionContent className="text-gray-600">
+              <AccordionContent className="text-muted-foreground">
                 Si vous avez oublié votre mot de passe, cliquez sur &quot;Mot de
                 passe oublié ?&quot; sur la page de connexion. Entrez votre
                 adresse email et nous vous enverrons un lien pour réinitialiser
@@ -101,7 +103,7 @@ export default function FAQ() {
               <AccordionTrigger>
                 Comment sont gérées mes données personnelles ?
               </AccordionTrigger>
-              <AccordionContent className="text-gray-600">
+              <AccordionContent className="text-muted-foreground">
                 Vos informations personnelles sont stockées de manière sécurisée
                 et ne sont jamais partagées avec des tiers sans votre
                 consentement. Pour plus de détails, consultez notre politique de
@@ -114,7 +116,7 @@ export default function FAQ() {
               <AccordionTrigger>
                 Comment contacter le support ?
               </AccordionTrigger>
-              <AccordionContent className="text-gray-600">
+              <AccordionContent className="text-muted-foreground">
                 Pour toute question ou problème technique, vous pouvez nous
                 contacter via le formulaire de contact disponible sur la page
                 &quot;Contact&quot;. Notre équipe s&apos;efforcera de vous

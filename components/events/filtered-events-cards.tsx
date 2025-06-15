@@ -58,9 +58,11 @@ export default function FilteredEventsCards({
   });
 
   return filteredEvents.length === 0 ? (
-    <div className="bg-white rounded-lg shadow-lg p-6 text-center">
-      <h2 className="text-xl font-semibold mb-4">Aucun événement trouvé</h2>
-      <p className="text-gray-600">
+    <div className="bg-card rounded-lg shadow-lg p-6 text-center">
+      <h2 className="text-xl font-semibold mb-4 text-foreground">
+        Aucun événement trouvé
+      </h2>
+      <p className="text-muted-foreground">
         Essayez de modifier vos critères de recherche
       </p>
     </div>

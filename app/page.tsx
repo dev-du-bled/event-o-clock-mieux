@@ -32,7 +32,7 @@ export default async function Home() {
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
             Découvrez des événements exceptionnels
           </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
             Trouvez et participez à des événements uniques près de chez vous
           </p>
           <InputSearchEvent variant="form" />
@@ -47,7 +47,7 @@ export default async function Home() {
           </h2>
           <Link
             href="/events"
-            className="px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+            className="px-4 py-2 border border-border rounded-lg hover:bg-accent transition-colors"
           >
             Voir tous les événements
           </Link>
