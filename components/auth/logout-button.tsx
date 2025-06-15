@@ -1,7 +1,6 @@
 "use client";
 
 import { authClient } from "@/lib/auth/auth-client";
-import { cn } from "@/lib/utils";
 import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -10,10 +9,7 @@ interface LogOutButtonProps {
   onClick?: () => void;
 }
 
-export default function LogOutButton({
-  className,
-  onClick,
-}: LogOutButtonProps) {
+export default function LogOutButton({ onClick }: LogOutButtonProps) {
   const router = useRouter();
 
   const logout = async () => {
@@ -32,13 +28,7 @@ export default function LogOutButton({
   };
 
   return (
-    <button
-      onClick={buttonClick}
-      className={cn(
-        "text-gray-600 hover:text-primary transition-colors cursor-pointer",
-        className
-      )}
-    >
+    <button onClick={buttonClick} className="hover:cursor-pointer w-full">
       <span className="flex items-center">
         <LogOut className="mr-1 h-5 w-5" />
         Déconnexion

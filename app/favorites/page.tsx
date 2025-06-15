@@ -4,12 +4,12 @@
  * @details Manages and displays user's favorite events with real-time updates
  */
 
-import { EventDialog } from "@/components/events/dialogs/event-dialog";
 import NoAuth from "@/components/auth/no-auth";
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
 import { getAllEvents } from "@/lib/db/events";
 import { getUserFavorites } from "@/server/actions/favorites";
+import { EventCard } from "@/components/events/event-card";
 
 /**
  * @brief Favorites management component
@@ -45,7 +45,7 @@ export default async function Favorites() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {favoritesEvents.length !== 0 ? (
             favoritesEvents.map(event => (
-              <EventDialog key={event.id} event={event} user={user} />
+              <EventCard key={event.id} event={event} />
             ))
           ) : (
             <p>Aucun Favoris</p>

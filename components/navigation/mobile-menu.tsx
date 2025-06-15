@@ -67,7 +67,7 @@ export default function MobileMenu() {
     <div className="md:hidden">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex justify-center text-muted-foreground hover:text-primary"
+        className="flex justify-center"
       >
         {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
       </button>
@@ -79,21 +79,13 @@ export default function MobileMenu() {
           ref={menuRef}
         >
           <div className="flex flex-col space-y-4">
-            <Link
-              onClick={() => setIsOpen(false)}
-              href="/events"
-              className="text-muted-foreground hover:text-primary transition-colors"
-            >
+            <Link onClick={() => setIsOpen(false)} href="/events">
               <span className="flex items-center">
                 <Ticket className="mr-1 h-5 w-5" />
                 Découvrir
               </span>
             </Link>
-            <Link
-              onClick={() => setIsOpen(false)}
-              href="/cinema"
-              className="text-muted-foreground hover:text-primary transition-colors"
-            >
+            <Link onClick={() => setIsOpen(false)} href="/cinema">
               <span className="flex items-center">
                 <Film className="w-5 h-5 mr-1" />
                 Cinéma
@@ -104,21 +96,13 @@ export default function MobileMenu() {
                 {/* Liens pour les organisateurs - basé sur les permissions */}
                 {canManageEvents && (
                   <>
-                    <Link
-                      onClick={() => setIsOpen(false)}
-                      href="/my-events"
-                      className="text-muted-foreground hover:text-primary transition-colors"
-                    >
+                    <Link onClick={() => setIsOpen(false)} href="/my-events">
                       <span className="flex items-center">
                         <Tag className="mr-1 h-5 w-5" />
                         Mes événements
                       </span>
                     </Link>
-                    <Link
-                      onClick={() => setIsOpen(false)}
-                      href="/create-event"
-                      className="text-muted-foreground hover:text-primary transition-colors"
-                    >
+                    <Link onClick={() => setIsOpen(false)} href="/create-event">
                       <span className="flex items-center">
                         <PlusCircle className="w-5 h-5 mr-1" />
                         Créer un événement
@@ -126,32 +110,20 @@ export default function MobileMenu() {
                     </Link>
                   </>
                 )}
-                <Link
-                  onClick={() => setIsOpen(false)}
-                  href="/favorites"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
+                <Link onClick={() => setIsOpen(false)} href="/favorites">
                   <span className="flex items-center">
                     <Heart className="w-5 h-5 mr-1" />
                     Favoris
                   </span>
                 </Link>
-                <Link
-                  onClick={() => setIsOpen(false)}
-                  href="/cinema/cart"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
+                <Link onClick={() => setIsOpen(false)} href="/cinema/cart">
                   <span className="flex items-center">
                     <ShoppingCart className="w-5 h-5 mr-1" />
                     Panier
                     {/* Panier {cartItemsCount > 0 && `(${cartItemsCount})`} */}
                   </span>
                 </Link>
-                <Link
-                  onClick={() => setIsOpen(false)}
-                  href="/profile"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
+                <Link onClick={() => setIsOpen(false)} href="/profile">
                   <span className="flex items-center">
                     {user.image ? (
                       <Image
@@ -171,21 +143,13 @@ export default function MobileMenu() {
             )}
             {!user ? (
               <>
-                <Link
-                  onClick={() => setIsOpen(false)}
-                  href="/login"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
+                <Link onClick={() => setIsOpen(false)} href="/login">
                   <span className="flex items-center">
                     <LogIn className="mr-1 h-5 w-5" />
                     Connexion
                   </span>
                 </Link>
-                <Link
-                  onClick={() => setIsOpen(false)}
-                  href="/register"
-                  className="text-muted-foreground hover:text-primary transition-colors"
-                >
+                <Link onClick={() => setIsOpen(false)} href="/register">
                   <span className="flex items-center">
                     <Clipboard className="mr-1 h-5 w-5" />
                     Inscription
@@ -199,7 +163,7 @@ export default function MobileMenu() {
                   <Link
                     onClick={() => setIsOpen(false)}
                     href="/administration"
-                    className="flex items-center hover:text-primary text-muted-foreground transition-colors"
+                    className="flex items-center"
                   >
                     <span className="flex items-center">
                       <LockKeyhole className="w-5 h-5 mr-1" />

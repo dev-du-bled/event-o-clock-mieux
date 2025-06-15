@@ -59,20 +59,14 @@ export async function Navbar() {
               Event&apos;O&apos;Clock
             </span>
           </Link>
-          <div className="ml-10 hidden items-center space-x-8 md:!flex ">
-            <Link
-              href="/events"
-              className="hover:text-primary text-muted-foreground transition-colors"
-            >
+          <div className="ml-10 hidden items-center space-x-8 md:flex ">
+            <Link href="/events">
               <span className="flex items-center">
                 <Ticket className="mr-1 h-5 w-5" />
                 Découvrir
               </span>
             </Link>
-            <Link
-              href="/cinema"
-              className="hover:text-primary text-muted-foreground transition-colors"
-            >
+            <Link href="/cinema">
               <span className="flex items-center">
                 <Film className="mr-1 h-5 w-5" />
                 Cinéma

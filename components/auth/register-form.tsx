@@ -5,6 +5,7 @@ import { Lock, Mail, User } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Alert, AlertTitle, AlertDescription } from "../ui/alert";
+import { Button } from "../ui/button";
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -140,13 +141,9 @@ export default function RegisterForm() {
       </div>
 
       <div>
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
-        >
+        <Button type="submit" disabled={loading} className="w-full">
           {loading ? "Inscription..." : "S'inscrire"}
-        </button>
+        </Button>
       </div>
     </form>
   );

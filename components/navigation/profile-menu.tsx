@@ -17,6 +17,7 @@ import Link from "next/link";
 import { authClient } from "@/lib/auth/auth-client";
 import { Skeleton } from "../ui/skeleton";
 import { Role } from "@prisma/client";
+import { Button } from "../ui/button";
 
 export default function ProfileMenu() {
   const { data: session, isPending } = authClient.useSession();
@@ -73,18 +74,12 @@ export default function ProfileMenu() {
   if (!user)
     return (
       <>
-        <Link
-          href="/login"
-          className="hover:text-primary px-4 py-2 text-gray-600 transition-colors"
-        >
-          Connexion
-        </Link>
-        <Link
-          href="/register"
-          className="bg-primary hover:bg-primary/90 rounded-lg px-4 py-2 text-white transition-colors"
-        >
-          Inscription
-        </Link>
+        <Button variant={"outline"} asChild>
+          <Link href="/login">Connexion</Link>
+        </Button>
+        <Button asChild>
+          <Link href="/register">Inscription</Link>
+        </Button>
       </>
     );
 
@@ -92,7 +87,7 @@ export default function ProfileMenu() {
     <div className="relative items-center flex" ref={menuRef}>
       <Link
         href="/cinema/cart"
-        className="hover:text-primary relative flex items-center px-4 py-2 text-gray-600 transition-colors"
+        className="relative flex items-center px-4 py-2"
       >
         <ShoppingCart className="mr-1 h-5 w-5" />
         Panier
@@ -103,7 +98,7 @@ export default function ProfileMenu() {
                         )} */}
       </Link>
       <button
-        className="group flex text-gray-600 hover:text-primary transition-colors hover:cursor-pointer"
+        className="group flex hover:cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
         data-state={isOpen ? "open" : "closed"}
       >
@@ -123,12 +118,12 @@ export default function ProfileMenu() {
       </button>
 
       {isOpen && (
-        <div className="absolute w-55 top-10 right-0 rounded-lg shadow-lg bg-white border">
+        <div className="absolute w-55 top-10 right-0 rounded-lg shadow-lg border bg-primary-foreground">
           <div className="px-4 py-2 space-y-2">
             <Link
               onClick={() => setIsOpen(false)}
               href="/profile"
-              className="flex items-center hover:text-primary text-gray-600 transition-colors"
+              className="flex items-center"
             >
               <span className="flex items-center">
                 <UserCircle2 className="w-5 h-5 mr-1" />
@@ -142,7 +137,7 @@ export default function ProfileMenu() {
                 <Link
                   onClick={() => setIsOpen(false)}
                   href="/create-event"
-                  className="flex items-center hover:text-primary text-gray-600 transition-colors"
+                  className="flex items-center"
                 >
                   <span className="flex items-center">
                     <PlusCircle className="w-5 h-5 mr-1" />
@@ -152,7 +147,7 @@ export default function ProfileMenu() {
                 <Link
                   onClick={() => setIsOpen(false)}
                   href="/my-events"
-                  className="flex items-center hover:text-primary text-gray-600 transition-colors"
+                  className="flex items-center"
                 >
                   <span className="flex items-center">
                     <Tag className="mr-1 h-5 w-5" />
@@ -165,7 +160,7 @@ export default function ProfileMenu() {
             <Link
               onClick={() => setIsOpen(false)}
               href="/favorites"
-              className="flex items-center hover:text-primary text-gray-600 transition-colors"
+              className="flex items-center"
             >
               <span className="flex items-center">
                 <Heart className="w-5 h-5 mr-1" />
@@ -178,7 +173,7 @@ export default function ProfileMenu() {
               <Link
                 onClick={() => setIsOpen(false)}
                 href="/administration"
-                className="flex items-center hover:text-primary text-gray-600 transition-colors"
+                className="flex items-center"
               >
                 <span className="flex items-center">
                   <LockKeyhole className="w-5 h-5 mr-1" />

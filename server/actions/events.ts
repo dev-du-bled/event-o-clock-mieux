@@ -21,7 +21,7 @@ type ServerActionResult = {
 /**
  * Vérifie si l'utilisateur a une permission spécifique
  */
-async function checkEventPermission(
+export async function checkEventPermission(
   permission: "create" | "update" | "delete"
 ): Promise<boolean> {
   try {

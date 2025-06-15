@@ -6,10 +6,9 @@
 
 import { getAllEvents } from "@/lib/db/events";
 import FullInputSearchEvent from "@/components/events/inputs/full-input-search-event";
-import { auth } from "@/lib/auth/auth";
-import { headers } from "next/headers";
 import FilteredEventsCards from "@/components/events/filtered-events-cards";
 import { getUserFavorites } from "@/server/actions/favorites";
+import { getUser } from "@/server/util/getUser";
 
 /**
  * @brief Events listing component
@@ -25,11 +24,7 @@ import { getUserFavorites } from "@/server/actions/favorites";
  * @returns React component for events page
  */
 export default async function Events() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  const user = session?.user;
+  const user = await getUser();
 
   const events = await getAllEvents();
   const favorites = await getUserFavorites();
