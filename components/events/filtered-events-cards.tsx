@@ -1,9 +1,10 @@
 "use client";
 
 import { Event } from "@prisma/client";
-import { EventDialog } from "./dialogs/event-dialog";
 import { useStoreParams } from "@/lib/store/url-params";
 import { auth } from "@/lib/auth/auth";
+import { Price } from "@/schemas/createEvent";
+import { EventCard } from "./event-card";
 
 interface PropsSearchEventsCards {
   user?: typeof auth.$Infer.Session.user;
@@ -12,7 +13,6 @@ interface PropsSearchEventsCards {
 }
 
 export default function FilteredEventsCards({
-  user,
   events,
 }: PropsSearchEventsCards) {
   const { search, location, category, minPrice, maxPrice, startDate, endDate } =
@@ -34,8 +34,12 @@ export default function FilteredEventsCards({
     const matchesPriceRange =
       !minPrice ||
       !maxPrice ||
-      (event.price >= minPrice && event.price <= maxPrice) ||
-      (event.price === 0 && minPrice === 0);
+      (event.prices as Price[]).some((price: Price) => {
+        const priceValue = parseFloat(price.price);
+        return priceValue >= minPrice && priceValue <= maxPrice;
+      }) ||
+      ((event.prices as Price[]).some(price => parseFloat(price.price) === 0) &&
+        minPrice === 0);
 
     const eventStartDate = new Date(event.startDate);
     const eventEndDate = new Date(event.endDate);
@@ -63,12 +67,7 @@ export default function FilteredEventsCards({
   ) : (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
       {filteredEvents.map(event => (
-        <EventDialog
-          key={event.id}
-          event={event}
-          user={user}
-          variant="default"
-        />
+        <EventCard key={event.id} event={event} />
       ))}
     </div>
   );

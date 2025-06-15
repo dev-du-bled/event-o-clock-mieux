@@ -14,7 +14,6 @@ interface EventCardProps {
  * The card image and category are displayed, and the user can click it for further actions.
  *
  * @param event - The event object to display.
- * @param variant - The variant of the card ("default" or "edit").
  */
 export function EventCard({ event }: EventCardProps) {
   return (
@@ -22,7 +21,7 @@ export function EventCard({ event }: EventCardProps) {
       href={`/events/${event.id}`}
       className="group hover:shadow-lg transition-all duration-300 rounded-2xl"
     >
-      <div className="flex flex-col rounded-2xl h-full">
+      <div className="flex-col rounded-2xl h-full">
         {/* Image */}
         <div className="relative overflow-hidden rounded-t-2xl">
           {event.images && event.images[0] ? (
@@ -63,15 +62,17 @@ export function EventCard({ event }: EventCardProps) {
           </div>
         </div>
         {/* Title and Location */}
-        <div className="flex justify-between border-2 border-t-0 rounded-b-2xl overflow-hidden">
-          <div className="flex flex-col p-4 space-y-2">
-            <h3 className="text-2xl font-semibold text-gray-800">
+        <div className="flex justify-between items-center border-2 border-t-0 rounded-b-2xl overflow-hidden">
+          <div className="flex flex-col p-4 space-y-2 flex-1 min-w-0">
+            <h3 className="text-xl md:text-2xl font-semibold text-gray-800 truncate">
               {event.title}
             </h3>
-            <p className="text-sm text-gray-600">{event.city}</p>
+            <p className="text-sm md:text-md text-gray-600 truncate">
+              {event.city}
+            </p>
           </div>
           {/* Buttons */}
-          <div className="translate-x-full group-hover:translate-x-0 opacity-0 group-hover:opacity-100 bg-accent-foreground rounded-full p-1 transition-all duration-300 self-center mr-5">
+          <div className="translate-x-full group-hover:translate-x-0 opacity-0 group-hover:opacity-100 bg-accent-foreground rounded-full p-1 transition-all duration-300 flex-shrink-0 mr-5">
             <ChevronRight className="text-accent" />
           </div>
         </div>
