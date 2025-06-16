@@ -5,10 +5,8 @@
  */
 import { getUserEvents } from "@/lib/db/events";
 import Link from "next/link";
-import { auth } from "@/lib/auth/auth";
-import { headers } from "next/headers";
 import { EventCard } from "@/components/events/event-card";
-import NoAuth from "@/components/auth/no-auth";
+import { getUser } from "@/server/util/getUser";
 
 /**
  * @brief User events management component
@@ -23,15 +21,7 @@ import NoAuth from "@/components/auth/no-auth";
  */
 
 export default async function MyEvents() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  const user = session?.user;
-
-  if (!user) {
-    return <NoAuth />;
-  }
+  const user = await getUser();
 
   const events = await getUserEvents(user.id);
 

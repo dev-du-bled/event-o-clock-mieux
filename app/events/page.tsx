@@ -7,8 +7,6 @@
 import { getAllEvents } from "@/lib/db/events";
 import FullInputSearchEvent from "@/components/events/inputs/full-input-search-event";
 import FilteredEventsCards from "@/components/events/filtered-events-cards";
-import { getUserFavorites } from "@/server/actions/favorites";
-import { getUser } from "@/server/util/getUser";
 
 /**
  * @brief Events listing component
@@ -24,10 +22,7 @@ import { getUser } from "@/server/util/getUser";
  * @returns React component for events page
  */
 export default async function Events() {
-  const user = await getUser();
-
   const events = await getAllEvents();
-  const favorites = await getUserFavorites();
 
   return (
     <div className="min-h-screen bg-background py-12">
@@ -42,11 +37,7 @@ export default async function Events() {
           </div>
         </div>
 
-        <FilteredEventsCards
-          user={user}
-          events={events}
-          favorites={favorites}
-        />
+        <FilteredEventsCards events={events} />
       </div>
     </div>
   );

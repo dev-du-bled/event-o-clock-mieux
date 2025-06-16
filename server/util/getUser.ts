@@ -19,3 +19,15 @@ export async function getUser() {
 
   return session.user;
 }
+
+/**
+ * Utilitaire pour récupérer l'utilisateur authentifié
+ * Optionnellement redirige vers la page de login si non authentifié
+ */
+export async function getUserWithoutRedirect() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  return session?.user || null;
+}

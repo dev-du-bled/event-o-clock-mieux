@@ -2,7 +2,7 @@
 
 import { authClient } from "@/lib/auth/auth-client";
 import { LogOut } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 interface LogOutButtonProps {
   className?: string;
@@ -11,12 +11,13 @@ interface LogOutButtonProps {
 
 export default function LogOutButton({ onClick }: LogOutButtonProps) {
   const router = useRouter();
+  const path = usePathname();
 
   const logout = async () => {
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
-          router.push("/login");
+          router.push(path);
         },
       },
     });
@@ -24,7 +25,7 @@ export default function LogOutButton({ onClick }: LogOutButtonProps) {
 
   const buttonClick = () => {
     logout();
-    if (onClick) onClick();
+    if (onClick) onClick(); // for the ref so it close the menu
   };
 
   return (

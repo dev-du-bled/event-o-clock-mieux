@@ -1,9 +1,9 @@
 import { getMovieDetails } from "@/lib/tmdb";
 import { getCinemaRooms } from "@/lib/db/cinema";
-import NoAuth from "@/components/auth/no-auth";
 import CinemaCard from "@/components/events/cinema-card";
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
+import { getUser } from "@/server/util/getUser";
 
 /**
  * @brief Cinema booking component
@@ -40,10 +40,7 @@ export default async function Cinema() {
    * @note The component uses the TMDb API to fetch movie details and images
    *
    */
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-  const user = session?.user;
+  const user = await getUser();
 
   // const [error, setError] = useState("");
 
@@ -53,10 +50,6 @@ export default async function Cinema() {
     .filter((id): id is number => id !== undefined);
   const moviePromises = movieIds.map(id => getMovieDetails(id));
   const movieData = await Promise.all(moviePromises);
-
-  if (!user) {
-    return <NoAuth />;
-  }
 
   return (
     <div className="min-h-screen bg-background p-4">

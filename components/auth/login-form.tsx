@@ -31,7 +31,11 @@ export default function LoginForm() {
           setLoading(true);
         },
         onSuccess() {
-          router.push(redirectTo);
+          if (decodeURIComponent(redirectTo) === "/login") {
+            router.push("/");
+          } else {
+            router.push(decodeURIComponent(redirectTo));
+          }
         },
         onError(ctx) {
           setError(ctx.error.message || "Erreur lors de la connexion");

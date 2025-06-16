@@ -18,11 +18,15 @@ import { authClient } from "@/lib/auth/auth-client";
 import { Skeleton } from "../ui/skeleton";
 import { Role } from "@prisma/client";
 import { Button } from "../ui/button";
+import { usePathname } from "next/navigation";
 
 export default function ProfileMenu() {
   const { data: session, isPending } = authClient.useSession();
 
   const user = session?.user;
+
+  const path = usePathname();
+  const pathname = decodeURIComponent(path);
 
   const [canManageEvents, setCanManageEvents] = useState(false);
 
@@ -75,7 +79,15 @@ export default function ProfileMenu() {
     return (
       <>
         <Button variant={"outline"} asChild>
-          <Link href="/login">Connexion</Link>
+          <Link
+            href={
+              pathname === "/login" || pathname === "register"
+                ? "/login"
+                : `/login?redirectTo=${encodeURIComponent(path)}`
+            }
+          >
+            Connexion
+          </Link>
         </Button>
         <Button asChild>
           <Link href="/register">Inscription</Link>
