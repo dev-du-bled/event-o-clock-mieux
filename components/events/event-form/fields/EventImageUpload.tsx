@@ -21,15 +21,15 @@ const EventImageUpload: React.FC<EventImageUploadProps> = ({
 }) => {
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">
-        <Upload className="inline-block w-4 h-4 mr-2" />
+      <label className="flex items-center gap-2 mb-2">
+        <Upload className="w-4 h-4" />
         Images (max 5)
       </label>
       <label htmlFor="images" className="cursor-pointer">
         <div
           onDrop={handleDrop}
           onDragOver={handleDragOver}
-          className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary transition-colors cursor-pointer group"
+          className="border-2 border-dashed rounded-lg p-8 text-center hover:border-accent border-primary group"
         >
           <input
             type="file"
@@ -39,8 +39,8 @@ const EventImageUpload: React.FC<EventImageUploadProps> = ({
             className="hidden"
             id="images"
           />
-          <Upload className="mx-auto h-12 w-12 text-gray-400 group-hover:text-gray-600" />
-          <p className="mt-2 text-sm text-gray-600">
+          <Upload className="mx-auto h-12 w-12 group-hover:text-accent" />
+          <p className="mt-2 text-sm group-hover:text-accent">
             Cliquez pour sélectionner ou glissez-déposez vos images ici
           </p>
         </div>

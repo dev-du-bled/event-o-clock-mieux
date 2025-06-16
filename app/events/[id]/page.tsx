@@ -22,7 +22,7 @@ export default async function EventPage({
   params: Promise<{ id: string }>;
 }) {
   const id = (await params).id;
-  const user = await getUser(false);
+  const user = await getUser();
 
   const event = await getEventById(id);
 

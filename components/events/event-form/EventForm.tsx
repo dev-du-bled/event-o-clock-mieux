@@ -22,6 +22,7 @@ import EventImageUpload from "./fields/EventImageUpload";
 import EventFinancialsAndContactForm from "./fields/EventFinancialsAndContactForm";
 import { Base64ToFile, searchAddress } from "@/lib/utils";
 import { AddressFeature } from "@/types/types";
+import { Button } from "@/components/ui/button";
 
 // Helper type pour les erreurs Zod formatées
 type FieldErrors = z.inferFlattenedErrors<
@@ -426,15 +427,11 @@ export default function EventForm({
         formErrors={formErrors}
       />
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full bg-primary text-primary-foreground py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-      >
+      <Button type="submit" disabled={loading} className="w-full">
         {loading
           ? `${type === "create" ? "Création" : "Mise à jour"} en cours...`
           : `${type === "create" ? "Créer" : "Mettre à jour"} l'événement`}
-      </button>
+      </Button>
     </form>
   );
 }

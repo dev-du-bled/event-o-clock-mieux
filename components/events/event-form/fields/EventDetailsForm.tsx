@@ -39,10 +39,7 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
     <>
       {/* Title Input */}
       <div>
-        <label
-          htmlFor="title"
-          className="block text-sm font-medium text-foreground mb-1"
-        >
+        <label htmlFor="title" className="mb-1">
           Titre de l&apos;événement *
         </label>
         <Input
@@ -64,10 +61,7 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
 
       {/* Description Input */}
       <div>
-        <label
-          htmlFor="description"
-          className="block text-sm font-medium text-foreground mb-1"
-        >
+        <label htmlFor="description" className="text-foreground mb-1">
           Description détaillée *
         </label>
         <Textarea
@@ -89,8 +83,8 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
 
       {/* Categories Selection */}
       <div>
-        <label className="block text-sm font-medium text-foreground mb-2">
-          <Tag className="inline-block w-4 h-4 mr-2" />
+        <label className="flex items-center gap-2 mb-2">
+          <Tag className="w-4 h-4" />
           Catégories *
         </label>
         <div className="flex flex-wrap gap-2">
@@ -117,9 +111,9 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
                   ? "bg-primary text-primary-foreground"
                   : "bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground"
               } ${
-                categoriesError && selectedCategories.length === 0
-                  ? "ring-2 ring-offset-1 ring-destructive"
-                  : ""
+                categoriesError &&
+                selectedCategories.length === 0 &&
+                "ring-2 ring-destructive"
               }`}
             >
               {category}

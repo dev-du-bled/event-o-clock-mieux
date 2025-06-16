@@ -85,29 +85,29 @@ const EventFinancialsAndContactForm: React.FC<
   };
 
   return (
-    <>
+    <div className="space-y-4">
       {/* Price Section */}
-      <div>
-        <label className="block text-sm font-medium text-foreground mb-2">
-          <Wallet className="inline-block w-4 h-4 mr-2" />
-          Tarifs *
-        </label>
+      <label className="flex items-center gap-2 mb-2">
+        <Wallet className="w-4 h-4" />
+        Tarifs *
+      </label>
+      <div className="flex flex-col sm:flex-row sm:justify-between space-y-2 sm:space-y-0">
         <RadioGroup
           defaultValue="Gratuit"
           className="flex"
           onValueChange={e => setIsPaid(e === "Payant")}
         >
-          <div className="flex items-center gap-2">
+          <label className="text-sm flex items-center gap-2">
             <RadioGroupItem value="Gratuit" />
-            <label className="text-sm">Gratuit</label>
-          </div>
-          <div className="flex items-center gap-2">
+            Gratuit
+          </label>
+          <label className="text-sm flex items-center gap-2">
             <RadioGroupItem value="Payant" />
-            <label className="text-sm">Payant</label>
-          </div>
+            Payant
+          </label>
         </RadioGroup>
         {isPaid && (
-          <div className="flex justify-end">
+          <div className="flex sm:justify-end">
             <Button
               variant="outline"
               size="sm"
@@ -122,42 +122,48 @@ const EventFinancialsAndContactForm: React.FC<
       {isPaid && (
         <div className="mt-2 space-y-4">
           <div className="flex flex-col space-y-2">
-            <Input
-              id="type"
-              name="type"
-              type="text"
-              value={type}
-              onChange={e => {
-                setType(e.target.value);
-                setErrors(prev => ({ ...prev, type: undefined }));
-              }}
-              className={
-                (errors.type || formErrors.prices?.[0]) && "border-destructive"
-              }
-              placeholder="Type de la place (ex: catégorie 1, VIP, etc.)"
-              aria-invalid={!!errors.type}
-              aria-describedby={errors.type ? "type-error" : undefined}
-            />
-            <FieldErrorDisplay error={errors.type} />
-            <Input
-              id="price"
-              name="price"
-              type="number"
-              value={price}
-              onChange={e => {
-                setPrice(e.target.value);
-                setErrors(prev => ({ ...prev, price: undefined }));
-              }}
-              className={
-                (errors.price || formErrors.prices?.[0]) && "border-destructive"
-              }
-              placeholder="Prix en euros"
-              step="0.01"
-              min="0"
-              aria-invalid={!!errors.price}
-              aria-describedby={errors.price ? "price-error" : undefined}
-            />
-            <FieldErrorDisplay error={errors.price} />
+            <div>
+              <Input
+                id="type"
+                name="type"
+                type="text"
+                value={type}
+                onChange={e => {
+                  setType(e.target.value);
+                  setErrors(prev => ({ ...prev, type: undefined }));
+                }}
+                className={
+                  (errors.type || formErrors.prices?.[0]) &&
+                  "border-destructive"
+                }
+                placeholder="Type de la place (ex: catégorie 1, VIP, etc.)"
+                aria-invalid={!!errors.type}
+                aria-describedby={errors.type ? "type-error" : undefined}
+              />
+              <FieldErrorDisplay error={errors.type} />
+            </div>
+            <div>
+              <Input
+                id="price"
+                name="price"
+                type="number"
+                value={price}
+                onChange={e => {
+                  setPrice(e.target.value);
+                  setErrors(prev => ({ ...prev, price: undefined }));
+                }}
+                className={
+                  (errors.price || formErrors.prices?.[0]) &&
+                  "border-destructive"
+                }
+                placeholder="Prix en euros"
+                step="0.01"
+                min="0"
+                aria-invalid={!!errors.price}
+                aria-describedby={errors.price ? "price-error" : undefined}
+              />
+              <FieldErrorDisplay error={errors.price} />
+            </div>
           </div>
         </div>
       )}
@@ -168,9 +174,7 @@ const EventFinancialsAndContactForm: React.FC<
       )}
       {isPaid && prices.length > 0 && (
         <div className="mt-4">
-          <h3 className="text-sm font-medium text-gray-700 mb-2">
-            Tarifs Configurés
-          </h3>
+          <h3 className="text-sm font-medium mb-2">Tarifs Configurés</h3>
           <div className="flex gap-2 flex-wrap">
             {prices.map((priceItem, index) => (
               <div
@@ -180,12 +184,12 @@ const EventFinancialsAndContactForm: React.FC<
                 {priceItem.type}: {priceItem.price} €
                 <button
                   type="button"
-                  className="w-5 h-5 flex justify-center items-center rounded-full hover:bg-red-500"
+                  className="w-5 h-5 flex justify-center items-center rounded-full hover:bg-destructive"
                   onClick={() =>
                     setPrices(prices.filter((_, i) => i !== index))
                   }
                 >
-                  <X className="w-4 h-4" />
+                  <X className="w-4 h-4 text-accent" />
                 </button>
               </div>
             ))}
@@ -195,9 +199,9 @@ const EventFinancialsAndContactForm: React.FC<
 
       {/* Contact Info Section */}
       <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          <Info className="inline-block w-4 h-4 mr-2" />
-          Informations de contact (optionnel)
+        <label className="flex items-center gap-2 mb-2">
+          <Info className="w-4 h-4" />
+          Informations de contact
         </label>
         <div className="space-y-4">
           <div>
@@ -242,7 +246,7 @@ const EventFinancialsAndContactForm: React.FC<
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -69,25 +69,27 @@ const EventLocationForm: React.FC<EventLocationFormProps> = ({
   return (
     <>
       {/* Address Section */}
+      <label className="flex items-center gap-2 mb-2">
+        <MapPin className="w-4 h-4" />
+        Adresse de l&apos;événement *
+      </label>
       <div className="space-y-4">
-        <label className="block text-sm font-medium text-foreground">
-          <MapPin className="inline-block w-4 h-4 mr-2" />
-          Adresse de l&apos;événement *
-        </label>
-        <Input
-          id="place"
-          name="place"
-          type="text"
-          value={place}
-          onChange={handlePlaceChange}
-          className={formErrors.place && "border-destructive"}
-          placeholder="Lieu de l'événement"
-          required
-          aria-invalid={!!formErrors.place}
-          aria-describedby={formErrors.place ? "place-error" : undefined}
-        />
-        <div id="place-error">
-          <FieldErrorDisplay error={formErrors.place?.[0]} />
+        <div>
+          <Input
+            id="place"
+            name="place"
+            type="text"
+            value={place}
+            onChange={handlePlaceChange}
+            className={formErrors.place && "border-destructive"}
+            placeholder="Lieu de l'événement"
+            required
+            aria-invalid={!!formErrors.place}
+            aria-describedby={formErrors.place ? "place-error" : undefined}
+          />
+          <div id="place-error">
+            <FieldErrorDisplay error={formErrors.place?.[0]} />
+          </div>
         </div>
         <div className="relative">
           <Input
@@ -117,9 +119,9 @@ const EventLocationForm: React.FC<EventLocationFormProps> = ({
               ))}
             </div>
           )}
-        </div>
-        <div id="address-error">
-          <FieldErrorDisplay error={formErrors.address?.[0]} />
+          <div id="address-error">
+            <FieldErrorDisplay error={formErrors.address?.[0]} />
+          </div>
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
@@ -174,8 +176,8 @@ const EventLocationForm: React.FC<EventLocationFormProps> = ({
 
       {/* Accessibility Section */}
       <div>
-        <label className="block text-sm font-medium text-foreground mb-2 mt-4">
-          <Accessibility className="inline-block w-4 h-4 mr-2" />
+        <label className="flex items-center gap-2 mb-2">
+          <Accessibility className="w-4 h-4" />
           Accessibilité
         </label>
         <div className="space-y-2">

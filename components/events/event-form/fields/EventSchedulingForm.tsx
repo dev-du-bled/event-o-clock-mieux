@@ -69,9 +69,9 @@ const EventSchedulingForm: React.FC<EventSchedulingFormProps> = ({
         </label>
 
         {isRecurring && (
-          <div className="space-y-4 pl-6 border-l-2 border-gray-200 ml-2">
+          <div className="space-y-4 pl-6 border-l-2 border-primary ml-2">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="text-sm font-medium mb-2">
                 Jours de la semaine *
               </label>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
@@ -101,9 +101,9 @@ const EventSchedulingForm: React.FC<EventSchedulingFormProps> = ({
               <div>
                 <label
                   htmlFor="recurringStartTime"
-                  className="block text-sm font-medium mb-2"
+                  className="flex items-center gap-2 mb-2 text-sm"
                 >
-                  <Clock className="inline-block w-4 h-4 mr-2" />
+                  <Clock className="w-4 h-4" />
                   Heure de début *
                 </label>
                 <Input
@@ -130,9 +130,9 @@ const EventSchedulingForm: React.FC<EventSchedulingFormProps> = ({
               <div>
                 <label
                   htmlFor="recurringEndTime"
-                  className="block text-sm font-medium mb-2"
+                  className="flex items-center gap-2 mb-2 text-sm"
                 >
-                  <Clock className="inline-block w-4 h-4 mr-2" />
+                  <Clock className="w-4 h-4" />
                   Heure de fin *
                 </label>
                 <Input
@@ -164,13 +164,13 @@ const EventSchedulingForm: React.FC<EventSchedulingFormProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Start Date/Time */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              <Clock className="inline-block w-4 h-4 mr-2" />
+            <label className="flex items-center gap-2 text-sm mb-2">
+              <Clock className="w-4 h-4" />
               Date et heure de début *
             </label>
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <input
+                <Input
                   id="startDate"
                   name="startDate"
                   type="date"
@@ -179,9 +179,7 @@ const EventSchedulingForm: React.FC<EventSchedulingFormProps> = ({
                     setStartDate(e.target.value);
                     clearDateErrors();
                   }}
-                  className={`w-full rounded-lg border ${
-                    formErrors.startDate ? "border-red-500" : "border-gray-300"
-                  } px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary`}
+                  className={formErrors.startDate && "border-destructive"}
                   aria-invalid={!!formErrors.startDate}
                   aria-describedby={
                     formErrors.startDate
@@ -194,7 +192,7 @@ const EventSchedulingForm: React.FC<EventSchedulingFormProps> = ({
                 </div>
               </div>
               <div>
-                <input
+                <Input
                   id="specificStartTime"
                   name="startTime" // Common name for Zod
                   type="time"
@@ -204,9 +202,7 @@ const EventSchedulingForm: React.FC<EventSchedulingFormProps> = ({
                     clearTimeErrors();
                     clearDateErrors(); // Also for chronology
                   }}
-                  className={`w-full rounded-lg border ${
-                    formErrors.startTime ? "border-red-500" : "border-gray-300"
-                  } px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary`}
+                  className={formErrors.startTime && "border-destructive"}
                   aria-invalid={!!formErrors.startTime}
                   aria-describedby={
                     formErrors.startTime
@@ -222,13 +218,13 @@ const EventSchedulingForm: React.FC<EventSchedulingFormProps> = ({
           </div>
           {/* End Date/Time */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              <Clock className="inline-block w-4 h-4 mr-2" />
+            <label className="flex items-center gap-2 text-sm mb-2">
+              <Clock className="w-4 h-4" />
               Date et heure de fin *
             </label>
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <input
+                <Input
                   id="endDate"
                   name="endDate"
                   type="date"
@@ -237,9 +233,7 @@ const EventSchedulingForm: React.FC<EventSchedulingFormProps> = ({
                     setEndDate(e.target.value);
                     clearDateErrors();
                   }}
-                  className={`w-full rounded-lg border ${
-                    formErrors.endDate ? "border-red-500" : "border-gray-300"
-                  } px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary`}
+                  className={formErrors.endDate && "border-destructive"}
                   aria-invalid={!!formErrors.endDate}
                   aria-describedby={
                     formErrors.endDate ? "endDate-error-specific" : undefined
@@ -250,7 +244,7 @@ const EventSchedulingForm: React.FC<EventSchedulingFormProps> = ({
                 </div>
               </div>
               <div>
-                <input
+                <Input
                   id="specificEndTime"
                   name="endTime" // Common name for Zod
                   type="time"
@@ -260,9 +254,7 @@ const EventSchedulingForm: React.FC<EventSchedulingFormProps> = ({
                     clearTimeErrors();
                     clearDateErrors(); // Also for chronology
                   }}
-                  className={`w-full rounded-lg border ${
-                    formErrors.endTime ? "border-red-500" : "border-gray-300"
-                  } px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary`}
+                  className={formErrors.endTime && "border-destructive"}
                   aria-invalid={!!formErrors.endTime}
                   aria-describedby={
                     formErrors.endTime ? "endTime-error-specific" : undefined
