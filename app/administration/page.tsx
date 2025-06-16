@@ -1,23 +1,16 @@
 import FormMoviesManagement from "@/components/administration/forms/form-movies-management";
 import FormRoomsManagement from "@/components/administration/forms/form-rooms-management";
-import NotFound from "../not-found";
-import { auth } from "@/lib/auth/auth";
-import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import { getUser } from "@/server/util/getUser";
 import { Role } from "@prisma/client";
-import NotAuthorized from "@/components/auth/not-authorized";
 
 export default async function Admin() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const user = await getUser();
 
-  const user = session?.user;
   const isAdmin = user?.role === Role.admin;
 
   if (!isAdmin) {
-    return <NotAuthorized />;
-  } else if (!user) {
-    return <NotFound />;
+    redirect("/forbidden");
   }
 
   return (

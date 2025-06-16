@@ -2,9 +2,9 @@ import React from "react";
 import EventForm from "@/components/events/event-form/EventForm";
 import { EventStatus } from "@prisma/client";
 import { EventDataType } from "@/lib/db/events";
-import NotAuthorized from "@/components/auth/not-authorized";
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 const data: EventDataType = {
   address: "",
@@ -43,7 +43,7 @@ export default async function CreateEventPage() {
   });
 
   if (!result.success) {
-    return <NotAuthorized />;
+    redirect("/forbidden");
   }
 
   return (

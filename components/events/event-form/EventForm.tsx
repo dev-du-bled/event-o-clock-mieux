@@ -14,7 +14,6 @@ import {
   createEventSchema,
   CreateEventFormData as ZodFormData,
 } from "@/schemas/createEvent";
-import NoAuth from "@/components/auth/no-auth";
 import EventDetailsForm from "./fields/EventDetailsForm";
 import EventSchedulingForm from "./fields/EventSchedulingForm";
 import EventLocationForm from "./fields/EventLocationForm";
@@ -270,10 +269,6 @@ export default function EventForm({
       setLoading(false);
     }
   };
-
-  if (!user) {
-    return <NoAuth />;
-  }
 
   return (
     <form

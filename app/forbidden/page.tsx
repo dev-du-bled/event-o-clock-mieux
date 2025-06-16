@@ -1,11 +1,11 @@
 import Link from "next/link";
 
-export default function NotFound() {
+export default function Forbidden() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
-      <h1 className="text-2xl font-bold">404</h1>
+      <h1 className="text-2xl font-bold">401</h1>
       <p className="mt-2 text-center">
-        La page que vous recherchez n&apos;existe pas.
+        Vous n&apos;êtes pas autorisé à accéder à cette page.
       </p>
       <Link
         href={"/"}

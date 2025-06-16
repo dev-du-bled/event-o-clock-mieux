@@ -4,12 +4,10 @@
  * @details Manages and displays user's favorite events with real-time updates
  */
 
-import NoAuth from "@/components/auth/no-auth";
-import { auth } from "@/lib/auth/auth";
-import { headers } from "next/headers";
 import { getAllEvents } from "@/lib/db/events";
 import { getUserFavorites } from "@/server/actions/favorites";
 import { EventCard } from "@/components/events/event-card";
+import { getUser } from "@/server/util/getUser";
 
 /**
  * @brief Favorites management component
@@ -22,15 +20,7 @@ import { EventCard } from "@/components/events/event-card";
  * @returns React component for favorites page
  */
 export default async function Favorites() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  const user = session?.user;
-
-  if (!user) {
-    return <NoAuth />;
-  }
+  await getUser();
 
   const events = await getAllEvents();
   const favorites = await getUserFavorites();

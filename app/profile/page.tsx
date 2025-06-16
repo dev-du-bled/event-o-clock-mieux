@@ -14,10 +14,8 @@ import { Ticket } from "lucide-react";
 import { getUserBookings } from "@/lib/db/cinema";
 import { getMovieDetails } from "@/lib/tmdb";
 import Link from "next/link";
-import NoAuth from "@/components/auth/no-auth";
 import EditProfile from "@/components/user/edit-profile";
-import { auth } from "@/lib/auth/auth";
-import { headers } from "next/headers";
+import { getUser } from "@/server/util/getUser";
 
 /**
  * @brief User profile management component
@@ -31,15 +29,7 @@ import { headers } from "next/headers";
  * @returns React component for user profile page
  */
 export default async function Profile() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  const user = session?.user;
-
-  if (!user) {
-    return <NoAuth />;
-  }
+  const user = await getUser();
 
   const userBookings = await getUserBookings(user.id); // TODO: issue here cause db has no relation
 

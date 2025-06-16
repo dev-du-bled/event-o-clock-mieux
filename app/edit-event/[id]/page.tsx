@@ -5,12 +5,12 @@
  *          image management, and address validation
  */
 
-import NotAuthorized from "@/components/auth/not-authorized";
 import EventForm from "@/components/events/event-form/EventForm";
 import { getUser } from "@/server/util/getUser";
 import { EventDataType, getEventById } from "@/lib/db/events";
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 export default async function EditEvent({
   params,
@@ -25,7 +25,7 @@ export default async function EditEvent({
   const event = await getEventById(id);
 
   if (!event) {
-    return <NotAuthorized />;
+    redirect("/not-found");
   }
 
   // Vérification des permissions (créateur ou permission update)
@@ -37,7 +37,7 @@ export default async function EditEvent({
   });
 
   if (!result.success && event.createdBy !== user.id) {
-    return <NotAuthorized />;
+    redirect("/forbidden");
   }
 
   const data: EventDataType = {
