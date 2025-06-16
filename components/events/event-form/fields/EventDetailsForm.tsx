@@ -3,6 +3,8 @@
 import React from "react";
 import { Tag } from "lucide-react";
 import FieldErrorDisplay from "./FieldError";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 interface EventDetailsFormProps {
   titleValue: string;
@@ -43,16 +45,14 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
         >
           Titre de l&apos;événement *
         </label>
-        <input
+        <Input
           id="title"
           name="title"
           type="text"
           required
           value={titleValue}
           onChange={onTitleChange}
-          className={`w-full rounded-lg border ${
-            titleError ? "border-destructive" : "border-input"
-          } bg-background px-4 py-2 text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary`}
+          className={titleError && "border-destructive"}
           placeholder="Ex: Concert de Jazz au Parc"
           aria-invalid={!!titleError}
           aria-describedby={titleError ? "title-error" : undefined}
@@ -70,16 +70,14 @@ const EventDetailsForm: React.FC<EventDetailsFormProps> = ({
         >
           Description détaillée *
         </label>
-        <textarea
+        <Textarea
           id="description"
           name="description"
           required
           value={descriptionValue}
           onChange={onDescriptionChange}
           rows={5}
-          className={`w-full rounded-lg border ${
-            descriptionError ? "border-destructive" : "border-input"
-          } bg-background px-4 py-2 text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary`}
+          className={descriptionError && "border-destructive"}
           placeholder="Décrivez votre événement en détail..."
           aria-invalid={!!descriptionError}
           aria-describedby={descriptionError ? "description-error" : undefined}

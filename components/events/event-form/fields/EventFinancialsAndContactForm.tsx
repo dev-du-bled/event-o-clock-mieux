@@ -5,6 +5,8 @@ import { Info, Wallet, X } from "lucide-react";
 import FieldErrorDisplay from "./FieldError";
 import { Button } from "@/components/ui/button";
 import { Price, priceSchema } from "@/schemas/createEvent";
+import { Input } from "@/components/ui/input";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 interface EventFinancialsAndContactFormProps {
   // Price props
@@ -90,124 +92,106 @@ const EventFinancialsAndContactForm: React.FC<
           <Wallet className="inline-block w-4 h-4 mr-2" />
           Tarifs *
         </label>
-        <div className="flex justify-between">
-          <div className="space-x-4">
-            <label className="inline-flex items-center cursor-pointer">
-              <input
-                type="radio"
-                name="paymentType"
-                checked={!isPaid}
-                onChange={() => {
-                  setIsPaid(false);
-                  setPrices([]);
-                  clearPricesError();
-                }}
-                className="text-primary"
-              />
-              <span className="ml-2 text-sm text-gray-600">Gratuit</span>
-            </label>
-            <label className="inline-flex items-center cursor-pointer">
-              <input
-                type="radio"
-                name="paymentType"
-                checked={isPaid}
-                onChange={() => setIsPaid(true)}
-                className="text-primary"
-              />
-              <span className="ml-2 text-sm text-gray-600">Payant</span>
-            </label>
+        <RadioGroup
+          defaultValue="Gratuit"
+          className="flex"
+          onValueChange={e => setIsPaid(e === "Payant")}
+        >
+          <div className="flex items-center gap-2">
+            <RadioGroupItem value="Gratuit" />
+            <label className="text-sm">Gratuit</label>
           </div>
-          {isPaid && (
-            <div className="flex justify-end">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={validate}
-                type="button"
-              >
-                Ajouter un tarif
-              </Button>
-            </div>
-          )}
-        </div>
+          <div className="flex items-center gap-2">
+            <RadioGroupItem value="Payant" />
+            <label className="text-sm">Payant</label>
+          </div>
+        </RadioGroup>
         {isPaid && (
-          <div className="mt-2 space-y-4">
-            <div className="flex flex-col space-y-2">
-              <input
-                id="type"
-                name="type"
-                value={type}
-                onChange={e => {
-                  setType(e.target.value);
-                  setErrors(prev => ({ ...prev, type: undefined }));
-                }}
-                className={`w-full rounded-lg border ${
-                  errors.type || formErrors.prices?.[0]
-                    ? "border-red-500"
-                    : "border-gray-300"
-                } px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary`}
-                placeholder="Type de la place (ex: catégorie 1, VIP, etc.)"
-                step="0.01"
-                min="0"
-                aria-invalid={!!errors.type}
-                aria-describedby={errors.type ? "type-error" : undefined}
-              />
-              <FieldErrorDisplay error={errors.type} />
-              <input
-                id="price"
-                name="price"
-                value={price}
-                onChange={e => {
-                  setPrice(e.target.value);
-                  setErrors(prev => ({ ...prev, price: undefined }));
-                }}
-                className={`w-full rounded-lg border ${
-                  errors.price || formErrors.prices?.[0]
-                    ? "border-red-500"
-                    : "border-gray-300"
-                } px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary`}
-                placeholder="Prix en euros"
-                step="0.01"
-                min="0"
-                aria-invalid={!!errors.price}
-                aria-describedby={errors.price ? "price-error" : undefined}
-              />
-              <FieldErrorDisplay error={errors.price} />
-            </div>
-          </div>
-        )}
-        {formErrors.prices && (
-          <div className="mt-2">
-            <FieldErrorDisplay error={formErrors.prices[0]} />
-          </div>
-        )}
-        {isPaid && prices.length > 0 && (
-          <div className="mt-4">
-            <h3 className="text-sm font-medium text-gray-700 mb-2">
-              Tarifs Configurés
-            </h3>
-            <div className="flex gap-2 flex-wrap">
-              {prices.map((priceItem, index) => (
-                <div
-                  key={index}
-                  className="flex text-sm bg-accent-foreground rounded-2xl text-accent gap-2 pl-2 py-1 pr-1"
-                >
-                  {priceItem.type}: {priceItem.price} €
-                  <button
-                    type="button"
-                    className="w-5 h-5 flex justify-center items-center rounded-full hover:bg-red-500"
-                    onClick={() =>
-                      setPrices(prices.filter((_, i) => i !== index))
-                    }
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-              ))}
-            </div>
+          <div className="flex justify-end">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={validate}
+              type="button"
+            >
+              Ajouter un tarif
+            </Button>
           </div>
         )}
       </div>
+      {isPaid && (
+        <div className="mt-2 space-y-4">
+          <div className="flex flex-col space-y-2">
+            <Input
+              id="type"
+              name="type"
+              type="text"
+              value={type}
+              onChange={e => {
+                setType(e.target.value);
+                setErrors(prev => ({ ...prev, type: undefined }));
+              }}
+              className={
+                (errors.type || formErrors.prices?.[0]) && "border-destructive"
+              }
+              placeholder="Type de la place (ex: catégorie 1, VIP, etc.)"
+              aria-invalid={!!errors.type}
+              aria-describedby={errors.type ? "type-error" : undefined}
+            />
+            <FieldErrorDisplay error={errors.type} />
+            <Input
+              id="price"
+              name="price"
+              type="number"
+              value={price}
+              onChange={e => {
+                setPrice(e.target.value);
+                setErrors(prev => ({ ...prev, price: undefined }));
+              }}
+              className={
+                (errors.price || formErrors.prices?.[0]) && "border-destructive"
+              }
+              placeholder="Prix en euros"
+              step="0.01"
+              min="0"
+              aria-invalid={!!errors.price}
+              aria-describedby={errors.price ? "price-error" : undefined}
+            />
+            <FieldErrorDisplay error={errors.price} />
+          </div>
+        </div>
+      )}
+      {formErrors.prices && (
+        <div className="mt-2">
+          <FieldErrorDisplay error={formErrors.prices[0]} />
+        </div>
+      )}
+      {isPaid && prices.length > 0 && (
+        <div className="mt-4">
+          <h3 className="text-sm font-medium text-gray-700 mb-2">
+            Tarifs Configurés
+          </h3>
+          <div className="flex gap-2 flex-wrap">
+            {prices.map((priceItem, index) => (
+              <div
+                key={index}
+                className="flex text-sm bg-accent-foreground rounded-2xl text-accent gap-2 pl-2 py-1 pr-1"
+              >
+                {priceItem.type}: {priceItem.price} €
+                <button
+                  type="button"
+                  className="w-5 h-5 flex justify-center items-center rounded-full hover:bg-red-500"
+                  onClick={() =>
+                    setPrices(prices.filter((_, i) => i !== index))
+                  }
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Contact Info Section */}
       <div className="mt-4">
@@ -217,7 +201,7 @@ const EventFinancialsAndContactForm: React.FC<
         </label>
         <div className="space-y-4">
           <div>
-            <input
+            <Input
               id="organizerWebsite"
               name="organizerWebsite"
               type="url"
@@ -226,11 +210,7 @@ const EventFinancialsAndContactForm: React.FC<
                 setOrganizerWebsite(e.target.value);
                 clearWebsiteError();
               }}
-              className={`w-full rounded-lg border ${
-                formErrors.organizerWebsite
-                  ? "border-red-500"
-                  : "border-gray-300"
-              } px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary`}
+              className={formErrors.organizerWebsite && "border-destructive"}
               placeholder="Site web (ex: https://monsite.com)"
               aria-invalid={!!formErrors.organizerWebsite}
               aria-describedby={
@@ -242,7 +222,7 @@ const EventFinancialsAndContactForm: React.FC<
             <FieldErrorDisplay error={formErrors.organizerWebsite?.[0]} />
           </div>
           <div>
-            <input
+            <Input
               id="organizerPhone"
               name="organizerPhone"
               type="tel"
@@ -251,9 +231,7 @@ const EventFinancialsAndContactForm: React.FC<
                 setOrganizerPhone(e.target.value);
                 clearPhoneError();
               }}
-              className={`w-full rounded-lg border ${
-                formErrors.organizerPhone ? "border-red-500" : "border-gray-300"
-              } px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary`}
+              className={formErrors.organizerPhone && "border-destructive"}
               placeholder="Numéro de téléphone"
               aria-invalid={!!formErrors.organizerPhone}
               aria-describedby={

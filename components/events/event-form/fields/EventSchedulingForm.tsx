@@ -4,6 +4,8 @@ import React from "react";
 import { Clock, Repeat } from "lucide-react";
 import FieldErrorDisplay from "./FieldError";
 import { CreateEventFormData as ZodFormData } from "@/schemas/createEvent";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
 
 interface EventSchedulingFormProps {
   // Recurrence props
@@ -57,21 +59,13 @@ const EventSchedulingForm: React.FC<EventSchedulingFormProps> = ({
     <>
       {/* Recurrence Checkbox & Conditional Fields */}
       <div className="space-y-4">
-        <label className="flex items-center space-x-2 cursor-pointer">
-          <input
-            type="checkbox"
+        <label className="flex items-center gap-2">
+          <Checkbox
             checked={isRecurring}
-            onChange={e => {
-              setIsRecurring(e.target.checked);
-              // Note: Error clearing for date/time fields when toggling isRecurring
-              // is handled in the parent component\'s setIsRecurring logic.
-            }}
-            className="rounded border-gray-300 text-primary focus:ring-primary"
+            onCheckedChange={e => setIsRecurring(e as boolean)}
           />
-          <span className="text-sm font-medium text-foreground">
-            <Repeat className="inline-block w-4 h-4 mr-2" />
-            Événement récurrent
-          </span>
+          <Repeat className="h-4 w-4" />
+          Événement récurrent
         </label>
 
         {isRecurring && (
@@ -82,24 +76,18 @@ const EventSchedulingForm: React.FC<EventSchedulingFormProps> = ({
               </label>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                 {weekDays.map(day => (
-                  <label
-                    key={day.id}
-                    className="flex items-center space-x-2 cursor-pointer"
-                  >
-                    <input
-                      type="checkbox"
+                  <label key={day.id} className="flex items-center space-x-2">
+                    <Checkbox
                       checked={recurringDays.includes(day.id)}
-                      onChange={e => {
-                        const checked = e.target.checked;
+                      onCheckedChange={e => {
                         let updatedDays: ZodFormData["recurringDays"];
-                        if (checked) {
+                        if (e) {
                           updatedDays = [...recurringDays, day.id];
                         } else {
                           updatedDays = recurringDays.filter(d => d !== day.id);
                         }
                         setRecurringDays(updatedDays);
                       }}
-                      className="rounded border-gray-300 text-primary focus:ring-primary"
                     />
                     <span>{day.label}</span>
                   </label>
@@ -113,12 +101,12 @@ const EventSchedulingForm: React.FC<EventSchedulingFormProps> = ({
               <div>
                 <label
                   htmlFor="recurringStartTime"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-sm font-medium mb-2"
                 >
                   <Clock className="inline-block w-4 h-4 mr-2" />
                   Heure de début *
                 </label>
-                <input
+                <Input
                   id="recurringStartTime"
                   name="startTime" // Common name for Zod
                   type="time"
@@ -127,9 +115,7 @@ const EventSchedulingForm: React.FC<EventSchedulingFormProps> = ({
                     setStartTime(e.target.value);
                     clearTimeErrors();
                   }}
-                  className={`w-full rounded-lg border ${
-                    formErrors.startTime ? "border-red-500" : "border-gray-300"
-                  } px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary`}
+                  className={formErrors.startTime && "border-destructive"}
                   aria-invalid={!!formErrors.startTime}
                   aria-describedby={
                     formErrors.startTime
@@ -144,12 +130,12 @@ const EventSchedulingForm: React.FC<EventSchedulingFormProps> = ({
               <div>
                 <label
                   htmlFor="recurringEndTime"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-sm font-medium mb-2"
                 >
                   <Clock className="inline-block w-4 h-4 mr-2" />
                   Heure de fin *
                 </label>
-                <input
+                <Input
                   id="recurringEndTime"
                   name="endTime" // Common name for Zod
                   type="time"
@@ -158,9 +144,7 @@ const EventSchedulingForm: React.FC<EventSchedulingFormProps> = ({
                     setEndTime(e.target.value);
                     clearTimeErrors();
                   }}
-                  className={`w-full rounded-lg border ${
-                    formErrors.endTime ? "border-red-500" : "border-gray-300"
-                  } px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary`}
+                  className={formErrors.endTime && "border-destructive"}
                   aria-invalid={!!formErrors.endTime}
                   aria-describedby={
                     formErrors.endTime ? "endTime-error-recurring" : undefined

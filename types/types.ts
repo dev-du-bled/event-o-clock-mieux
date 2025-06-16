@@ -1,10 +1,9 @@
 export interface AddressFeature {
   properties: {
     label: string;
-    postcode: string;
     city: string;
-    housenumber?: string;
-    street: string;
+    name: string; // full street address with number
+    postcode: string;
   };
 }
 

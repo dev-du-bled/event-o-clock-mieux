@@ -3,12 +3,14 @@
 import React from "react";
 import { MapPin, Accessibility } from "lucide-react";
 import FieldErrorDisplay from "./FieldError";
-import AddressFeature from "@/lib/types";
+import { AddressFeature } from "@/types/types";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface EventLocationFormProps {
   // Address props
   place: string;
-  setPlace: (place: string) => void;
+  handlePlaceChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   address: string;
   handleAddressChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   addressInputRef: React.RefObject<HTMLInputElement>;
@@ -43,7 +45,7 @@ interface EventLocationFormProps {
 
 const EventLocationForm: React.FC<EventLocationFormProps> = ({
   place,
-  setPlace,
+  handlePlaceChange,
   address,
   handleAddressChange,
   addressInputRef,
@@ -72,31 +74,30 @@ const EventLocationForm: React.FC<EventLocationFormProps> = ({
           <MapPin className="inline-block w-4 h-4 mr-2" />
           Adresse de l&apos;événement *
         </label>
-        <input
+        <Input
           id="place"
           name="place"
           type="text"
           value={place}
-          onChange={e => setPlace(e.target.value)}
-          className={`w-full rounded-lg border ${
-            formErrors.place ? "border-destructive" : "border-input"
-          } bg-background px-4 py-2 text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary`}
+          onChange={handlePlaceChange}
+          className={formErrors.place && "border-destructive"}
           placeholder="Lieu de l'événement"
           required
           aria-invalid={!!formErrors.place}
           aria-describedby={formErrors.place ? "place-error" : undefined}
         />
+        <div id="place-error">
+          <FieldErrorDisplay error={formErrors.place?.[0]} />
+        </div>
         <div className="relative">
-          <input
+          <Input
             id="address"
             name="address"
             type="text"
             ref={addressInputRef}
             value={address}
             onChange={handleAddressChange}
-            className={`w-full rounded-lg border ${
-              formErrors.address ? "border-destructive" : "border-input"
-            } bg-background px-4 py-2 text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary`}
+            className={formErrors.address && "border-destructive"}
             placeholder="Numéro et nom de la rue"
             autoComplete="off"
             aria-invalid={!!formErrors.address}
@@ -122,7 +123,7 @@ const EventLocationForm: React.FC<EventLocationFormProps> = ({
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <input
+            <Input
               id="city"
               name="city"
               type="text"
@@ -132,7 +133,7 @@ const EventLocationForm: React.FC<EventLocationFormProps> = ({
                 clearCityError();
               }}
               className={`w-full rounded-lg border ${
-                formErrors.city ? "border-destructive" : "border-input"
+                formErrors.city ? "border-destructive" : "border-Input"
               } bg-background px-4 py-2 text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary`}
               placeholder="Ville"
               required
@@ -144,7 +145,7 @@ const EventLocationForm: React.FC<EventLocationFormProps> = ({
             </div>
           </div>
           <div>
-            <input
+            <Input
               id="postalCode"
               name="postalCode"
               type="text"
@@ -154,7 +155,7 @@ const EventLocationForm: React.FC<EventLocationFormProps> = ({
                 clearPostalCodeError();
               }}
               className={`w-full rounded-lg border ${
-                formErrors.postalCode ? "border-destructive" : "border-input"
+                formErrors.postalCode ? "border-destructive" : "border-Input"
               } bg-background px-4 py-2 text-foreground focus:ring-2 focus:ring-primary/20 focus:border-primary`}
               placeholder="Code postal"
               required
@@ -179,33 +180,27 @@ const EventLocationForm: React.FC<EventLocationFormProps> = ({
         </label>
         <div className="space-y-2">
           <label className="flex items-center cursor-pointer">
-            <input
-              type="checkbox"
+            <Checkbox
               checked={isAccessible}
-              onChange={e => setIsAccessible(e.target.checked)}
-              className="rounded border-input text-primary focus:ring-primary"
+              onCheckedChange={e => setIsAccessible(e as boolean)}
             />
             <span className="ml-2 text-sm text-muted-foreground">
               Accessible aux personnes à mobilité réduite
             </span>
           </label>
           <label className="flex items-center cursor-pointer">
-            <input
-              type="checkbox"
+            <Checkbox
               checked={hasParking}
-              onChange={e => setHasParking(e.target.checked)}
-              className="rounded border-input text-primary focus:ring-primary"
+              onCheckedChange={e => setHasParking(e as boolean)}
             />
             <span className="ml-2 text-sm text-muted-foreground">
               Parking disponible
             </span>
           </label>
           <label className="flex items-center cursor-pointer">
-            <input
-              type="checkbox"
+            <Checkbox
               checked={hasPublicTransport}
-              onChange={e => setHasPublicTransport(e.target.checked)}
-              className="rounded border-input text-primary focus:ring-primary"
+              onCheckedChange={e => setHasPublicTransport(e as boolean)}
             />
             <span className="ml-2 text-sm text-muted-foreground">
               Transport en commun à proximité

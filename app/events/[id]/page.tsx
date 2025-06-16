@@ -22,7 +22,7 @@ export default async function EventPage({
   params: Promise<{ id: string }>;
 }) {
   const id = (await params).id;
-  const user = await getUser("/events/" + id);
+  const user = await getUser(false);
 
   const event = await getEventById(id);
 
@@ -55,7 +55,7 @@ export default async function EventPage({
         </div>
         <div className="flex flex-col md:flex-row gap-10">
           <div className="flex justify-center md:justify-start w-full md:w-1/2">
-            <div className="rounded-lg w-full">
+            <div className="w-full">
               {event.images.length > 0 ? (
                 <Carousel>
                   <CarouselContent>
@@ -87,6 +87,8 @@ export default async function EventPage({
             <p className="text-wrap break-words">{event.description}</p>
           </div>
         </div>
+        {/* debug */}
+        <pre>{JSON.stringify(event, null, 2)}</pre>
       </div>
     </div>
   );

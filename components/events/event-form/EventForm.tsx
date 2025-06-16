@@ -8,7 +8,6 @@ import {
   updateEventAction,
   redirectAfterSuccess,
 } from "@/server/actions/events";
-import AddressFeature from "@/lib/types";
 import { authClient } from "@/lib/auth/auth-client";
 import { z } from "zod";
 import {
@@ -22,6 +21,7 @@ import EventLocationForm from "./fields/EventLocationForm";
 import EventImageUpload from "./fields/EventImageUpload";
 import EventFinancialsAndContactForm from "./fields/EventFinancialsAndContactForm";
 import { Base64ToFile, searchAddress } from "@/lib/utils";
+import { AddressFeature } from "@/types/types";
 
 // Helper type pour les erreurs Zod formatées
 type FieldErrors = z.inferFlattenedErrors<
@@ -129,6 +129,12 @@ export default function EventForm({
     { id: "sunday", label: "Dimanche" },
   ];
 
+  const handlePlaceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setFormData(prev => ({ ...prev, place: value }));
+    setFormErrors(prev => ({ ...prev, place: undefined }));
+  };
+
   const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setFormData(prev => ({ ...prev, address: value }));
@@ -137,18 +143,15 @@ export default function EventForm({
   };
 
   const handleAddressSelect = (feature: AddressFeature) => {
-    const { postcode, city, housenumber, street } = feature.properties;
-    const fullAddress = `${housenumber ? housenumber + " " : ""}${street}`;
+    const { name, city, postcode } = feature.properties;
     setFormData(prev => ({
       ...prev,
-      place: feature.properties.label, //TODO: change to correct value
-      address: fullAddress,
+      address: name,
       city,
       postalCode: postcode,
     }));
     setFormErrors(prev => ({
       ...prev,
-      place: undefined,
       address: undefined,
       city: undefined,
       postalCode: undefined,
@@ -202,7 +205,7 @@ export default function EventForm({
       recurringDays: isRecurring ? recurringDays : [],
       prices: isPaid
         ? (formData.prices as { type: string; price: string }[])
-        : [{ type: "normal", price: "0" }],
+        : [],
     };
 
     const validationResult = createEventSchema.safeParse(dataToValidate);
@@ -347,9 +350,7 @@ export default function EventForm({
 
       <EventLocationForm
         place={formData.place}
-        setPlace={newPlace =>
-          setFormData(prev => ({ ...prev, place: newPlace }))
-        }
+        handlePlaceChange={handlePlaceChange}
         address={formData.address}
         handleAddressChange={handleAddressChange}
         addressInputRef={addressInputRef}

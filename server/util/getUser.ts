@@ -8,13 +8,13 @@ import { redirect } from "next/navigation";
  * Utilitaire pour récupérer l'utilisateur authentifié
  * Redirige vers la page de login si non authentifié
  */
-export async function getUser(redirectTo?: string) {
+export async function getUser(shouldRedirect?: boolean) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
 
-  if (!session?.user) {
-    redirect("/login" + (redirectTo ? `?redirectTo=${redirectTo}` : ""));
+  if (shouldRedirect || !session?.user) {
+    redirect("/login");
   }
 
   return session.user;

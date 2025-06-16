@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -51,15 +52,12 @@ export default function LoginForm() {
 
       <div className="space-y-4">
         <div>
-          <label
-            htmlFor="email"
-            className="block text-sm font-medium text-gray-700"
-          >
+          <label htmlFor="email" className="block text-sm font-medium">
             Email
           </label>
           <div className="mt-1 relative">
             <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-            <input
+            <Input
               id="email"
               type="email"
               required
@@ -68,22 +66,19 @@ export default function LoginForm() {
                 setEmail(e.target.value);
                 setError("");
               }}
-              className="pl-10 block w-full rounded-lg border border-gray-300 py-2 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-primary/20 focus:border-primary"
+              className="pl-10"
               placeholder="vous@exemple.com"
             />
           </div>
         </div>
 
         <div>
-          <label
-            htmlFor="password"
-            className="block text-sm font-medium text-gray-700"
-          >
+          <label htmlFor="password" className="block text-sm font-medium">
             Mot de passe
           </label>
           <div className="mt-1 relative">
             <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-            <input
+            <Input
               id="password"
               type="password"
               required
@@ -92,7 +87,7 @@ export default function LoginForm() {
                 setPassword(e.target.value);
                 setError("");
               }}
-              className="pl-10 block w-full rounded-lg border border-gray-300 py-2 text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-primary/20 focus:border-primary"
+              className="pl-10"
               placeholder="••••••••"
             />
           </div>
