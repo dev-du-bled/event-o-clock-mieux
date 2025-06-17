@@ -15,6 +15,7 @@ import { createRoomAction } from "@/server/actions/rooms";
 import { toast } from "sonner";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input";
 
 export default function CreateRoomDialog() {
   const router = useRouter();
@@ -60,11 +61,11 @@ export default function CreateRoomDialog() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger>
-        <button className="flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+      <DialogTrigger asChild>
+        <Button>
           <Plus className={`w-4 h-4 mr-2 }`} />
           {"Ajouter une salle"}
-        </button>
+        </Button>
       </DialogTrigger>
 
       <DialogContent>
@@ -78,7 +79,7 @@ export default function CreateRoomDialog() {
         >
           Nom de la salle:
         </label>
-        <input
+        <Input
           type="text"
           id="name"
           name="name"
@@ -87,7 +88,7 @@ export default function CreateRoomDialog() {
           className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary`}
           value={roomName}
           onChange={e => setRoomName(e.target.value)}
-        ></input>
+        ></Input>
 
         <label
           htmlFor="capacity"
@@ -95,7 +96,7 @@ export default function CreateRoomDialog() {
         >
           Capacitée:
         </label>
-        <input
+        <Input
           type="number"
           id="capacity"
           name="capacity"
@@ -106,7 +107,7 @@ export default function CreateRoomDialog() {
           className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary`}
           value={roomCapacity}
           onChange={e => setRoomCapacity(parseInt(e.target.value))}
-        ></input>
+        ></Input>
 
         <DialogFooter>
           <Button onClick={handleCreateRoom} disabled={loading}>
