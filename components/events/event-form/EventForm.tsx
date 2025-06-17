@@ -207,8 +207,6 @@ export default function EventForm({
       prices: isPaid ? (formData.prices as Price[]) : [],
     };
 
-    console.log(dataToValidate);
-
     const validationResult = createEventSchema.safeParse(dataToValidate);
 
     if (!validationResult.success) {

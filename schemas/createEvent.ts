@@ -94,7 +94,6 @@ export const createEventSchema = z
         const result = priceSchema.safeParse(price);
         if (!result.success) {
           result.error.issues.forEach(issue => {
-            console.log(issue);
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
               message: issue.message,

@@ -86,11 +86,11 @@ export default async function EventPage({
               )}
             </div>
           </div>
-          <div className="space-y-2 w-full md:w-1/2">
-            <div className="flex gap-2">
+          <div className=" flex flex-col h-64 sm:h-80 space-y-2 w-full md:w-1/2">
+            <div className="flex gap-2 flex-wrap">
               {event.categories.map(cat => (
                 <div
-                  key={`categorie-${cat}`}
+                  key={`categorie-${cat}-${event.id}`}
                   className="rounded-full bg-primary text-primary-foreground px-2"
                 >
                   {cat}
@@ -98,11 +98,18 @@ export default async function EventPage({
               ))}
             </div>
             <h2 className="text-lg font-bold">A propos</h2>
-            <p className="text-wrap break-words">{event.description}</p>
+            <p className="text-wrap break-words overflow-hidden overflow-y-auto">
+              {event.description}
+            </p>
           </div>
         </div>
+
+        <div className=""></div>
+
         {/* debug */}
-        <pre>{JSON.stringify(event, null, 2)}</pre>
+        <pre className="text-wrap break-words">
+          {JSON.stringify({ ...event, images: [] }, null, 2)}
+        </pre>
       </div>
     </div>
   );

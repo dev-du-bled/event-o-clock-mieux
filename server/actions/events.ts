@@ -32,8 +32,7 @@ export async function checkEventPermission(
       },
     });
     return result.success || false;
-  } catch (error) {
-    console.error("Erreur vérification permission:", error);
+  } catch {
     return false;
   }
 }

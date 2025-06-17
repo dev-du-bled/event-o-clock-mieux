@@ -107,7 +107,7 @@ export default function CreateRoomDialog() {
         <DialogFooter>
           <Button onClick={handleCreateRoom} disabled={loading}>
             {loading && <Loader2 className="animate-spin" />}
-            {`Créer la salle ${roomName}`}
+            {`Créer la salle`}
           </Button>
           <DialogClose>
             <Button variant={"secondary"}>{`Annuler`}</Button>
