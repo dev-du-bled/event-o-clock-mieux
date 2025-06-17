@@ -12,7 +12,7 @@ interface EventFinancialsAndContactFormProps {
   // Price props
   isPaid: boolean;
   setIsPaid: (isPaid: boolean) => void;
-  prices: { type: string; price: string }[];
+  prices: Price[];
   setPrices: (prices: Price[]) => void;
   clearPricesError: () => void;
 
@@ -49,7 +49,7 @@ const EventFinancialsAndContactForm: React.FC<
   formErrors,
 }) => {
   const [type, setType] = React.useState<string>("");
-  const [price, setPrice] = React.useState<string>("");
+  const [price, setPrice] = React.useState<number>(1);
   const [errors, setErrors] = React.useState<{
     type?: string;
     price?: string;
@@ -60,7 +60,7 @@ const EventFinancialsAndContactForm: React.FC<
 
     const result = priceSchema.safeParse({
       type,
-      price: price.replace(",", "."),
+      price,
     });
 
     if (!result.success) {
@@ -74,13 +74,9 @@ const EventFinancialsAndContactForm: React.FC<
     }
 
     const data = result.data;
-    setPrices(
-      [...prices, data].sort(
-        (a, b) => parseFloat(a.price) - parseFloat(b.price)
-      )
-    ); // sort in asc order to easier display after
+    setPrices([...prices, data].sort((a, b) => a.price - b.price)); // sort in asc order to easier display after
     setType("");
-    setPrice("0");
+    setPrice(1);
     clearPricesError();
   };
 
@@ -93,7 +89,7 @@ const EventFinancialsAndContactForm: React.FC<
       </label>
       <div className="flex flex-col sm:flex-row sm:justify-between space-y-2 sm:space-y-0">
         <RadioGroup
-          defaultValue="Gratuit"
+          defaultValue={isPaid ? "Payant" : "Gratuit"}
           className="flex"
           onValueChange={e => setIsPaid(e === "Payant")}
         >
@@ -147,9 +143,9 @@ const EventFinancialsAndContactForm: React.FC<
                 id="price"
                 name="price"
                 type="number"
-                value={price}
+                value={price.toString()}
                 onChange={e => {
-                  setPrice(e.target.value);
+                  setPrice(parseFloat(e.target.value));
                   setErrors(prev => ({ ...prev, price: undefined }));
                 }}
                 className={

@@ -227,7 +227,7 @@ async function main() {
         createdBy: users[1].id,
         status: "PUBLISHED",
         isRecurring: true,
-        recurringDays: ["Vendredi"],
+        recurringDays: ["friday"],
         recurringEndDate: "2024-12-31",
         isAccessible: true,
         hasParking: false,

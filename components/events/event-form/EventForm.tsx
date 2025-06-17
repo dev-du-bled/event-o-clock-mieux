@@ -12,6 +12,7 @@ import { authClient } from "@/lib/auth/auth-client";
 import { z } from "zod";
 import {
   createEventSchema,
+  Price,
   CreateEventFormData as ZodFormData,
 } from "@/schemas/createEvent";
 import EventDetailsForm from "./fields/EventDetailsForm";
@@ -203,10 +204,10 @@ export default function EventForm({
       isPaid,
       isRecurring,
       recurringDays: isRecurring ? recurringDays : [],
-      prices: isPaid
-        ? (formData.prices as { type: string; price: string }[])
-        : [],
+      prices: isPaid ? (formData.prices as Price[]) : [],
     };
+
+    console.log(dataToValidate);
 
     const validationResult = createEventSchema.safeParse(dataToValidate);
 
@@ -398,7 +399,7 @@ export default function EventForm({
       <EventFinancialsAndContactForm
         isPaid={isPaid}
         setIsPaid={setIsPaid}
-        prices={formData.prices as { type: string; price: string }[]}
+        prices={formData.prices as Price[]}
         setPrices={newPrice =>
           setFormData(prev => ({ ...prev, prices: newPrice }))
         }

@@ -87,6 +87,16 @@ export default async function EventPage({
             </div>
           </div>
           <div className="space-y-2 w-full md:w-1/2">
+            <div className="flex gap-2">
+              {event.categories.map(cat => (
+                <div
+                  key={`categorie-${cat}`}
+                  className="rounded-full bg-primary text-primary-foreground px-2"
+                >
+                  {cat}
+                </div>
+              ))}
+            </div>
             <h2 className="text-lg font-bold">A propos</h2>
             <p className="text-wrap break-words">{event.description}</p>
           </div>

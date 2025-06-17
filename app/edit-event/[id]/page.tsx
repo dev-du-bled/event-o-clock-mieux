@@ -61,7 +61,7 @@ export default async function EditEvent({
     status: event.status,
     isRecurring: event.isRecurring,
     recurringDays: event.recurringDays,
-    recurringEndDate: event.recurringEndDate || "",
+    recurringEndDate: event.recurringEndDate,
     isAccessible: event.isAccessible,
     hasParking: event.hasParking,
     hasPublicTransport: event.hasPublicTransport,

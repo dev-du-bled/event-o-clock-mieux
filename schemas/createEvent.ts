@@ -17,21 +17,8 @@ const validWeekDays = [
 export const priceSchema = z.object({
   type: z.string().trim().min(1, { message: "Le type est requis" }),
   price: z
-    .string()
-    .trim()
-    .min(1, { message: "Le prix est requis" })
-    .refine(
-      val => {
-        const priceAsNumber = Number(val);
-        return !isNaN(priceAsNumber) && priceAsNumber >= 0;
-      },
-      {
-        message: "Le prix doit être un nombre positif supérieur ou égal à zéro",
-      }
-    )
-    .refine(val => /^\d+(\.\d{1,2})?$/.test(val.replace(",", ".")), {
-      message: "Format de prix invalide (ex: 10.50)",
-    }),
+    .number({ message: "Le prix doit être un nombre" })
+    .min(0.9, { message: "Le prix doit etre supérieur à 1" }),
 });
 
 export type Price = z.infer<typeof priceSchema>;
@@ -107,6 +94,7 @@ export const createEventSchema = z
         const result = priceSchema.safeParse(price);
         if (!result.success) {
           result.error.issues.forEach(issue => {
+            console.log(issue);
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
               message: issue.message,

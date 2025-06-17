@@ -14,7 +14,6 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Link from "next/link";
 import { useCartStore } from "@/lib/store/cart";
 import { authClient } from "@/lib/auth/auth-client";
-import NoAuth from "@/components/auth/no-auth";
 import { searchAddress } from "@/lib/utils";
 import { AddressFeature } from "@/types/types";
 
