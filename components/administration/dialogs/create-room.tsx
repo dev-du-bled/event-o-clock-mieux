@@ -73,10 +73,7 @@ export default function CreateRoomDialog() {
           <DialogTitle>{`Créer une nouvelle salle`}</DialogTitle>
         </DialogHeader>
 
-        <label
-          htmlFor="name"
-          className="block text-sm font-medium text-gray-700 mb-1"
-        >
+        <label htmlFor="name" className="block text-sm font-medium mb-1">
           Nom de la salle:
         </label>
         <Input
@@ -84,16 +81,14 @@ export default function CreateRoomDialog() {
           id="name"
           name="name"
           required
+          maxLength={25}
           placeholder="Nouvelle salle"
           className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:ring-primary/20 focus:border-primary`}
           value={roomName}
           onChange={e => setRoomName(e.target.value)}
         ></Input>
 
-        <label
-          htmlFor="capacity"
-          className="block text-sm font-medium text-gray-700 mb-1"
-        >
+        <label htmlFor="capacity" className="block text-sm font-medium mb-1">
           Capacitée:
         </label>
         <Input
