@@ -1,4 +1,4 @@
-import { Armchair, Plus, Trash, Pencil } from "lucide-react";
+import { Armchair, Pencil } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -8,16 +8,8 @@ import {
 } from "@/components/ui/table";
 import { getCinemaRooms } from "@/lib/db/cinema";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import DeleteRoomDialog from "../dialogs/delete-room";
+import CreateRoomDialog from "../dialogs/create-room";
 
 export default async function FormRoomsManagement() {
   return (
@@ -28,29 +20,7 @@ export default async function FormRoomsManagement() {
           <Armchair className="w-6 h-6" />
           <h2 className="text-xl font-semibold">Gestion des salles</h2>
         </div>
-        <Dialog>
-          <DialogTrigger>
-            <button className="flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-              <Plus className={`w-4 h-4 mr-2 }`} />
-              {"Ajouter une salle"}
-            </button>
-          </DialogTrigger>
-
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{`Créer une nouvelle salle`}</DialogTitle>
-            </DialogHeader>
-
-            <DialogFooter>
-              <Button
-              // onClick={}
-              >{`Créer`}</Button>
-              <DialogClose>
-                <Button variant={"secondary"}>{`Annuler`}</Button>
-              </DialogClose>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        <CreateRoomDialog />
       </div>
 
       {/* card content */}
@@ -77,35 +47,7 @@ export default async function FormRoomsManagement() {
                   gap: 10,
                 }}
               >
-                <Dialog>
-                  <DialogTrigger>
-                    <Button variant={"destructive"} size={"icon"}>
-                      <Trash />
-                    </Button>
-                  </DialogTrigger>
-
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>
-                        {`Supprimer la salle "${room?.name}" ?`}
-                      </DialogTitle>
-                    </DialogHeader>
-
-                    <DialogDescription>
-                      {`La salle "${room?.name}", ainsi que toutes les réservations la concernant seront supprimées, continuer?`}
-                    </DialogDescription>
-                    <DialogFooter>
-                      <Button
-                        variant={"destructive"}
-                        // TODO: After merging this branch into main, create a function in @lib/db/cinema to delete a room
-                        // onClick={}
-                      >{`Supprimer la salle "${room?.name}"`}</Button>
-                      <DialogClose>
-                        <Button variant={"secondary"}>{`Annuler`}</Button>
-                      </DialogClose>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
+                <DeleteRoomDialog room={room}></DeleteRoomDialog>
 
                 <Button variant={"outline"} size={"icon"}>
                   <Pencil />
