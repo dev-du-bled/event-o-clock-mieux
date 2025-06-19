@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/carousel";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { getEventById } from "@/lib/db/events";
-import { generateICS } from "@/lib/utils";
 import { weekDaysData } from "@/schemas/createEvent";
 import { checkEventPermission } from "@/server/actions/events";
 import { isEventFavoriteAction } from "@/server/actions/favorites";
@@ -94,7 +93,7 @@ export default async function EventPage({
             )}
           </div>
           <div className="flex flex-col max-h-64 sm:max-h-80 space-y-2 bg-muted/50 p-6 rounded-lg border">
-            <h2 className="text-lg font-bold">A propos</h2>
+            <h2 className="text-xl font-bold">A propos</h2>
             <ScrollArea className="overflow-y-auto pr-4">
               {event.description}
             </ScrollArea>
@@ -105,7 +104,7 @@ export default async function EventPage({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {/* Catégories */}
           <div className="flex flex-col space-y-2 rounded-lg p-6 bg-muted/50 border">
-            <h2 className="text-lg font-bold">Catégories</h2>
+            <h2 className="text-xl font-bold">Catégories</h2>
             <div className="flex gap-2 flex-wrap">
               {event.categories.map(cat => (
                 <div
@@ -121,13 +120,11 @@ export default async function EventPage({
           {/* Date et heure */}
           <div className="flex flex-col space-y-2 rounded-lg p-6 bg-muted/50 border">
             <div className="flex justify-between items-center">
-              <h2 className="text-lg font-bold">Date et Heure</h2>
-              <Link
-                target="_blank"
-                href={`/api/event-calendar?id=${event.id}`}
-                className="hover:bg-accent p-1.5 rounded-full"
-              >
-                <CalendarDays className="h-5 w-5" />
+              <h2 className="text-xl font-bold">Horaires</h2>
+              <Link target="_blank" href={`/api/event-calendar?id=${event.id}`}>
+                <Button size={"icon"}>
+                  <CalendarDays className="h-4 w-4" />
+                </Button>
               </Link>
             </div>
             <div className="text-wrap break-words">
@@ -163,13 +160,14 @@ export default async function EventPage({
           {/* Lieu */}
           <div className="flex flex-col space-y-2 rounded-lg p-6 bg-muted/50 border">
             <div className="flex justify-between items-center">
-              <h2 className="text-lg font-bold">Lieu</h2>
+              <h2 className="text-xl font-bold">Lieu</h2>
               <Link
                 target="_blank"
                 href={`https://maps.google.com?q=${event.coordinates[1]},${event.coordinates[0]}`}
-                className="hover:bg-accent p-1.5 rounded-full"
               >
-                <MapPin className="h-5 w-5" />
+                <Button size={"icon"}>
+                  <MapPin className="h-4 w-4" />
+                </Button>
               </Link>
             </div>
             <p className="text-wrap break-words">

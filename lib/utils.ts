@@ -207,8 +207,7 @@ export function generateICS(event: Event, eventURl: string): string {
         .replace(/[-:]/g, "")
         .slice(0, -5) + "Z";
 
-  return `
-BEGIN:VCALENDAR
+  return `BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:event-o-clock
 

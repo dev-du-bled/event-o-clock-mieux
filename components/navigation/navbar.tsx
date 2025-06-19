@@ -84,7 +84,7 @@ export async function Navbar() {
         </nav>
 
         {/* Menu pour mobile */}
-        <MobileMenu />
+        <MobileMenu initialSession={session} />
       </div>
     </header>
   );

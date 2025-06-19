@@ -20,11 +20,23 @@ import { useEffect, useRef, useState } from "react";
 import LogOutButton from "../auth/logout-button";
 import { authClient } from "@/lib/auth/auth-client";
 import { Role } from "@prisma/client";
+import { auth } from "@/lib/auth/auth";
+import { usePathname } from "next/navigation";
 
-export default function MobileMenu() {
-  const { data: session } = authClient.useSession();
+type MobileMenuProps = {
+  initialSession: Awaited<ReturnType<typeof auth.api.getSession>>;
+};
+
+export default function MobileMenu({ initialSession }: MobileMenuProps) {
+  const { data: clientSession } = authClient.useSession();
+
+  const session = clientSession || initialSession;
 
   const user = session?.user;
+
+  const path = usePathname();
+  const pathname = decodeURIComponent(path);
+
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -143,7 +155,14 @@ export default function MobileMenu() {
             )}
             {!user ? (
               <>
-                <Link onClick={() => setIsOpen(false)} href="/login">
+                <Link
+                  onClick={() => setIsOpen(false)}
+                  href={
+                    pathname === "/login" || pathname === "register"
+                      ? "/login"
+                      : `/login?redirectTo=${encodeURIComponent(path)}`
+                  }
+                >
                   <span className="flex items-center">
                     <LogIn className="mr-1 h-5 w-5" />
                     Connexion
