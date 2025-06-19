@@ -13,6 +13,7 @@ import { z } from "zod";
 import {
   createEventSchema,
   Price,
+  weekDaysData,
   CreateEventFormData as ZodFormData,
 } from "@/schemas/createEvent";
 import EventDetailsForm from "./fields/EventDetailsForm";
@@ -20,8 +21,8 @@ import EventSchedulingForm from "./fields/EventSchedulingForm";
 import EventLocationForm from "./fields/EventLocationForm";
 import EventImageUpload from "./fields/EventImageUpload";
 import EventFinancialsAndContactForm from "./fields/EventFinancialsAndContactForm";
-import { Base64ToFile, searchAddress } from "@/lib/utils";
-import { AddressFeature } from "@/types/types";
+import { Base64ToFile, FileToBase64, searchAddress } from "@/lib/utils";
+import { AddressData } from "@/types/types";
 import { Button } from "@/components/ui/button";
 
 // Helper type pour les erreurs Zod formatées
@@ -51,9 +52,9 @@ export default function EventForm({
     eventData.categories
   );
   const [isPaid, setIsPaid] = useState(eventData.isPaid);
-  const [addressSuggestions, setAddressSuggestions] = useState<
-    AddressFeature[]
-  >([]);
+  const [addressSuggestions, setAddressSuggestions] = useState<AddressData[]>(
+    []
+  );
   const [showSuggestions, setShowSuggestions] = useState(false);
   const addressInputRef = useRef<HTMLInputElement>(null);
   const [isRecurring, setIsRecurring] = useState(eventData.isRecurring);
@@ -120,15 +121,7 @@ export default function EventForm({
   const weekDays: {
     id: ZodFormData["recurringDays"][number];
     label: string;
-  }[] = [
-    { id: "monday", label: "Lundi" },
-    { id: "tuesday", label: "Mardi" },
-    { id: "wednesday", label: "Mercredi" },
-    { id: "thursday", label: "Jeudi" },
-    { id: "friday", label: "Vendredi" },
-    { id: "saturday", label: "Samedi" },
-    { id: "sunday", label: "Dimanche" },
-  ];
+  }[] = weekDaysData;
 
   const handlePlaceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -143,19 +136,21 @@ export default function EventForm({
     searchAddress(value, setAddressSuggestions, setShowSuggestions);
   };
 
-  const handleAddressSelect = (feature: AddressFeature) => {
-    const { name, city, postcode } = feature.properties;
+  const handleAddressSelect = (feature: AddressData) => {
+    const { properties, geometry } = feature;
     setFormData(prev => ({
       ...prev,
-      address: name,
-      city,
-      postalCode: postcode,
+      address: properties.name,
+      city: properties.city,
+      postalCode: properties.postcode,
+      coordinates: geometry.coordinates,
     }));
     setFormErrors(prev => ({
       ...prev,
       address: undefined,
       city: undefined,
       postalCode: undefined,
+      coordinates: undefined,
     }));
     setShowSuggestions(false);
   };
@@ -179,16 +174,6 @@ export default function EventForm({
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-  };
-
-  // Convertir les images en base64
-  const fileToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = error => reject(error);
-    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -226,7 +211,7 @@ export default function EventForm({
 
       // Convertir les images en base64
       const base64Images = await Promise.all(
-        images.map(image => fileToBase64(image))
+        images.map(image => FileToBase64(image))
       );
 
       if (type === "create") {

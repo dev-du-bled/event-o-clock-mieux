@@ -51,6 +51,7 @@ export default async function EditEvent({
     place: event.place,
     city: event.city,
     postalCode: event.postalCode,
+    coordinates: event.coordinates,
     prices: event.prices,
     images: event.images,
     categories: event.categories,

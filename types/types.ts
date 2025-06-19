@@ -1,4 +1,7 @@
-export interface AddressFeature {
+export interface AddressData {
+  geometry: {
+    coordinates: [number, number];
+  };
   properties: {
     label: string;
     city: string;

@@ -4,7 +4,7 @@ const timeRegex = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
 const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
 const frenchPostalCodeRegex = /^\d{5}$/;
 
-const validWeekDays = [
+export const validWeekDays = [
   "monday",
   "tuesday",
   "wednesday",
@@ -13,6 +13,19 @@ const validWeekDays = [
   "saturday",
   "sunday",
 ] as const;
+
+export const weekDaysData: {
+  id: (typeof validWeekDays)[number];
+  label: string;
+}[] = [
+  { id: "monday", label: "Lundi" },
+  { id: "tuesday", label: "Mardi" },
+  { id: "wednesday", label: "Mercredi" },
+  { id: "thursday", label: "Jeudi" },
+  { id: "friday", label: "Vendredi" },
+  { id: "saturday", label: "Samedi" },
+  { id: "sunday", label: "Dimanche" },
+];
 
 export const priceSchema = z.object({
   type: z.string().trim().min(1, { message: "Le type est requis" }),
@@ -47,6 +60,7 @@ export const createEventSchema = z
     postalCode: z
       .string()
       .regex(frenchPostalCodeRegex, "Code postal invalide (5 chiffres)"),
+    coordinates: z.array(z.number()).length(2).optional(),
 
     description: z
       .string()

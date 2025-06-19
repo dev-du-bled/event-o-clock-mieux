@@ -64,7 +64,7 @@ export function EventCard({ event }: EventCardProps) {
         {/* Title and Location */}
         <div className="flex justify-between items-center border-2 border-border border-t-0 rounded-b-2xl overflow-hidden bg-card">
           <div className="flex flex-col p-4 space-y-2 flex-1 min-w-0">
-            <h3 className="text-xl md:text-2xl font-semibold text-foreground truncate">
+            <h3 className="text-lg md:text-xl font-semibold text-foreground truncate">
               {event.title}
             </h3>
             <p className="text-sm md:text-md text-muted-foreground truncate">

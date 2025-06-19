@@ -3,7 +3,8 @@ import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-import { AddressFeature } from "@/types/types";
+import { AddressData } from "@/types/types";
+import { validWeekDays } from "@/schemas/createEvent";
 
 /**
  * A utility function to combine class names conditionally and merge conflicting Tailwind CSS classes.
@@ -92,7 +93,7 @@ export function formatEventTime(event: Event) {
  */
 export const searchAddress = async (
   query: string,
-  setAddressSuggestions: (suggestions: AddressFeature[]) => void,
+  setAddressSuggestions: (suggestions: AddressData[]) => void,
   setShowSuggestions: (show: boolean) => void
 ) => {
   if (!query.trim()) {
@@ -108,6 +109,7 @@ export const searchAddress = async (
       )}&limit=5`
     );
     const data = await response.json();
+
     setAddressSuggestions(data.features || []);
     setShowSuggestions(true);
   } catch (error) {
@@ -130,4 +132,98 @@ export async function Base64ToFile(
   const blob = await data.blob();
 
   return new File([blob], fileName, { type: "image/webp" });
+}
+
+// Convertir les images en base64
+// marche seulement dans le navigateur
+export async function FileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = error => reject(error);
+  });
+}
+
+/**
+ * Generate an ICS file  for an event
+ * @param event The event to generate the ICS file for
+ * @param url The URL to the event page
+ * @returns string of the ICS file content
+ */
+export function generateICS(event: Event, eventURl: string): string {
+  let recurringDaysRule = "";
+  let firstDayString = "";
+
+  // generate the recurring days rule if the event is recurring
+  if (event.isRecurring) {
+    // add days ot the rule string like "MO", "TU", "WE", "TH", "FR", "SA", "SU"
+    recurringDaysRule = `RRULE:FREQ=WEEKLY;BYDAY=${event.recurringDays.map(
+      day => {
+        return day.slice(0, 2).toUpperCase();
+      }
+    )};`;
+
+    const dayIndex = validWeekDays.indexOf(
+      event.recurringDays[0] as (typeof validWeekDays)[number]
+    );
+
+    // set the nextDay to the next occurrence of the first recurring day
+
+    const today = new Date();
+    const currentDayIndex = today.getDay();
+    const fixCurrentDayIndex = currentDayIndex === 0 ? 6 : currentDayIndex - 1; // sunday = 0 set it to 7 to be monday = 0
+    const daysUntilNext = (dayIndex - fixCurrentDayIndex + 7) % 7;
+
+    firstDayString = format(
+      new Date().setDate(today.getDate() + daysUntilNext),
+      "yyyy-MM-dd"
+    );
+  }
+
+  const titleFormated = event.title.replace(/\s+/g, "-").toLowerCase();
+
+  const dtstamp =
+    new Date(event.createdAt).toISOString().replace(/[-:]/g, "").slice(0, -5) +
+    "Z";
+
+  const startTime = event.isRecurring
+    ? new Date(`${firstDayString}T${event.startTime}`)
+        .toISOString()
+        .replace(/[-:]/g, "")
+        .slice(0, -5) + "Z"
+    : new Date(`${event.startDate}T${event.startTime}`)
+        .toISOString()
+        .replace(/[-:]/g, "")
+        .slice(0, -5) + "Z";
+
+  const endTime = event.isRecurring
+    ? new Date(`${firstDayString}T${event.endTime}`)
+        .toISOString()
+        .replace(/[-:]/g, "")
+        .slice(0, -5) + "Z"
+    : new Date(`${event.endDate}T${event.endTime}`)
+        .toISOString()
+        .replace(/[-:]/g, "")
+        .slice(0, -5) + "Z";
+
+  return `
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:event-o-clock
+
+BEGIN:VEVENT
+UID:${titleFormated}@event-o-clock
+DTSTAMP:${dtstamp}
+DTSTART:${startTime}
+DTEND:${endTime}
+SUMMARY:${event.title}
+DESCRIPTION:${event.description}
+LOCATION:${`${event.place} ${event.address} ${event.city} ${event.postalCode}` || "Lieu non spécifié"}
+URL:${eventURl}
+${event.isRecurring ? recurringDaysRule : ""}
+
+END:VEVENT
+
+END:VCALENDAR`;
 }

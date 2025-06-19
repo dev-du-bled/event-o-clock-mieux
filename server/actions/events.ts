@@ -81,6 +81,7 @@ export async function createEventAction(
         address: validatedData.address,
         city: validatedData.city,
         postalCode: validatedData.postalCode,
+        coordinates: validatedData.coordinates,
         categories: validatedData.categories,
         isPaid: validatedData.isPaid,
         prices: validatedData.prices,
@@ -168,6 +169,7 @@ export async function updateEventAction(
 
     // Validation des données
     const validationResult = createEventSchema.safeParse(data);
+
     if (!validationResult.success) {
       return {
         success: false,

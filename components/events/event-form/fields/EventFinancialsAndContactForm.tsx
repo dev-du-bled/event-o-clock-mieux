@@ -185,7 +185,7 @@ const EventFinancialsAndContactForm: React.FC<
                     setPrices(prices.filter((_, i) => i !== index))
                   }
                 >
-                  <X className="w-4 h-4 text-accent" />
+                  <X className="w-4 h-4 text-muted" />
                 </button>
               </div>
             ))}

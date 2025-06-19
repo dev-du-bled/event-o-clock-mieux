@@ -3,7 +3,7 @@
 import React from "react";
 import { MapPin, Accessibility } from "lucide-react";
 import FieldErrorDisplay from "./FieldError";
-import { AddressFeature } from "@/types/types";
+import { AddressData } from "@/types/types";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 
@@ -15,8 +15,8 @@ interface EventLocationFormProps {
   handleAddressChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   addressInputRef: React.RefObject<HTMLInputElement>;
   showSuggestions: boolean;
-  addressSuggestions: AddressFeature[];
-  handleAddressSelect: (feature: AddressFeature) => void;
+  addressSuggestions: AddressData[];
+  handleAddressSelect: (feature: AddressData) => void;
   city: string;
   setCity: (city: string) => void;
   postalCode: string;
