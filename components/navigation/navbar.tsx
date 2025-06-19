@@ -4,6 +4,8 @@ import { Calendar, Film, Ticket } from "lucide-react";
 // import { CartItem } from "@/lib/db/cinema";
 import MobileMenu from "./mobile-menu";
 import ProfileMenu from "./profile-menu";
+import { auth } from "@/lib/auth/auth";
+import { headers } from "next/headers";
 
 /**
  * Navbar component that include menu
@@ -13,6 +15,7 @@ import ProfileMenu from "./profile-menu";
  */
 
 export async function Navbar() {
+  const session = await auth.api.getSession({ headers: await headers() });
   // const [cartItemsCount, setCartItemsCount] = useState(0);
 
   // useEffect(() => {
@@ -77,7 +80,7 @@ export async function Navbar() {
 
         {/* Boutons d'action */}
         <nav className="hidden space-x-4 md:flex">
-          <ProfileMenu />
+          <ProfileMenu initialSession={session} />
         </nav>
 
         {/* Menu pour mobile */}
