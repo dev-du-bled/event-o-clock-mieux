@@ -2,8 +2,7 @@
 import Link from "next/link";
 import { Calendar, Film, Ticket } from "lucide-react";
 // import { CartItem } from "@/lib/db/cinema";
-import MobileMenu from "./mobile-menu";
-import ProfileMenu from "./profile-menu";
+import NavigationMenu from "./navigation-menu";
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
 
@@ -78,13 +77,8 @@ export async function Navbar() {
           </div>
         </nav>
 
-        {/* Boutons d'action */}
-        <nav className="hidden space-x-4 md:flex">
-          <ProfileMenu initialSession={session} />
-        </nav>
-
-        {/* Menu pour mobile */}
-        <MobileMenu initialSession={session} />
+        {/* Menu de navigation unifié */}
+        <NavigationMenu initialSession={session} />
       </div>
     </header>
   );
