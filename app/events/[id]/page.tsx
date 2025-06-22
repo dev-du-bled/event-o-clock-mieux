@@ -12,7 +12,7 @@ import { getEventById } from "@/lib/db/events";
 import { weekDaysData } from "@/schemas/createEvent";
 import { checkEventPermission } from "@/server/actions/events";
 import { isEventFavoriteAction } from "@/server/actions/favorites";
-import { getUserWithoutRedirect } from "@/server/util/getUser";
+import { getUser } from "@/server/util/getUser";
 import { Role } from "@prisma/client";
 import { Calendar, CalendarDays, MapPin, Pencil } from "lucide-react";
 import Image from "next/image";
@@ -30,7 +30,7 @@ export default async function EventPage({
   params: Promise<{ id: string }>;
 }) {
   const id = (await params).id;
-  const user = await getUserWithoutRedirect();
+  const user = await getUser(false);
 
   const event = await getEventById(id);
 

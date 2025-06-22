@@ -36,7 +36,7 @@ export default async function EditEvent({
     },
   });
 
-  if (!result.success && event.createdBy !== user.id) {
+  if (!result.success && event.createdBy !== user!.id) {
     redirect("/forbidden");
   }
 

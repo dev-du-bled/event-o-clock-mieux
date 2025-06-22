@@ -23,7 +23,7 @@ import { getUser } from "@/server/util/getUser";
 export default async function MyEvents() {
   const user = await getUser();
 
-  const events = await getUserEvents(user.id);
+  const events = await getUserEvents(user!.id);
 
   return (
     <div className="min-h-screen bg-background py-12">

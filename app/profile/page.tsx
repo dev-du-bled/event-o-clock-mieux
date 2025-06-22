@@ -31,7 +31,7 @@ import { getUser } from "@/server/util/getUser";
 export default async function Profile() {
   const user = await getUser();
 
-  const userBookings = await getUserBookings(user.id); // TODO: issue here cause db has no relation
+  const userBookings = await getUserBookings(user!.id); // TODO: issue here cause db has no relation
 
   // Fetch movie details for each booking
   const bookings = await Promise.all(
