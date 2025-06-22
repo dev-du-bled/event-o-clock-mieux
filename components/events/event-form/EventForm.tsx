@@ -137,20 +137,18 @@ export default function EventForm({
   };
 
   const handleAddressSelect = (feature: AddressData) => {
-    const { properties, geometry } = feature;
+    const { properties } = feature;
     setFormData(prev => ({
       ...prev,
       address: properties.name,
       city: properties.city,
       postalCode: properties.postcode,
-      coordinates: geometry.coordinates,
     }));
     setFormErrors(prev => ({
       ...prev,
       address: undefined,
       city: undefined,
       postalCode: undefined,
-      coordinates: undefined,
     }));
     setShowSuggestions(false);
   };

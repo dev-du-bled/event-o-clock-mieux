@@ -17,7 +17,6 @@ const data: EventDataType = {
   place: "",
   city: "",
   postalCode: "",
-  coordinates: [],
   prices: [],
   images: [],
   categories: [],

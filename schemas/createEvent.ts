@@ -60,7 +60,6 @@ export const createEventSchema = z
     postalCode: z
       .string()
       .regex(frenchPostalCodeRegex, "Code postal invalide (5 chiffres)"),
-    coordinates: z.array(z.number()).length(2).optional(),
 
     description: z
       .string()

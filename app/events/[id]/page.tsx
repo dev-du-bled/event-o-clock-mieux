@@ -18,6 +18,11 @@ import { Calendar, CalendarDays, MapPin, Pencil } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 
 export default async function EventPage({
   params,
@@ -121,10 +126,21 @@ export default async function EventPage({
           <div className="flex flex-col space-y-2 rounded-lg p-6 bg-muted/50 border">
             <div className="flex justify-between items-center">
               <h2 className="text-xl font-bold">Horaires</h2>
-              <Link target="_blank" href={`/api/event-calendar?id=${event.id}`}>
-                <Button size={"icon"}>
-                  <CalendarDays className="h-4 w-4" />
-                </Button>
+              <Link
+                target="_blank"
+                href={`/api/event-calendar?id=${event.id}`}
+                className="flex items-center gap-2"
+              >
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button size={"icon"}>
+                      <CalendarDays className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="left">
+                    <p>Ajouter à votre calendrier</p>
+                  </TooltipContent>
+                </Tooltip>
               </Link>
             </div>
             <div className="text-wrap break-words">
@@ -163,11 +179,18 @@ export default async function EventPage({
               <h2 className="text-xl font-bold">Lieu</h2>
               <Link
                 target="_blank"
-                href={`https://maps.google.com?q=${event.coordinates[1]},${event.coordinates[0]}`}
+                href={`https://maps.google.com/maps?q=${encodeURIComponent(`${event.address}, ${event.city}, ${event.postalCode}`)}`}
               >
-                <Button size={"icon"}>
-                  <MapPin className="h-4 w-4" />
-                </Button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button size={"icon"}>
+                      <MapPin className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="left">
+                    <p>Ouvrir dans Google Maps</p>
+                  </TooltipContent>
+                </Tooltip>
               </Link>
             </div>
             <p className="text-wrap break-words">

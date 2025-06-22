@@ -114,7 +114,6 @@ model Event {
   address            String
   city               String
   postalCode         String
-  coordinates        Float[]
   description        String
   images             String[]
   categories         String[]
