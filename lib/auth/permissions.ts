@@ -8,15 +8,25 @@ import {
 const statement = {
   ...defaultStatements,
   // Permissions pour la gestion des événements (lecture accessible à tous)
-  event: ["create", "update", "delete"],
-  room: ["create", "update", "delete", "assign"],
+  event: [
+    "create", // Créer un événement
+    "update", // Modifier un événement
+    "delete", // Supprimer un événement
+    "override", // Modifier un événement si on est pas le créateur
+  ],
+  room: [
+    "create", // Créer une salle
+    "update", // Modifier une salle
+    "delete", // Supprimer une salle
+    "assign", // Assigner une salle à un événement
+  ],
 } as const;
 
 export const ac = createAccessControl(statement);
 
 export const admin = ac.newRole({
   ...adminAc.statements,
-  event: ["create", "update", "delete"],
+  event: ["create", "update", "delete", "override"],
   room: ["create", "update", "delete", "assign"],
 });
 

@@ -10,10 +10,9 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { getEventById } from "@/lib/db/events";
 import { weekDaysData } from "@/schemas/createEvent";
-import { checkEventPermission } from "@/server/actions/events";
 import { isEventFavoriteAction } from "@/server/actions/favorites";
 import { getUser } from "@/server/util/getUser";
-import { Role } from "@prisma/client";
+import { canUpdateEvent } from "@/server/util/canUpdateEvent";
 import {
   Calendar,
   CalendarDays,
@@ -54,9 +53,7 @@ export default async function EventPage({
   let canUpdate: boolean = false;
   if (user) {
     isFavorite = (await isEventFavoriteAction(event.id)).data as boolean;
-    canUpdate =
-      ((await checkEventPermission("update")) && user.id === event.createdBy) ||
-      user.role === Role.admin;
+    canUpdate = await canUpdateEvent(event.id);
   }
 
   return (

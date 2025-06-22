@@ -10,6 +10,7 @@ import { uploadEventImage } from "@/lib/storage";
 import { Base64ToFile } from "@/lib/utils";
 import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
+import { canUpdateEvent } from "../util/canUpdateEvent";
 
 type ServerActionResult = {
   success: boolean;
@@ -22,7 +23,7 @@ type ServerActionResult = {
  * Vérifie si l'utilisateur a une permission spécifique
  */
 export async function checkEventPermission(
-  permission: "create" | "update" | "delete"
+  permission: "create" | "update" | "delete" | "override"
 ): Promise<boolean> {
   try {
     const result = await auth.api.userHasPermission({
@@ -143,8 +144,6 @@ export async function updateEventAction(
   imageStrings: string[]
 ): Promise<ServerActionResult> {
   try {
-    const user = await getUser();
-
     // Vérification que l'événement existe
     const existingEvent = await prisma.event.findUnique({
       where: { id: eventId },
@@ -158,8 +157,8 @@ export async function updateEventAction(
     }
 
     // Vérification des permissions (créateur ou permission update)
-    const canUpdate = await checkEventPermission("update");
-    if (!canUpdate && existingEvent.createdBy !== user!.id) {
+    const canUpdate = await canUpdateEvent(eventId);
+    if (!canUpdate) {
       return {
         success: false,
         message: "Vous n'avez pas les permissions pour modifier cet événement",
