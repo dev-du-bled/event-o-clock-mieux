@@ -54,7 +54,7 @@ export default function FavoriteButton({
 
   return (
     <Button
-      variant={"destructive"}
+      variant={favorite ? "destructive" : "default"}
       className="w-full sm:w-auto"
       onClick={() => handleFavoriteClick(eventId)}
       disabled={loading}

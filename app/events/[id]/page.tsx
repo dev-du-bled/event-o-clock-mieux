@@ -14,7 +14,21 @@ import { checkEventPermission } from "@/server/actions/events";
 import { isEventFavoriteAction } from "@/server/actions/favorites";
 import { getUser } from "@/server/util/getUser";
 import { Role } from "@prisma/client";
-import { Calendar, CalendarDays, MapPin, Pencil } from "lucide-react";
+import {
+  Calendar,
+  CalendarDays,
+  MapPin,
+  Pencil,
+  Euro,
+  Globe,
+  Phone,
+  Car,
+  Bus,
+  Accessibility,
+  Check,
+  X,
+  User,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -49,10 +63,22 @@ export default async function EventPage({
     <div className="min-h-screen py-12">
       <div className="container mx-auto space-y-4 px-4 max-w-6xl">
         <div className="flex flex-col sm:flex-row border-b-2 pb-2 justify-between">
-          <h1 className="text-2xl font-bold mb-2 sm:mb-0 text-center sm:text-start">
-            {event.title}
-          </h1>
-          <div className="flex w-full sm:w-auto flex-col sm:flex-row items-center gap-2">
+          <div>
+            <h1 className="text-2xl font-bold mb-1 text-center sm:text-start">
+              {event.title}
+            </h1>
+            <div className="text-sm text-muted-foreground text-center sm:text-start">
+              Créé le {new Date(event.createdAt).toLocaleDateString("fr-FR")}
+              {event.updatedAt !== event.createdAt && (
+                <span>
+                  {" "}
+                  • Modifié le{" "}
+                  {new Date(event.updatedAt).toLocaleDateString("fr-FR")}
+                </span>
+              )}
+            </div>
+          </div>
+          <div className="flex w-full sm:w-auto flex-col sm:flex-row items-center gap-2 mt-2 sm:mt-0">
             {canUpdate && (
               <Button asChild variant={"outline"} className="w-full sm:w-auto">
                 <Link href={`/edit-event/${event.id}`}>
@@ -201,12 +227,112 @@ export default async function EventPage({
               <strong>Ville: </strong> {`${event.city} ${event.postalCode}`}
             </p>
           </div>
+
+          {/* Tarifs */}
+          {event.isPaid && event.prices && event.prices.length > 0 && (
+            <div className="flex flex-col space-y-2 rounded-lg p-6 bg-muted/50 border">
+              <div className="flex items-center gap-2">
+                <Euro className="w-5 h-5" />
+                <h2 className="text-xl font-bold">Tarifs</h2>
+              </div>
+              <div className="space-y-2">
+                {event.prices.map((price, index) => {
+                  const priceObj = price as { type: string; price: number };
+                  return (
+                    <div
+                      key={`price-${index}`}
+                      className="flex justify-between items-center"
+                    >
+                      <span className="text-sm">{priceObj.type}</span>
+                      <span className="font-semibold">{priceObj.price}€</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Contact organisateur */}
+          <div className="flex flex-col space-y-2 rounded-lg p-6 bg-muted/50 border">
+            <div className="flex items-center gap-2">
+              <User className="w-5 h-5" />
+              <h2 className="text-xl font-bold">Contact organisateur</h2>
+            </div>
+            <div className="space-y-2">
+              {event.organizerWebsite &&
+              event.organizerWebsite.trim() !== "" ? (
+                <div className="flex items-center gap-2">
+                  <Globe className="w-4 h-4" />
+                  <Link
+                    href={event.organizerWebsite}
+                    target="_blank"
+                    className="text-blue-600 hover:underline break-all"
+                  >
+                    Site web
+                  </Link>
+                </div>
+              ) : null}
+              {event.organizerPhone && event.organizerPhone.trim() !== "" ? (
+                <div className="flex items-center gap-2">
+                  <Phone className="w-4 h-4" />
+                  <Link
+                    href={`tel:${event.organizerPhone}`}
+                    className="text-blue-600 hover:underline"
+                  >
+                    {event.organizerPhone}
+                  </Link>
+                </div>
+              ) : null}
+              {(!event.organizerWebsite ||
+                event.organizerWebsite.trim() === "") &&
+                (!event.organizerPhone ||
+                  event.organizerPhone.trim() === "") && (
+                  <p className="text-sm text-muted-foreground italic">
+                    Aucune information de contact disponible
+                  </p>
+                )}
+            </div>
+          </div>
+
+          {/* Informations pratiques */}
+          <div className="flex flex-col space-y-2 rounded-lg p-6 bg-muted/50 border">
+            <h2 className="text-xl font-bold">Informations pratiques</h2>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Accessibility className="w-4 h-4" />
+                <span className="text-sm">Accessible PMR</span>
+                {event.isAccessible ? (
+                  <Check className="w-4 h-4 text-green-600" />
+                ) : (
+                  <X className="w-4 h-4 text-red-600" />
+                )}
+              </div>
+              <div className="flex items-center gap-2">
+                <Car className="w-4 h-4" />
+                <span className="text-sm">Parking disponible</span>
+                {event.hasParking ? (
+                  <Check className="w-4 h-4 text-green-600" />
+                ) : (
+                  <X className="w-4 h-4 text-red-600" />
+                )}
+              </div>
+              <div className="flex items-center gap-2">
+                <Bus className="w-4 h-4" />
+                <span className="text-sm">Transports publics</span>
+                {event.hasPublicTransport ? (
+                  <Check className="w-4 h-4 text-green-600" />
+                ) : (
+                  <X className="w-4 h-4 text-red-600" />
+                )}
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* debug */}
-        <pre className="text-wrap break-words">
+        {/* <pre className="text-wrap break-words">
           {JSON.stringify({ ...event, images: [] }, null, 2)}
-        </pre>
+        </pre> */}
       </div>
     </div>
   );
