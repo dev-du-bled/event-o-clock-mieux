@@ -41,47 +41,50 @@ async function main() {
   const users = await Promise.all([
     prisma.user.create({
       data: {
-        email: "admin@event-o-clock.fr",
-        name: "Administrateur",
-        role: "admin",
-        emailVerified: true,
-        image: "https://api.dicebear.com/7.x/avataaars/svg?seed=admin",
-      },
-    }),
-    prisma.user.create({
-      data: {
-        email: "organizer@event-o-clock.fr",
+        id: "f6f6855a-deb8-4314-877e-02ffebb6f70e",
+        email: "organizer@example.com",
         name: "Marie Organisatrice",
         role: "organizer",
         emailVerified: true,
-        image: "https://api.dicebear.com/7.x/avataaars/svg?seed=marie",
+        image: "https://api.dicebear.com/7.x/avataaars/png?seed=marie",
       },
     }),
     prisma.user.create({
       data: {
-        email: "jean.dupont@gmail.com",
-        name: "Jean Dupont",
-        role: "user",
+        id: "5usWgZttnsQOHEPCHdu51AHJ9qcrhDrE",
+        email: "admin@example.com",
+        name: "Jean michel admin",
+        role: "admin",
         emailVerified: true,
-        image: "https://api.dicebear.com/7.x/avataaars/svg?seed=jean",
+        image: "https://api.dicebear.com/7.x/avataaars/png?seed=jean",
       },
     }),
-    prisma.user.create({
+  ]);
+
+  // Créer les comptes après les utilisateurs
+  await Promise.all([
+    prisma.account.create({
       data: {
-        email: "sophie.martin@yahoo.fr",
-        name: "Sophie Martin",
-        role: "user",
-        emailVerified: true,
-        image: "https://api.dicebear.com/7.x/avataaars/svg?seed=sophie",
+        id: "account-f6f6855a-deb8-4314-877e-02ffebb6f70e",
+        accountId: "f6f6855a-deb8-4314-877e-02ffebb6f70e", // organizer
+        userId: "f6f6855a-deb8-4314-877e-02ffebb6f70e",
+        providerId: "credential",
+        password:
+          "4194721bd9a5abc9c06a26396abb04d4:3cf4c960b36c14e454a0d5ba0d522fecd59e8912d78e23e102e534a2856136b7abd798205faee3eb75ac5a9f985ce1e6d0b60393d693ce1e591011fd0b8867e6", // azertyuiop
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
     }),
-    prisma.user.create({
+    prisma.account.create({
       data: {
-        email: "pierre.cinema@hotmail.com",
-        name: "Pierre Cinéphile",
-        role: "user",
-        emailVerified: false,
-        image: "https://api.dicebear.com/7.x/avataaars/svg?seed=pierre",
+        id: "account-5usWgZttnsQOHEPCHdu51AHJ9qcrhDrE",
+        accountId: "5usWgZttnsQOHEPCHdu51AHJ9qcrhDrE", // admin
+        userId: "5usWgZttnsQOHEPCHdu51AHJ9qcrhDrE",
+        providerId: "credential",
+        password:
+          "4194721bd9a5abc9c06a26396abb04d4:3cf4c960b36c14e454a0d5ba0d522fecd59e8912d78e23e102e534a2856136b7abd798205faee3eb75ac5a9f985ce1e6d0b60393d693ce1e591011fd0b8867e6", // azertyuiop
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
     }),
   ]);
@@ -165,39 +168,6 @@ async function main() {
         status: "PUBLISHED",
         isAccessible: true,
         hasParking: true,
-        hasPublicTransport: true,
-      },
-    }),
-    prisma.event.create({
-      data: {
-        title: "Exposition Art Moderne",
-        startDate: "2024-06-01",
-        startTime: "10:00",
-        endDate: "2024-08-31",
-        endTime: "18:00",
-        place: "Musée d'Art Contemporain",
-        address: "12 Rue des Beaux-Arts",
-        city: "Lyon",
-        postalCode: "69001",
-        description:
-          "Une exposition unique présentant les œuvres d'artistes contemporains du monde entier. Plus de 200 œuvres exposées.",
-        images: [
-          "https://images.unsplash.com/photo-1544967882-4318b767b525?w=800",
-          "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=800",
-        ],
-        categories: ["Art", "Exposition", "Culture"],
-        isPaid: true,
-        prices: [
-          { type: "Enfant", price: 8.0 },
-          { type: "Adulte", price: 15.0 },
-          { type: "Senior", price: 12.0 },
-        ],
-        organizerWebsite: "https://musee-lyon.fr",
-        organizerPhone: "04 78 92 34 56",
-        createdBy: users[1].id,
-        status: "PUBLISHED",
-        isAccessible: true,
-        hasParking: false,
         hasPublicTransport: true,
       },
     }),
@@ -304,26 +274,26 @@ async function main() {
   await Promise.all([
     prisma.favorite.create({
       data: {
-        userId: users[2].id, // Jean
+        userId: users[1].id, // Admin
         eventId: events[0].id, // Festival Jazz
       },
     }),
     prisma.favorite.create({
       data: {
-        userId: users[2].id, // Jean
+        userId: users[1].id, // Admin
         eventId: events[4].id, // Concert Classique
       },
     }),
     prisma.favorite.create({
       data: {
-        userId: users[3].id, // Sophie
+        userId: users[0].id, // Marie
         eventId: events[1].id, // Expo Art
       },
     }),
     prisma.favorite.create({
       data: {
-        userId: users[4].id, // Pierre
-        eventId: events[0].id, // Festival Jazz
+        userId: users[0].id, // Marie
+        eventId: events[2].id, // Marathon
       },
     }),
   ]);
@@ -395,105 +365,6 @@ async function main() {
 
   console.log("🪑 Sièges créés");
 
-  // Créer quelques réservations
-  const availableSeats = seats.filter(seat => seat.isAvailable);
-  const bookings = [];
-
-  for (let i = 0; i < 5; i++) {
-    const randomUser = users[Math.floor(Math.random() * users.length)];
-    const randomRoom =
-      cinemaRooms[Math.floor(Math.random() * cinemaRooms.length)];
-    const roomSeats = availableSeats.filter(
-      seat => seat.roomId === randomRoom.id
-    );
-
-    if (roomSeats.length > 0) {
-      const selectedSeats = roomSeats.slice(
-        0,
-        Math.floor(Math.random() * 3) + 1
-      ); // 1-3 sièges
-
-      const booking = await prisma.booking.create({
-        data: {
-          userId: randomUser.id,
-          roomId: randomRoom.id,
-          movieId: (
-            randomRoom.currentMovie as {
-              movieId: number;
-              title: string;
-              showtime: string;
-              date: string;
-            }
-          ).movieId,
-          totalAmount: selectedSeats.length * 12.5,
-          status: (["PENDING", "CONFIRMED", "CANCELLED"] as const)[
-            Math.floor(Math.random() * 3)
-          ],
-        },
-      });
-
-      bookings.push(booking);
-
-      // Créer les BookingSeat et marquer les sièges comme non disponibles
-      for (const seat of selectedSeats) {
-        await prisma.bookingSeat.create({
-          data: {
-            bookingId: booking.id,
-            seatId: seat.id,
-            ticketType: (["CHILD", "ADULT", "STUDENT"] as const)[
-              Math.floor(Math.random() * 3)
-            ],
-            price: Math.random() > 0.5 ? 12.5 : 8.5,
-          },
-        });
-
-        // Marquer le siège comme non disponible
-        await prisma.seat.update({
-          where: { id: seat.id },
-          data: { isAvailable: false },
-        });
-      }
-    }
-  }
-
-  console.log("🎫 Réservations créées");
-
-  // Créer des messages de contact
-  await Promise.all([
-    prisma.contactMessage.create({
-      data: {
-        name: "Alice Dupuis",
-        email: "alice.dupuis@gmail.com",
-        subject: "Question sur un événement",
-        message:
-          "Bonjour, j'aimerais avoir plus d'informations sur le Festival de Jazz de Paris. Y a-t-il encore des places disponibles ?",
-        status: "PENDING",
-      },
-    }),
-    prisma.contactMessage.create({
-      data: {
-        name: "Marc Leblanc",
-        email: "marc.leblanc@yahoo.fr",
-        subject: "Problème de réservation",
-        message:
-          "J'ai un problème avec ma réservation pour le cinéma. Pouvez-vous m'aider ?",
-        status: "SENT",
-      },
-    }),
-    prisma.contactMessage.create({
-      data: {
-        name: "Julie Martin",
-        email: "julie.martin@hotmail.com",
-        subject: "Suggestion d'amélioration",
-        message:
-          "Votre plateforme est géniale ! J'aimerais suggérer d'ajouter un système de notifications pour les nouveaux événements.",
-        status: "PENDING",
-      },
-    }),
-  ]);
-
-  console.log("📧 Messages de contact créés");
-
   console.log("✅ Seed terminé avec succès !");
   console.log(`📊 Données créées :
     - ${users.length} utilisateurs
@@ -501,8 +372,7 @@ async function main() {
     - 4 favoris
     - ${cinemaRooms.length} salles de cinéma
     - ${seats.length} sièges
-    - ${bookings.length} réservations
-    - 3 messages de contact`);
+  `);
 }
 
 main()
