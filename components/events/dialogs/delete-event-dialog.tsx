@@ -1,6 +1,6 @@
 "use client";
 
-import { Loader2, Trash2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { Button } from "../../ui/button";
 import {
   Dialog,
@@ -12,17 +12,22 @@ import {
   DialogTrigger,
 } from "../../ui/dialog";
 import { Event } from "@prisma/client";
-import { deleteEventAction } from "@/server/actions/events";
+import {
+  deleteEventAction,
+  redirectAfterSuccess,
+} from "@/server/actions/events";
 import { toast } from "sonner";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 interface DeleteEventDialogProps {
+  children: React.ReactNode;
   event: Event;
 }
 
-export default function DeleteEventDialog({ event }: DeleteEventDialogProps) {
-  const router = useRouter();
+export default function DeleteEventDialog({
+  children,
+  event,
+}: DeleteEventDialogProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
 
@@ -38,7 +43,7 @@ export default function DeleteEventDialog({ event }: DeleteEventDialogProps) {
         });
         // ferme le dialog si succès
         setOpen(false);
-        router.refresh();
+        redirectAfterSuccess("/events");
       } else {
         toast("Erreur", {
           description:
@@ -60,11 +65,7 @@ export default function DeleteEventDialog({ event }: DeleteEventDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button size="icon" variant="destructive">
-          <Trash2 className="w-5 h-5" />
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">
@@ -76,9 +77,6 @@ export default function DeleteEventDialog({ event }: DeleteEventDialogProps) {
           {event.title}&quot; ? Cette action est irréversible.
         </p>
         <DialogFooter>
-          <DialogClose asChild>
-            <Button variant="outline">Annuler</Button>
-          </DialogClose>
           <Button
             variant="destructive"
             disabled={loading}
@@ -87,6 +85,9 @@ export default function DeleteEventDialog({ event }: DeleteEventDialogProps) {
             {loading && <Loader2 className="animate-spin" />}
             Supprimer
           </Button>
+          <DialogClose asChild>
+            <Button variant="outline">Annuler</Button>
+          </DialogClose>
         </DialogFooter>
       </DialogContent>
     </Dialog>

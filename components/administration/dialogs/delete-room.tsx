@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 
 interface DeleteRoomDialogProps {
   room: CinemaRoom;
+  
 }
 
 export default function DeleteRoomDialog({

@@ -2,6 +2,7 @@
 
 import { Event } from "@prisma/client";
 import prisma from "../prisma";
+import { Price } from "@/schemas/createEvent";
 
 export type EventDataType = Omit<Event, "id" | "createdAt" | "updatedAt">;
 
@@ -14,6 +15,14 @@ export type EventDataType = Omit<Event, "id" | "createdAt" | "updatedAt">;
 export async function getAllEvents() {
   try {
     const events = await prisma.event.findMany();
+
+    events.forEach(event => {
+      if (event.prices) {
+        event.prices = (event.prices as Price[]).sort(
+          (a, b) => a.price - b.price
+        );
+      }
+    });
 
     return events;
   } catch (error) {
@@ -35,6 +44,14 @@ export async function getUserEvents(userId: string) {
       where: { user: { id: userId } },
     });
 
+    userEvents.forEach(event => {
+      if (event.prices) {
+        event.prices = (event.prices as Price[]).sort(
+          (a, b) => a.price - b.price
+        );
+      }
+    });
+
     return userEvents;
   } catch (error) {
     console.error("Erreur lors de la récupération des événements:", error);
@@ -47,6 +64,12 @@ export async function getEventById(eventId: string) {
     const event = await prisma.event.findFirst({
       where: { id: eventId },
     });
+
+    if (event && event.prices) {
+      event.prices = (event.prices as Price[]).sort(
+        (a, b) => a.price - b.price
+      );
+    }
 
     return event;
   } catch (error) {

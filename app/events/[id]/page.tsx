@@ -27,6 +27,7 @@ import {
   Check,
   X,
   User,
+  Trash2,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -36,6 +37,7 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from "@/components/ui/tooltip";
+import DeleteEventDialog from "@/components/events/dialogs/delete-event-dialog";
 
 export default async function EventPage({
   params,
@@ -77,12 +79,29 @@ export default async function EventPage({
           </div>
           <div className="flex w-full sm:w-auto flex-col sm:flex-row items-center gap-2 mt-2 sm:mt-0">
             {canUpdate && (
-              <Button asChild variant={"outline"} className="w-full sm:w-auto">
-                <Link href={`/edit-event/${event.id}`}>
-                  <Pencil className="w-4 h-4" />
-                  Modifier l&apos;événement
-                </Link>
-              </Button>
+              <>
+                <Button
+                  asChild
+                  variant={"outline"}
+                  className="w-full sm:w-auto"
+                >
+                  <Link href={`/edit-event/${event.id}`}>
+                    <Pencil className="w-4 h-4" />
+                    <span className="sm:hidden">Modifier l&apos;événement</span>
+                  </Link>
+                </Button>
+                <DeleteEventDialog event={event}>
+                  <Button
+                    variant={"outline"}
+                    className="w-full sm:w-auto hover:bg-destructive group"
+                  >
+                    <Trash2 className="w-4 h-4 group-hover:text-white" />
+                    <span className="sm:hidden">
+                      Supprimer l&apos;événement
+                    </span>
+                  </Button>
+                </DeleteEventDialog>
+              </>
             )}
             {user && (
               <FavoriteButton
@@ -327,9 +346,9 @@ export default async function EventPage({
         </div>
 
         {/* debug */}
-        {/* <pre className="text-wrap break-words">
+        <pre className="text-wrap break-words">
           {JSON.stringify({ ...event, images: [] }, null, 2)}
-        </pre> */}
+        </pre>
       </div>
     </div>
   );

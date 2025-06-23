@@ -138,6 +138,57 @@ async function main() {
         updatedAt: "2025-06-17T12:16:32.132Z",
       },
     }),
+
+    // j'étais obligé tel le fanboy que je suis
+    prisma.event.create({
+      data: {
+        title: "Linkin Park - From Zero World Tour 2026",
+        startDate: "2026-06-16",
+        startTime: "21:00",
+        endDate: "2026-06-16",
+        endTime: "23:00",
+        place: "Groupama Stadium",
+        address: "10 Avenue Simone Veil",
+        city: "Décines-Charpieu",
+        postalCode: "69150",
+        description:
+          'Le groupe légendaire Linkin Park revient sur la scène française pour un concert au Groupama Stadium le 16 juin 2026 lors de leur tournée From Zero World Tour. Le groupe, qui a récemment fait son retour avec un nouvel album percutant, promet un show qui va marquer les esprits. Entre leurs classiques comme "Numb", "In the End" et les nouveaux comme "The Emptiness Machine" ou bien encore "Heavy is the Crown" , préparez-vous à une soirée mémorable.',
+        images: await Promise.all([
+          FileToBase64Node(
+            path.join(__dirname, "images-seed", "lp-1.jpg"),
+            "lp1"
+          ),
+          FileToBase64Node(
+            path.join(__dirname, "images-seed", "lp-2.jpg"),
+            "lp-2"
+          ),
+        ]),
+        categories: ["Musique", "Concert", "Rock"],
+        isPaid: true,
+        prices: [
+          { type: "VIP", price: 250.0 },
+          { type: "Pelouse Or", price: 150.0 },
+          { type: "Pelouse", price: 120.0 },
+          { type: "Catégorie 1", price: 100.0 },
+          { type: "Catégorie 2", price: 85.0 },
+          { type: "Catégorie 3", price: 75.0 },
+          { type: "Catégorie 4", price: 65.0 },
+        ],
+        organizerWebsite: "https://linkinpark.com",
+        organizerPhone: "",
+        createdBy: users[1].id, // Marie Organisatrice
+        status: "PUBLISHED",
+        isRecurring: false,
+        recurringDays: [],
+        recurringEndDate: null,
+        isAccessible: true,
+        hasParking: true,
+        hasPublicTransport: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    }),
+
     prisma.event.create({
       data: {
         title: "Festival de Jazz de Paris",

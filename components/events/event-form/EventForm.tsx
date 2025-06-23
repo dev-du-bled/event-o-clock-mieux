@@ -264,7 +264,6 @@ export default function EventForm({
           {error}
         </div>
       )}
-
       <EventDetailsForm
         titleValue={formData.title}
         onTitleChange={e => {
@@ -286,7 +285,6 @@ export default function EventForm({
           setFormErrors(prev => ({ ...prev, categories: undefined }))
         }
       />
-
       <EventSchedulingForm
         isRecurring={isRecurring}
         setIsRecurring={setIsRecurring}
@@ -325,7 +323,6 @@ export default function EventForm({
           }));
         }}
       />
-
       <EventLocationForm
         place={formData.place}
         handlePlaceChange={handlePlaceChange}
@@ -364,7 +361,6 @@ export default function EventForm({
           setFormErrors(prev => ({ ...prev, postalCode: undefined }))
         }
       />
-
       <EventImageUpload
         images={images}
         handleImageChange={handleImageChange}
@@ -376,7 +372,6 @@ export default function EventForm({
           )
         }
       />
-
       <EventFinancialsAndContactForm
         isPaid={isPaid}
         setIsPaid={setIsPaid}
@@ -403,7 +398,6 @@ export default function EventForm({
         }
         formErrors={formErrors}
       />
-
       <Button type="submit" disabled={loading} className="w-full">
         {loading
           ? `${type === "create" ? "Création" : "Mise à jour"} en cours...`

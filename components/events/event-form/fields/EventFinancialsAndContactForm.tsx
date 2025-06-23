@@ -74,7 +74,7 @@ const EventFinancialsAndContactForm: React.FC<
     }
 
     const data = result.data;
-    setPrices([...prices, data].sort((a, b) => a.price - b.price)); // sort in asc order to easier display after
+    setPrices([...prices, data].sort((a, b) => a.price - b.price)); // TODO: fix sort ascending by price, in db its not ordered
     setType("");
     setPrice(1);
     clearPricesError();
