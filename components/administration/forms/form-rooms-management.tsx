@@ -7,9 +7,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { getCinemaRooms } from "@/lib/db/cinema";
-import { Button } from "@/components/ui/button";
 import DeleteRoomDialog from "../dialogs/delete-room";
 import CreateRoomDialog from "../dialogs/create-room";
+import EditRoomDialog from "../dialogs/edit-room";
+import AssignMovieRoomDialog from "../dialogs/assign-movie-room";
 
 export default async function FormRoomsManagement() {
   return (
@@ -28,7 +29,6 @@ export default async function FormRoomsManagement() {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableCell>ID</TableCell>
             <TableCell>Nom</TableCell>
             <TableCell>Nombre de sièges</TableCell>
             <TableCell>Actions</TableCell>
@@ -37,21 +37,17 @@ export default async function FormRoomsManagement() {
         <TableBody>
           {(await getCinemaRooms()).map(room => (
             <TableRow key={room.id}>
-              <TableCell>{room.id}</TableCell>
               <TableCell>{room.name}</TableCell>
               <TableCell>{room.capacity}</TableCell>
               <TableCell
                 style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr",
+                  display: "flex",
                   gap: 10,
                 }}
               >
-                <DeleteRoomDialog room={room}></DeleteRoomDialog>
-
-                <Button variant={"outline"} size={"icon"}>
-                  <Pencil />
-                </Button>
+                <DeleteRoomDialog room={room} />
+                <EditRoomDialog room={room} />
+                <AssignMovieRoomDialog room={room} />
               </TableCell>
             </TableRow>
           ))}

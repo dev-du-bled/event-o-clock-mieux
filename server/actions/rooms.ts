@@ -137,3 +137,88 @@ export async function createRoomAction(
     };
   }
 }
+
+/**
+ * Action pour créer une salle
+ */
+export async function editRoomAction(
+  roomId: string,
+  newRoomName: string
+): Promise<ServerActionResult> {
+  try {
+    // Vérification des permissions
+    const canCreate = await checkRoomPermission("create");
+    if (!canCreate) {
+      return {
+        success: false,
+        message: "Vous n'avez pas la permission de modifier les salles.",
+      };
+    }
+
+    // Editer la salle
+    await prisma.cinemaRoom.update({
+      where: {
+        id: roomId,
+      },
+      data: {
+        name: newRoomName,
+      },
+    });
+
+    revalidatePath("/administration ");
+    revalidatePath("/cinema");
+
+    return {
+      success: true,
+      message: "Salle modifier avec succès",
+    };
+  } catch (error) {
+    console.error("Erreur modification salle:", error);
+    return {
+      success: false,
+      message: "Impossible de modifier la salle",
+    };
+  }
+}
+
+/**
+ * Action pour créer une salle
+ */
+export async function assignMovieRoomAction(
+  roomId: string,
+  movieId: string,
+  showtime: string
+): Promise<ServerActionResult> {
+  try {
+    // Vérification des permissions
+    const canCreate = await checkRoomPermission("assign");
+    if (!canCreate) {
+      return {
+        success: false,
+        message: "Vous n'avez pas la permission d'assigner des films",
+      };
+    }
+
+    await prisma.cinemaRoom.update({
+      where: {
+        id: roomId,
+      },
+      data: {
+        currentMovie: JSON.stringify({ movieId: movieId, showtime: showtime }),
+      },
+    });
+
+    revalidatePath("/administration ");
+
+    return {
+      success: true,
+      message: "Film assigné avec succès",
+    };
+  } catch (error) {
+    console.error("Erreur assignation film:", error);
+    return {
+      success: false,
+      message: "Impossible d'assigner le film",
+    };
+  }
+}

@@ -30,7 +30,7 @@ const options = {
   method: "GET",
   headers: {
     accept: "application/json",
-    Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMDB_API_KEY}`,
+    Authorization: `Bearer ${process.env.NEXT_TMDB_API_KEY}`,
   },
 };
 
@@ -45,7 +45,7 @@ export async function getMovieDetails(movieId: number): Promise<Movie> {
   try {
     const response = await fetch(
       `${BASE_URL}/movie/${movieId}?language=fr-FR`,
-      options,
+      options
     );
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -54,6 +54,23 @@ export async function getMovieDetails(movieId: number): Promise<Movie> {
   } catch (error) {
     console.error("Erreur lors de la récupération des détails du film:", error);
     throw new Error("Impossible de charger les détails du film");
+  }
+}
+
+export async function searchTMDB(query: string): Promise<[Movie]> {
+  try {
+    const response = await fetch(
+      `${BASE_URL}/search/movie?query=${query}`,
+      options
+    );
+
+    if (response.status === 401) throw Error("401 Unauthorized");
+
+    const movies = await response.json();
+    return movies.results;
+  } catch (error) {
+    console.error("Erreur lors de la recherche:", error);
+    throw new Error("Impossible de chercher des films");
   }
 }
 
@@ -66,7 +83,7 @@ export async function getMovieDetails(movieId: number): Promise<Movie> {
  */
 export function getImageUrl(
   path: string | null,
-  size: string = "original",
+  size: string = "original"
 ): string {
   // Update return type to Promise<string>
   if (!path) {
