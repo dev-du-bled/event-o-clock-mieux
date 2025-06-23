@@ -10,14 +10,25 @@ import { redirect } from "next/navigation";
  * Redirige vers la page de login si non authentifié
  * @returns L'utilisateur authentifié ou null si non authentifié et redirectToLogin est false
  */
+
+export async function getUser(): Promise<typeof auth.$Infer.Session.user>;
+
+export async function getUser(
+  redirectToLogin: true
+): Promise<typeof auth.$Infer.Session.user>;
+
+export async function getUser(
+  redirectToLogin: false
+): Promise<typeof auth.$Infer.Session.user | null>;
+
 export async function getUser(redirectToLogin: boolean = true) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
 
   if (!session?.user && redirectToLogin) {
-    redirect("/login");
+    return redirect("/login");
   }
 
-  return session?.user;
+  return session?.user || null;
 }

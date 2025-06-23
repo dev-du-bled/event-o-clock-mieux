@@ -48,7 +48,7 @@ export async function addToFavoritesAction(
     const existingFavorite = await prisma.favorite.findUnique({
       where: {
         userId_eventId: {
-          userId: user!.id,
+          userId: user.id,
           eventId: eventId,
         },
       },
@@ -63,7 +63,7 @@ export async function addToFavoritesAction(
 
     const addFavorite = await prisma.favorite.create({
       data: {
-        userId: user!.id,
+        userId: user.id,
         eventId,
         createdAt: new Date(),
       },
@@ -102,7 +102,7 @@ export async function removeFromFavoritesAction(
     await prisma.favorite.delete({
       where: {
         userId_eventId: {
-          userId: user!.id,
+          userId: user.id,
           eventId: eventId,
         },
       },
@@ -147,7 +147,7 @@ export async function getUserFavoritesAction(): Promise<ServerActionResult> {
 
     const favorites = await prisma.favorite.findMany({
       where: {
-        userId: user!.id,
+        userId: user.id,
       },
       select: {
         eventId: true,

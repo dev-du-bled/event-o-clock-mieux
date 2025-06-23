@@ -92,7 +92,7 @@ export async function createEventAction(
         isAccessible: validatedData.isAccessible,
         hasParking: validatedData.hasParking,
         hasPublicTransport: validatedData.hasPublicTransport,
-        createdBy: user!.id,
+        createdBy: user.id,
         images: [], // On ajoutera les images après
       },
     });
@@ -244,7 +244,7 @@ export async function deleteEventAction(
 
     // Vérification des permissions (créateur ou permission delete)
     const canDelete = await checkEventPermission("delete");
-    if (!canDelete && existingEvent.createdBy !== user!.id) {
+    if (!canDelete && existingEvent.createdBy !== user.id) {
       return {
         success: false,
         message: "Vous n'avez pas les permissions pour supprimer cet événement",
