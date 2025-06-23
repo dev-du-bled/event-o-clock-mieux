@@ -87,8 +87,7 @@ export async function deleteRoomAction(
  */
 export async function createRoomAction(
   name: string,
-  capacity: number,
-  currentmovie: string
+  capacity: number
 ): Promise<ServerActionResult> {
   try {
     // Vérification des permissions
@@ -107,7 +106,6 @@ export async function createRoomAction(
       data: {
         name: name,
         capacity: capacity,
-        currentMovie: currentmovie,
         seats: {
           createMany: {
             data: Array.from({ length: capacity }, (_, i) => {

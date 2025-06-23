@@ -23,17 +23,12 @@ export default function CreateRoomDialog() {
   const [open, setOpen] = useState<boolean>(false);
   const [roomName, setRoomName] = useState<string>("Nouvelle salle");
   const [roomCapacity, setRoomCapacity] = useState<number>(50);
-  const [roomCurrentMovie, setRoomCurrentMovie] = useState<string>("{}");
 
   const handleCreateRoom = async () => {
     setLoading(true);
 
     try {
-      const result = await createRoomAction(
-        roomName,
-        roomCapacity,
-        roomCurrentMovie
-      );
+      const result = await createRoomAction(roomName, roomCapacity);
 
       if (result.success) {
         toast("Succès", {
