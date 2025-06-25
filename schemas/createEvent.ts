@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { string, z } from "zod";
 
 const timeRegex = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
 const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
@@ -29,8 +29,14 @@ export const weekDaysData: {
 
 export const priceSchema = z.object({
   type: z.string().trim().min(1, { message: "Le type est requis" }),
+  count: z
+    .number({ message: "Le nombre de place est requis" })
+    .int({ message: "Le nombre doit être un entier" })
+    .min(1, { message: "Le nombre doit être supérieur à 0" })
+    .max(10000, { message: "Le nombre doit être inférieur à 10000" }),
+
   price: z
-    .number({ message: "Le prix doit être un nombre" })
+    .number({ message: "Le prix est requis" })
     .min(0.9, { message: "Le prix doit etre supérieur à 1" }),
 });
 
@@ -54,6 +60,12 @@ export const createEventSchema = z
     startTime: z.string().regex(timeRegex, "Format d'heure invalide (HH:MM)"),
     endTime: z.string().regex(timeRegex, "Format d'heure invalide (HH:MM)"),
 
+    map: z
+      .object({
+        name: string().optional(),
+        data: string().optional(),
+      })
+      .optional(),
     place: z.string().trim().min(1, { message: "Le lieu est requis" }),
     address: z.string().trim().min(1, { message: "L'adresse est requise" }),
     city: z.string().trim().min(1, { message: "La ville est requise" }),
@@ -201,3 +213,7 @@ export const createEventSchema = z
   });
 
 export type CreateEventFormData = z.infer<typeof createEventSchema>;
+
+export type FieldErrors = z.inferFlattenedErrors<
+  typeof createEventSchema
+>["fieldErrors"];

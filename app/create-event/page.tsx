@@ -14,6 +14,7 @@ const data: EventDataType = {
   endDate: "",
   endTime: "",
   description: "",
+  map: { name: undefined, data: undefined },
   place: "",
   city: "",
   postalCode: "",

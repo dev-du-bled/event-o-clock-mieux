@@ -48,6 +48,7 @@ export default async function EditEvent({
     endDate: event.endDate,
     endTime: event.endTime,
     description: event.description,
+    map: event.map,
     place: event.place,
     city: event.city,
     postalCode: event.postalCode,

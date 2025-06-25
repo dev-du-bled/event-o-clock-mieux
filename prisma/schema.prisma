@@ -110,6 +110,7 @@ model Event {
   startTime          String
   endDate            String
   endTime            String
+  map                Json?
   place              String
   address            String
   city               String

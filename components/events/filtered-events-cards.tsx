@@ -35,10 +35,19 @@ export default function FilteredEventsCards({
       !minPrice ||
       !maxPrice ||
       (event.prices as Price[]).some((price: Price) => {
-        const priceValue = parseFloat(price.price);
+        const priceValue =
+          typeof price.price === "number"
+            ? price.price
+            : parseFloat(price.price);
         return priceValue >= minPrice && priceValue <= maxPrice;
       }) ||
-      ((event.prices as Price[]).some(price => parseFloat(price.price) === 0) &&
+      ((event.prices as Price[]).some(price => {
+        const priceValue =
+          typeof price.price === "number"
+            ? price.price
+            : parseFloat(price.price);
+        return priceValue === 0;
+      }) &&
         minPrice === 0);
 
     const eventStartDate = new Date(event.startDate);

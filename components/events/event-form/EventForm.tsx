@@ -20,10 +20,12 @@ import EventDetailsForm from "./fields/EventDetailsForm";
 import EventSchedulingForm from "./fields/EventSchedulingForm";
 import EventLocationForm from "./fields/EventLocationForm";
 import EventImageUpload from "./fields/EventImageUpload";
-import EventFinancialsAndContactForm from "./fields/EventFinancialsAndContactForm";
 import { Base64ToFile, FileToBase64, searchAddress } from "@/lib/utils";
-import { AddressData } from "@/types/types";
+import { AddressData, mapType } from "@/types/types";
 import { Button } from "@/components/ui/button";
+import EventContactForm from "./fields/EventContactForm";
+import EventFinancialForm from "./fields/EventFinancialsForm";
+import EventMapForm from "./fields/EventMapForm";
 
 // Helper type pour les erreurs Zod formatées
 type FieldErrors = z.inferFlattenedErrors<
@@ -35,6 +37,18 @@ interface EventFormProps {
   eventId?: string;
   eventData: EventDataType;
 }
+
+const categories = [
+  "Concert",
+  "Festival",
+  "Conférence",
+  "Sport",
+  "Art",
+  "Gastronomie",
+  "Technologie",
+  "Bien-être",
+  "Autre",
+];
 
 export default function EventForm({
   type,
@@ -106,18 +120,6 @@ export default function EventForm({
     }
   }, [isRecurring, setFormErrors, setRecurringDays]);
 
-  const categories = [
-    "Concert",
-    "Festival",
-    "Conférence",
-    "Sport",
-    "Art",
-    "Gastronomie",
-    "Technologie",
-    "Bien-être",
-    "Autre",
-  ];
-
   const weekDays: {
     id: ZodFormData["recurringDays"][number];
     label: string;
@@ -188,6 +190,7 @@ export default function EventForm({
       isRecurring,
       recurringDays: isRecurring ? recurringDays : [],
       prices: isPaid ? (formData.prices as Price[]) : [],
+      map: (formData.map as mapType) || { name: undefined, data: undefined },
     };
 
     const validationResult = createEventSchema.safeParse(dataToValidate);
@@ -323,6 +326,22 @@ export default function EventForm({
           }));
         }}
       />
+      <EventFinancialForm
+        isPaid={isPaid}
+        setIsPaid={setIsPaid}
+        prices={formData.prices as Price[]}
+        setPrices={newPrice =>
+          setFormData(prev => ({ ...prev, prices: newPrice }))
+        }
+        clearPricesError={() =>
+          setFormErrors(prev => ({ ...prev, prices: undefined }))
+        }
+        formErrors={formErrors}
+      />
+      <EventMapForm
+        map={formData.map as mapType}
+        setMap={newMap => setFormData(prev => ({ ...prev, map: newMap }))}
+      />
       <EventLocationForm
         place={formData.place}
         handlePlaceChange={handlePlaceChange}
@@ -372,16 +391,7 @@ export default function EventForm({
           )
         }
       />
-      <EventFinancialsAndContactForm
-        isPaid={isPaid}
-        setIsPaid={setIsPaid}
-        prices={formData.prices as Price[]}
-        setPrices={newPrice =>
-          setFormData(prev => ({ ...prev, prices: newPrice }))
-        }
-        clearPricesError={() =>
-          setFormErrors(prev => ({ ...prev, prices: undefined }))
-        }
+      <EventContactForm
         organizerWebsite={formData.organizerWebsite}
         setOrganizerWebsite={newWebsite =>
           setFormData(prev => ({ ...prev, organizerWebsite: newWebsite }))

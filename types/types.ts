@@ -15,6 +15,11 @@ export interface CityFeature {
   };
 }
 
+export type mapType = {
+  name?: string;
+  data?: string;
+};
+
 /**
  * @brief Cinema room configuration
  * @details Defines the layout parameters for cinema rooms
