@@ -26,6 +26,7 @@ import { Button } from "@/components/ui/button";
 import EventContactForm from "./fields/EventContactForm";
 import EventFinancialForm from "./fields/EventFinancialsForm";
 import EventMapForm from "./fields/EventMapForm";
+import PlaceAssignment from "../dialogs/place-assignement";
 
 // Helper type pour les erreurs Zod formatées
 type FieldErrors = z.inferFlattenedErrors<
@@ -338,10 +339,17 @@ export default function EventForm({
         }
         formErrors={formErrors}
       />
-      <EventMapForm
-        map={formData.map as mapType}
-        setMap={newMap => setFormData(prev => ({ ...prev, map: newMap }))}
-      />
+      <div className="space-y-2">
+        <EventMapForm
+          map={formData.map as mapType}
+          setMap={newMap => setFormData(prev => ({ ...prev, map: newMap }))}
+        />
+        <PlaceAssignment
+          prices={formData.prices as Price[]}
+          map={formData.map as mapType}
+          setMap={newMap => setFormData(prev => ({ ...prev, map: newMap }))}
+        />
+      </div>
       <EventLocationForm
         place={formData.place}
         handlePlaceChange={handlePlaceChange}

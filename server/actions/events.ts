@@ -78,6 +78,7 @@ export async function createEventAction(
         startTime: validatedData.startTime,
         endDate: validatedData.endDate!,
         endTime: validatedData.endTime,
+        map: validatedData.map,
         place: validatedData.place,
         address: validatedData.address,
         city: validatedData.city,

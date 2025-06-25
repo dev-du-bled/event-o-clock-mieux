@@ -16,8 +16,14 @@ export interface CityFeature {
 }
 
 export type mapType = {
-  name?: string;
-  data?: string;
+  image?: {
+    name: string;
+    data: string;
+  };
+  svg?: {
+    name: string;
+    data: string;
+  };
 };
 
 /**

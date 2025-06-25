@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
+import { FileToBase64 } from "@/lib/utils";
 import { mapType } from "@/types/types";
 import { Map, X } from "lucide-react";
-import { useState } from "react";
+import { useRef } from "react";
 
 interface EventFormPlanProps {
   map: mapType;
@@ -9,69 +10,124 @@ interface EventFormPlanProps {
 }
 
 export default function EventMapForm({ map, setMap }: EventFormPlanProps) {
-  const [open, setOpen] = useState<boolean>(false);
+  const svgRef = useRef<HTMLInputElement>(null);
+  const imageRef = useRef<HTMLInputElement>(null);
 
-  const handleMapChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSvgChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && file.type === "image/svg+xml") {
       const reader = new FileReader();
       reader.onload = e => {
         const svgString = e.target?.result as string;
         setMap({
-          name: file.name,
-          data: svgString,
+          ...map,
+          svg: {
+            name: file.name,
+            data: svgString,
+          },
         });
       };
       reader.readAsText(file);
     }
   };
 
-  const deleteMap = () => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && file.type.startsWith("image/")) {
+      const imageString = await FileToBase64(file);
+      setMap({
+        ...map,
+        image: {
+          name: file.name,
+          data: imageString,
+        },
+      });
+    }
+  };
+
+  const deleteSvg = () => {
     setMap({
-      name: undefined,
-      data: undefined,
+      ...map,
+      svg: undefined,
     });
+    svgRef.current!.value = "";
+  };
+
+  const deleteImage = () => {
+    setMap({
+      ...map,
+      image: undefined,
+    });
+    imageRef.current!.value = "";
   };
 
   return (
     <>
-      {/* Modal to select where are places on map */}
-      {/* <PlaceAssignment
-        open={open}
-        setOpen={setOpen}
-        prices={formData.prices as Price[]}
-        map={formData.map as mapType}
-        setMap={(map: mapType) => setFormData({ ...formData, map })}
-      /> */}
-      <div className="mb-4">
-        <label className="flex items-center gap-2 mb-2">
-          <Map className="w-4 h-4" />
-          <span>Plan</span>
-        </label>
-        <div className="relative" onDragOver={e => e.preventDefault()}>
-          <input
-            type="file"
-            accept=".svg"
-            onChange={handleMapChange}
-            className="absolute inset-0 opacity-0 cursor-pointer"
-            placeholder="Upload a map (SVG format)"
-          />
-          <div className="flex flex-col sm:flex-row gap-2 text-secondary-foreground px-3 py-2 rounded-md border">
-            <Button className="flex-shrink-0">
-              <span className="text-sm">Parcourir...</span>
+      <label className="flex items-center gap-2 mb-2">
+        <Map className="w-4 h-4" />
+        <span>Plan</span>
+      </label>
+
+      <div className="flex flex-wrap gap-2">
+        <div className="flex flex-col flex-1 min-w-55 gap-2">
+          <label className="text-sm text-muted-foreground">Plan SVG</label>
+          <div className="flex border rounded-md p-2 items-center gap-2">
+            <input
+              ref={svgRef}
+              type="file"
+              accept=".svg"
+              onChange={handleSvgChange}
+              className="hidden"
+            />
+            <Button
+              type="button"
+              size="sm"
+              onClick={() => svgRef.current?.click()}
+            >
+              Parcourir...
             </Button>
-            <div className="flex items-center gap-2 truncate">
-              <span className="text-sm truncate">
-                {(map && map.name) || "Pas de fichier sélectionné"}
+            <div className="flex items-center gap-2 flex-1 min-w-0 justify-between">
+              <span className="text-sm truncate max-w-full">
+                {map.svg?.name || "Pas de fichiers sélectionné"}
               </span>
-              {map && map.data && (
+              {map.svg && (
                 <button
-                  type="button"
-                  onClick={deleteMap}
-                  className="absolute right-3 bg-red-600 text-accent rounded-full w-5 h-5 flex items-center justify-center hover:cursor-pointer"
-                  aria-label={`Supprimer le plan`}
+                  className="flex bg-destructive rounded-full text-accent p-0.5"
+                  onClick={deleteSvg}
                 >
-                  <X size={12} />
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col flex-1 min-w-55 gap-2">
+          <label className="text-sm text-muted-foreground">Plan Image</label>
+          <div className="flex flex-1 min-w-55 border rounded-md p-2 items-center gap-2">
+            <input
+              ref={imageRef}
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="hidden"
+            />
+            <Button
+              type="button"
+              size="sm"
+              onClick={() => imageRef.current?.click()}
+            >
+              Parcourir...
+            </Button>
+            <div className="flex items-center gap-2 flex-1 min-w-0 justify-between">
+              <span className="text-sm truncate max-w-full">
+                {map.image?.name || "Pas de fichiers sélectionné"}
+              </span>
+              {map.image && (
+                <button
+                  className="flex bg-destructive rounded-full text-accent p-0.5"
+                  onClick={deleteImage}
+                >
+                  <X className="w-4 h-4" />
                 </button>
               )}
             </div>

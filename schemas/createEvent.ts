@@ -1,4 +1,4 @@
-import { string, z } from "zod";
+import { z } from "zod";
 
 const timeRegex = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
 const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
@@ -62,8 +62,18 @@ export const createEventSchema = z
 
     map: z
       .object({
-        name: string().optional(),
-        data: string().optional(),
+        image: z
+          .object({
+            name: z.string().trim(),
+            data: z.string().trim(),
+          })
+          .optional(),
+        svg: z
+          .object({
+            name: z.string().trim(),
+            data: z.string().trim(),
+          })
+          .optional(),
       })
       .optional(),
     place: z.string().trim().min(1, { message: "Le lieu est requis" }),

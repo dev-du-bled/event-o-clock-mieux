@@ -1,59 +1,118 @@
-import { Dialog, DialogHeader } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+} from "@/components/ui/dialog";
 import { Price } from "@/schemas/createEvent";
 import { mapType } from "@/types/types";
-import { DialogTitle, DialogTrigger } from "@radix-ui/react-dialog";
+import { DialogContent, DialogTitle, DialogTrigger } from "../../ui/dialog";
+import Image from "next/image";
+import { useState } from "react";
 
 interface PlaceAssignmentProps {
-  // for dialog state
-  open: boolean;
-  setOpen: (open: boolean) => void;
-
-  // data states
   prices: Price[];
   map: mapType;
   setMap: (map: mapType) => void;
 }
 
 export default function PlaceAssignment({
-  open,
-  setOpen,
   prices,
   map,
-  //   setMap,
+  setMap,
 }: PlaceAssignmentProps) {
-  return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger>
-        <></>
-      </DialogTrigger>
-      <DialogHeader>
-        <DialogTitle>Affectation des places</DialogTitle>
-      </DialogHeader>
-      <div className="p-4">
-        <h2 className="text-lg font-semibold mb-4">Tarifs</h2>
-        {prices.length > 0 ? (
-          <ul className="space-y-2">
-            {prices.map((price, index) => (
-              <li key={index} className="flex justify-between">
-                <span>{price.type}</span>
-                <span>{price.price} €</span>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-gray-500">Aucun tarif défini.</p>
-        )}
+  const isDisabled = prices.length === 0 || (!map.svg && !map.image);
+  const [selectedPrice, setSelectedPrice] = useState<Price | null>(null);
+  const [assignedPlaces, setAssignedPlaces] = useState<string>(
+    map.svg?.data || ""
+  );
 
-        <h2 className="text-lg font-semibold mt-6 mb-4">Plan de salle</h2>
-        {map.name ? (
-          <div className="border p-4 rounded-md">
-            <p>Plan: {map.name}</p>
-            {/* Add more details about the map if needed */}
+  // click on svg
+  const handleMapClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!selectedPrice) return;
+    const target = e.target as HTMLElement;
+    if (target && target.tagName !== "svg" && target.closest("svg")) {
+      target.setAttribute("x-place", selectedPrice.type);
+      target.setAttribute("fill", "#FFD700");
+
+      const updatedSvg = (target.closest("svg") as SVGSVGElement).outerHTML;
+      setAssignedPlaces(updatedSvg);
+    }
+  };
+
+  const handleReset = () => {
+    if (map.svg?.data) {
+      setAssignedPlaces(map.svg.data);
+      setSelectedPrice(null);
+    }
+  };
+
+  const handleSave = () => {
+    if (assignedPlaces) {
+      setMap({
+        ...map,
+        svg: { name: map.svg?.name ?? "", data: assignedPlaces },
+      });
+      setSelectedPrice(null);
+    }
+  };
+
+  if (isDisabled) return <Button disabled>Affecter les places</Button>;
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button disabled={isDisabled}>Affecter les places</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Affectation des places</DialogTitle>
+          <DialogDescription className="text-sm text-muted-foreground">
+            Affecter les places aux différents tarifs en cliquant sur la carte.
+          </DialogDescription>
+        </DialogHeader>
+        <div>
+          <div className="flex items-center justify-center rounded-sm relative w-full h-125">
+            {map.image?.data && (
+              <Image
+                src={map.image.data}
+                alt="Event Map"
+                fill
+                className="absolute inset-0 w-full h-full object-contain"
+              />
+            )}
+            {assignedPlaces && (
+              <div
+                dangerouslySetInnerHTML={{ __html: assignedPlaces }}
+                className="absolute inset-0 w-full h-full cursor-pointer"
+                onClick={handleMapClick}
+              />
+            )}
           </div>
-        ) : (
-          <p className="text-gray-500">Aucun plan de salle sélectionné.</p>
-        )}
-      </div>
+          <div className="flex gap-2 mb-4">
+            {prices.map(price => (
+              <Button
+                key={price.type}
+                variant={
+                  selectedPrice?.type === price.type ? "default" : "outline"
+                }
+                onClick={() => setSelectedPrice(price)}
+              >
+                {price.type}
+              </Button>
+            ))}
+          </div>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={handleReset}>
+            Réinitialiser
+          </Button>
+          <Button disabled={!selectedPrice} onClick={handleSave}>
+            Enregistrer
+          </Button>
+        </DialogFooter>
+      </DialogContent>
     </Dialog>
   );
 }
