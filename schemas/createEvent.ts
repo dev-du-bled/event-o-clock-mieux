@@ -136,6 +136,13 @@ export const createEventSchema = z
             });
           });
         }
+
+        if (data.prices.filter(p => p.type === price.type).length > 1) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: `Le type "${price.type}" est déjà utilisé pour un autre prix`,
+          });
+        }
       });
     }
 

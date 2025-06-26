@@ -22,6 +22,7 @@
     "@radix-ui/react-dialog": "^1.1.11",
     "@radix-ui/react-label": "^2.1.3",
     "@radix-ui/react-radio-group": "^1.3.7",
+    "@radix-ui/react-select": "^2.2.5",
     "@radix-ui/react-slot": "^1.2.0",
     "@radix-ui/react-toast": "^1.2.7",
     "@radix-ui/react-tooltip": "^1.2.7",
@@ -47,6 +48,9 @@
     "tailwindcss": "^4.0.15",
     "tw-animate-css": "^1.2.5",
     "zustand": "^5.0.3"
+  },
+  "overrides": {
+    "@radix-ui/react-focus-scope": "1.1.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.3",

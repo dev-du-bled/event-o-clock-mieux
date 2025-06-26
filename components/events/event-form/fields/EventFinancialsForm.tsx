@@ -48,6 +48,15 @@ const EventFinancialForm: React.FC<EventFinancialsAndContactFormProps> = ({
       price,
     });
 
+    if (prices.some(p => p.type === type)) {
+      setErrors(prev => ({
+        ...prev,
+        type: "Ce type de place est déjà configuré.",
+      }));
+      clearPricesError();
+      return;
+    }
+
     if (!result.success) {
       const errors = result.error.flatten().fieldErrors;
       setErrors({
