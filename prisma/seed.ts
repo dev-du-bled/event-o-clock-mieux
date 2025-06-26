@@ -226,6 +226,10 @@ async function main() {
         startTime: "21:00",
         endDate: "2026-06-16",
         endTime: "23:00",
+        map: {
+          image: undefined,
+          svg: undefined,
+        },
         place: "Groupama Stadium",
         address: "10 Avenue Simone Veil",
         city: "Décines-Charpieu",

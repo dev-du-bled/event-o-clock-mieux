@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/carousel";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { getEventById } from "@/lib/db/events";
-import { weekDaysData } from "@/schemas/createEvent";
+import { Price, weekDaysData } from "@/schemas/createEvent";
 import { isEventFavoriteAction } from "@/server/actions/favorites";
 import { getUser } from "@/server/util/getUser";
 import { canUpdateEvent } from "@/server/util/canUpdateEvent";
@@ -39,6 +39,7 @@ import {
 } from "@/components/ui/tooltip";
 import DeleteEventDialog from "@/components/events/dialogs/delete-event-dialog";
 import BookDialog from "@/components/events/dialogs/book-dialog";
+import { mapType } from "@/types/types";
 
 export default async function EventPage({
   params,
@@ -108,7 +109,12 @@ export default async function EventPage({
                     </DeleteEventDialog>
                   </>
                 )}
-                <BookDialog />
+                {event.isPaid && (
+                  <BookDialog
+                    map={event.map as mapType}
+                    prices={event.prices as Price[]}
+                  />
+                )}
                 <FavoriteButton
                   user={user}
                   eventId={event.id}
