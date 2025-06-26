@@ -125,6 +125,13 @@ export const createEventSchema = z
         });
       }
 
+      if (data.prices.length > 10) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Un maximum de 10 prix est autorisé",
+        });
+      }
+
       data.prices.forEach((price, index) => {
         const result = priceSchema.safeParse(price);
         if (!result.success) {

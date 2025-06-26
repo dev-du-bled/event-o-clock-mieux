@@ -57,6 +57,15 @@ const EventFinancialForm: React.FC<EventFinancialsAndContactFormProps> = ({
       return;
     }
 
+    if (prices.length >= 10) {
+      setErrors(prev => ({
+        ...prev,
+        type: "Un maximum de 10 prix est autorisé.",
+      }));
+      clearPricesError();
+      return;
+    }
+
     if (!result.success) {
       const errors = result.error.flatten().fieldErrors;
       setErrors({
