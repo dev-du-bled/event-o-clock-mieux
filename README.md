@@ -17,6 +17,7 @@ Une fois cela fait, on peut lancer le projet
 ### Avec Docker
 
 ```bash
+# Lancer le projet et build le conteneur 
 docker compose up -d --build
 ```
 
@@ -25,6 +26,12 @@ docker compose up -d --build
 Ici, on utilise bun en tant que gestionnaire de dépendances et runtime pour profite de ses performances.
 
 ```bash
+# Initialiser la base de données
+docker compose up -d db
+```
+
+```bash
+# Installer les dépendances
 bun install
 ```
 
