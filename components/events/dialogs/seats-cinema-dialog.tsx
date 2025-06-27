@@ -123,6 +123,7 @@ export default function SeatsCinemaDialog({ room }: CinemaDialogProps) {
               <span className="w-6 text-center text-gray-500">{row}</span>
               {Array.from({ length: ROOM_CONFIG.seatsPerRow }, (_, index) => {
                 const seatId = `${row}${index + 1}`;
+                // @ts-expect-error json
                 const seat = room.seats.find(s => s.id === seatId);
                 const isSelected = selectedSeats.some(
                   item => item.seatId === seatId

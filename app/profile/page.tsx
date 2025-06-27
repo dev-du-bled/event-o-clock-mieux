@@ -99,6 +99,7 @@ export default async function Profile() {
                   {bookings.map(booking => (
                     <TableRow key={booking.id} className="bg-card">
                       <TableCell className="whitespace-nowrap font-medium text-foreground">
+                        {/* @ts-expect-error tkt json*/}
                         {booking.movie?.title || `Film #${booking.movieId}`}
                       </TableCell>
                       <TableCell>

@@ -22,7 +22,7 @@ import { EventCard } from "@/components/events/event-card";
 export default async function Home() {
   const events = await getAllEvents();
 
-  const featuredEvents = events.sort(() => 0.5 - Math.random()).slice(0, 5);
+  const featuredEvents = events.sort(() => 0.5 - Math.random());
 
   return (
     <main className="min-h-screen">

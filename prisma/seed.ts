@@ -62,9 +62,9 @@ async function main() {
     prisma.user.create({
       data: {
         id: "c3b2a1d4-5f6e-4b7c-8d9e-0f1a2b3c4d5e",
-        email: "e@e.com",
-        name: "Eden",
-        role: "admin",
+        email: "visiteur@example.com",
+        name: "Visiteur",
+        role: "user",
         emailVerified: true,
       },
     }),
@@ -99,11 +99,11 @@ async function main() {
     prisma.account.create({
       data: {
         id: "account-c3b2a1d4-5f6e-4b7c-8d9e-0f1a2b3c4d5e",
-        accountId: "c3b2a1d4-5f6e-4b7c-8d9e-0f1a2b3c4d5e", // Eden
+        accountId: "c3b2a1d4-5f6e-4b7c-8d9e-0f1a2b3c4d5e", // visitor
         userId: "c3b2a1d4-5f6e-4b7c-8d9e-0f1a2b3c4d5e",
         providerId: "credential",
         password:
-          "22ee9b33cf4d76185069891071b834c3:cdd6fbc773d6f7306c338079a710b38876b29a106f089be9079196590fc3bc3117f2acd0c56be00e39cb81f40ff3272c4574583434e181c83414411fe6ee8370",
+          "4194721bd9a5abc9c06a26396abb04d4:3cf4c960b36c14e454a0d5ba0d522fecd59e8912d78e23e102e534a2856136b7abd798205faee3eb75ac5a9f985ce1e6d0b60393d693ce1e591011fd0b8867e6", // azertyuiop
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -123,59 +123,7 @@ async function main() {
         endTime: "14:30",
         map: {
           image: undefined,
-          svg: {
-            data: `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%" version="1.1" viewBox="0 0 1380 1000" id="svgDisplayed">
-        <g id="svgContent">
-            <polygon id="698406921" points="583,274,573,348,629,352,631,277" class="clickable-area"></polygon>
-            <polygon id="698406922" points="631,352,643,279,691,284,684,358" class="clickable-area"></polygon>
-            <polygon id="698406923" points="687,358,702,285,750,292,740,366" class="clickable-area"></polygon>
-            <polygon id="698406924" points="744,367,797,376,807,301,761,293" class="clickable-area"></polygon>
-            <polygon id="698406925" points="799,376,820,304,866,313,854,387" class="clickable-area"></polygon>
-            <polygon id="698406927" points="897,404,941,341,955,352,970,366,984,382,994,397,925,433,918,424,950,396,937,383,905,411" class="clickable-area"></polygon>
-            <polygon id="698406928" points="927,438,999,404,1007,421,1012,440,1015,456,937,471,935,458,932,447" class="clickable-area"></polygon>
-            <polygon id="698406929" points="937,474,1016,468,1018,509,938,514" class="clickable-area"></polygon>
-            <polygon id="698406931" points="923,598,933,559,1012,572,1002,614" class="clickable-area"></polygon>
-            <polygon id="698406932" points="905,633,914,620,922,601,1000,624,991,643,981,661,971,674" class="clickable-area"></polygon>
-            <polygon id="698406933" points="903,636,965,682,954,693,933,709,912,721,895,728,863,660,876,654,903,687,919,677,892,644" class="clickable-area"></polygon>
-            <polygon id="698406935" points="756,659,787,662,816,664,809,736,757,732" class="clickable-area"></polygon>
-            <polygon id="698406936" points="709,653,753,659,746,714,702,709" class="clickable-area"></polygon>
-            <polygon id="698406937" points="625,653,657,658,655,673,666,675,669,660,701,665,690,726,612,714" class="clickable-area"></polygon>
-            <polygon id="698406938" points="577,631,622,640,607,694,565,686" class="clickable-area"></polygon>
-            <polygon id="698406939" points="517,618,575,631,554,684,503,672" class="clickable-area"></polygon>
-            <polygon id="698406941" points="492,214,510,210,530,207,550,205,552,255,534,256,518,259,505,263" class="clickable-area"></polygon>
-            <polygon id="698406942" points="552,255,604,258,667,264,673,215,642,212,610,209,580,207,550,205" class="clickable-area"></polygon>
-            <polygon id="698406943" points="667,264,726,271,790,281,800,232,734,222,673,215" class="clickable-area"></polygon>
-            <polygon id="698406944" points="800,232,857,243,917,257,900,304,846,291,790,281" class="clickable-area"></polygon>
-            <polygon id="698406945" points="917,257,935,263,956,273,987,291,1005,305,1018,318,982,353,967,339,946,324,924,313,900,304" class="clickable-area"></polygon>
-            <polygon id="698406946" points="982,353,1018,318,1037,339,1052,364,1064,391,1073,415,1027,432,1018,405,1008,385,995,368" class="clickable-area"></polygon>
-            <polygon id="698406947" points="1027,432,1073,415,1078,444,1081,474,1081,505,1079,535,1033,538,1034,496,1031,455" class="clickable-area"></polygon>
-            <polygon id="698406948" points="1033,538,1079,535,1076,567,1070,594,1062,625,1051,655,1009,643,1022,603,1030,565" class="clickable-area"></polygon>
-            <polygon id="698406949" points="1009,643,1051,655,1036,682,1018,704,996,726,969,745,946,717,966,702,983,684,997,664" class="clickable-area"></polygon>
-            <polygon id="698406950" points="946,717,970,745,943,760,916,769,884,777,849,780,844,749,872,746,899,740,924,730" class="clickable-area"></polygon>
-            <polygon id="698406951" points="844,749,849,780,818,779,782,777,747,774,712,770,716,738,756,743,802,747" class="clickable-area"></polygon>
-            <polygon id="698406952" points="716,738,712,770,642,760,574,748,582,717" class="clickable-area"></polygon>
-            <polygon id="698406953" points="582,717,574,748,501,732,439,716,464,690,514,703" class="clickable-area"></polygon>
-            <polygon id="698406954" points="464,690,439,716,413,705,384,688,413,665,435,679" class="clickable-area"></polygon>
-            <polygon id="698406955" points="492,214,511,210,530,207,550,205,548,137,527,141,496,149,476,156" class="clickable-area"></polygon>
-            <polygon id="698406956" points="548,137,591,133,648,133,678,133,670,213,610,208,550,205" class="clickable-area"></polygon>
-            <polygon id="698406957" points="678,133,726,137,778,145,810,151,797,231,736,222,670,213" class="clickable-area"></polygon>
-            <polygon id="698406958" points="810,151,873,167,938,190,917,256,887,249,843,239,797,231" class="clickable-area"></polygon>
-            <polygon id="698406959" points="938,190,917,256,936,262,970,280,987,290,1008,307,1017,316,1055,276,1039,259,1022,243,1005,229,987,217,962,201" class="clickable-area"></polygon>
-            <polygon id="698406960" points="1017,316,1055,276,1068,292,1088,321,1102,346,1111,368,1120,396,1073,412,1063,385,1052,361,1038,338" class="clickable-area"></polygon>
-            <polygon id="698406961" points="1073,412,1120,396,1126,424,1130,462,1132,483,1125,483,1117,494,1114,528,1082,530,1083,500,1083,470,1079,438" class="clickable-area"></polygon>
-            <polygon id="698406962" points="1082,530,1114,528,1112,560,1125,561,1120,594,1111,631,1101,662,1055,649,1065,621,1073,592,1079,560" class="clickable-area"></polygon>
-            <polygon id="698406963" points="1101,662,1055,649,1038,681,1022,701,1000,724,977,742,1009,780,1036,758,1059,734,1076,710,1091,685" class="clickable-area"></polygon>
-            <polygon id="698406964" points="977,742,1009,780,989,794,955,812,926,824,891,833,858,839,851,781,886,778,917,771,945,761" class="clickable-area"></polygon>
-            <polygon id="698406965" points="851,781,858,839,823,841,776,842,711,838,718,785,710,784,712,771,745,775,790,779,823,781" class="clickable-area"></polygon>
-            <polygon id="698406966" points="711,838,677,835,685,788,685,781,587,765,576,819,540,811,557,760,567,762,571,749,606,756,677,767,712,771,710,784,718,785" class="clickable-area"></polygon>
-            <polygon id="698406967" points="571,749,567,762,557,760,540,811,492,798,444,782,404,767,437,717,469,726,502,735,538,742" class="clickable-area"></polygon>
-            <polygon id="698406968" points="437,717,404,767,366,745,338,723,380,688,406,704" class="clickable-area"></polygon>
-            <polygon id="PELOUSE_1" points="660,596,694,405,553,385,513,574" class="clickable-area"></polygon>
-            <polygon id="PELOUSE_2" points="861,430,694,405,660,596,836,624" class="clickable-area"></polygon>
-        </g>
-    </svg>`,
-            name: "FreeBoax HD ADSL",
-          },
+          svg: undefined,
         },
         place: "Chez Moi",
         address: "32 Rue Marie Guillemot",
@@ -221,21 +169,79 @@ async function main() {
     // j'étais obligé tel le fanboy que je suis
     prisma.event.create({
       data: {
-        title: "Linkin Park - From Zero World Tour 2026",
+        title: "Linkin Park - From Zero World Tour 2025",
         startDate: "2026-06-16",
         startTime: "21:00",
         endDate: "2026-06-16",
         endTime: "23:00",
         map: {
-          image: undefined,
-          svg: undefined,
+          image: {
+            data: await FileToBase64Node(
+              path.join(__dirname, "images-seed", "topview.png"),
+              "stade-de-france-map"
+            ),
+            name: "Stade de France Map",
+          },
+          svg: {
+            data: `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%" version="1.1" viewBox="0 0 1380 1000" id="svgDisplayed">
+          <g id="svgContent" x-eoc-price="75" x-eoc-price-type="Catégorie 3" fill="#FF6B6B">
+              <polygon id="698406921" points="583,274,573,348,629,352,631,277" class="clickable-area" fill="#45B7D1" x-eoc-price="100" x-eoc-price-type="Catégorie 1"></polygon>
+              <polygon id="698406922" points="631,352,643,279,691,284,684,358" class="clickable-area" fill="#45B7D1" x-eoc-price="100" x-eoc-price-type="Catégorie 1"></polygon>
+              <polygon id="698406923" points="687,358,702,285,750,292,740,366" class="clickable-area" fill="#45B7D1" x-eoc-price="100" x-eoc-price-type="Catégorie 1"></polygon>
+              <polygon id="698406924" points="744,367,797,376,807,301,761,293" class="clickable-area" fill="#45B7D1" x-eoc-price="100" x-eoc-price-type="Catégorie 1"></polygon>
+              <polygon id="698406925" points="799,376,820,304,866,313,854,387" class="clickable-area" fill="#45B7D1" x-eoc-price="100" x-eoc-price-type="Catégorie 1"></polygon>
+              <polygon id="698406927" points="897,404,941,341,955,352,970,366,984,382,994,397,925,433,918,424,950,396,937,383,905,411" class="clickable-area" fill="#4ECDC4" x-eoc-price="85" x-eoc-price-type="Catégorie 2"></polygon>
+              <polygon id="698406928" points="927,438,999,404,1007,421,1012,440,1015,456,937,471,935,458,932,447" class="clickable-area" fill="#4ECDC4" x-eoc-price="85" x-eoc-price-type="Catégorie 2"></polygon>
+              <polygon id="698406929" points="937,474,1016,468,1018,509,938,514" class="clickable-area" fill="#4ECDC4" x-eoc-price="85" x-eoc-price-type="Catégorie 2"></polygon>
+              <polygon id="698406931" points="923,598,933,559,1012,572,1002,614" class="clickable-area" fill="#4ECDC4" x-eoc-price="85" x-eoc-price-type="Catégorie 2"></polygon>
+              <polygon id="698406932" points="905,633,914,620,922,601,1000,624,991,643,981,661,971,674" class="clickable-area" fill="#4ECDC4" x-eoc-price="85" x-eoc-price-type="Catégorie 2"></polygon>
+              <polygon id="698406933" points="903,636,965,682,954,693,933,709,912,721,895,728,863,660,876,654,903,687,919,677,892,644" class="clickable-area" fill="#4ECDC4" x-eoc-price="85" x-eoc-price-type="Catégorie 2"></polygon>
+              <polygon id="698406935" points="756,659,787,662,816,664,809,736,757,732" class="clickable-area" fill="#45B7D1" x-eoc-price="100" x-eoc-price-type="Catégorie 1"></polygon>
+              <polygon id="698406936" points="709,653,753,659,746,714,702,709" class="clickable-area" fill="#45B7D1" x-eoc-price="100" x-eoc-price-type="Catégorie 1"></polygon>
+              <polygon id="698406937" points="625,653,657,658,655,673,666,675,669,660,701,665,690,726,612,714" class="clickable-area" fill="#45B7D1" x-eoc-price="100" x-eoc-price-type="Catégorie 1"></polygon>
+              <polygon id="698406938" points="577,631,622,640,607,694,565,686" class="clickable-area" fill="#45B7D1" x-eoc-price="100" x-eoc-price-type="Catégorie 1"></polygon>
+              <polygon id="698406939" points="517,618,575,631,554,684,503,672" class="clickable-area" fill="#45B7D1" x-eoc-price="100" x-eoc-price-type="Catégorie 1"></polygon>
+              <polygon id="698406941" points="492,214,510,210,530,207,550,205,552,255,534,256,518,259,505,263" class="clickable-area" fill="#FF6B6B" x-eoc-price="75" x-eoc-price-type="Catégorie 3"></polygon>
+              <polygon id="698406942" points="552,255,604,258,667,264,673,215,642,212,610,209,580,207,550,205" class="clickable-area" fill="#45B7D1" x-eoc-price="100" x-eoc-price-type="Catégorie 1"></polygon>
+              <polygon id="698406943" points="667,264,726,271,790,281,800,232,734,222,673,215" class="clickable-area" fill="#45B7D1" x-eoc-price="100" x-eoc-price-type="Catégorie 1"></polygon>
+              <polygon id="698406944" points="800,232,857,243,917,257,900,304,846,291,790,281" class="clickable-area" fill="#4ECDC4" x-eoc-price="85" x-eoc-price-type="Catégorie 2"></polygon>
+              <polygon id="698406945" points="917,257,935,263,956,273,987,291,1005,305,1018,318,982,353,967,339,946,324,924,313,900,304" class="clickable-area" fill="#4ECDC4" x-eoc-price="85" x-eoc-price-type="Catégorie 2"></polygon>
+              <polygon id="698406946" points="982,353,1018,318,1037,339,1052,364,1064,391,1073,415,1027,432,1018,405,1008,385,995,368" class="clickable-area" fill="#FF6B6B" x-eoc-price="75" x-eoc-price-type="Catégorie 3"></polygon>
+              <polygon id="698406947" points="1027,432,1073,415,1078,444,1081,474,1081,505,1079,535,1033,538,1034,496,1031,455" class="clickable-area" fill="#FF6B6B" x-eoc-price="75" x-eoc-price-type="Catégorie 3"></polygon>
+              <polygon id="698406948" points="1033,538,1079,535,1076,567,1070,594,1062,625,1051,655,1009,643,1022,603,1030,565" class="clickable-area" fill="#FF6B6B" x-eoc-price="75" x-eoc-price-type="Catégorie 3"></polygon>
+              <polygon id="698406949" points="1009,643,1051,655,1036,682,1018,704,996,726,969,745,946,717,966,702,983,684,997,664" class="clickable-area" fill="#FF6B6B" x-eoc-price="75" x-eoc-price-type="Catégorie 3"></polygon>
+              <polygon id="698406950" points="946,717,970,745,943,760,916,769,884,777,849,780,844,749,872,746,899,740,924,730" class="clickable-area" fill="#4ECDC4" x-eoc-price="85" x-eoc-price-type="Catégorie 2"></polygon>
+              <polygon id="698406951" points="844,749,849,780,818,779,782,777,747,774,712,770,716,738,756,743,802,747" class="clickable-area" fill="#4ECDC4" x-eoc-price="85" x-eoc-price-type="Catégorie 2"></polygon>
+              <polygon id="698406952" points="716,738,712,770,642,760,574,748,582,717" class="clickable-area" fill="#45B7D1" x-eoc-price="100" x-eoc-price-type="Catégorie 1"></polygon>
+              <polygon id="698406953" points="582,717,574,748,501,732,439,716,464,690,514,703" class="clickable-area" fill="#45B7D1" x-eoc-price="100" x-eoc-price-type="Catégorie 1"></polygon>
+              <polygon id="698406954" points="464,690,439,716,413,705,384,688,413,665,435,679" class="clickable-area" fill="#FF6B6B" x-eoc-price="75" x-eoc-price-type="Catégorie 3"></polygon>
+              <polygon id="698406955" points="492,214,511,210,530,207,550,205,548,137,527,141,496,149,476,156" class="clickable-area" fill="#FF6B6B" x-eoc-price="75" x-eoc-price-type="Catégorie 3"></polygon>
+              <polygon id="698406956" points="548,137,591,133,648,133,678,133,670,213,610,208,550,205" class="clickable-area" fill="#45B7D1" x-eoc-price="100" x-eoc-price-type="Catégorie 1"></polygon>
+              <polygon id="698406957" points="678,133,726,137,778,145,810,151,797,231,736,222,670,213" class="clickable-area" fill="#45B7D1" x-eoc-price="100" x-eoc-price-type="Catégorie 1"></polygon>
+              <polygon id="698406958" points="810,151,873,167,938,190,917,256,887,249,843,239,797,231" class="clickable-area" fill="#4ECDC4" x-eoc-price="85" x-eoc-price-type="Catégorie 2"></polygon>
+              <polygon id="698406959" points="938,190,917,256,936,262,970,280,987,290,1008,307,1017,316,1055,276,1039,259,1022,243,1005,229,987,217,962,201" class="clickable-area" fill="#4ECDC4" x-eoc-price="85" x-eoc-price-type="Catégorie 2"></polygon>
+              <polygon id="698406960" points="1017,316,1055,276,1068,292,1088,321,1102,346,1111,368,1120,396,1073,412,1063,385,1052,361,1038,338" class="clickable-area" fill="#FF6B6B" x-eoc-price="75" x-eoc-price-type="Catégorie 3"></polygon>
+              <polygon id="698406961" points="1073,412,1120,396,1126,424,1130,462,1132,483,1125,483,1117,494,1114,528,1082,530,1083,500,1083,470,1079,438" class="clickable-area" fill="#FF6B6B" x-eoc-price="75" x-eoc-price-type="Catégorie 3"></polygon>
+              <polygon id="698406962" points="1082,530,1114,528,1112,560,1125,561,1120,594,1111,631,1101,662,1055,649,1065,621,1073,592,1079,560" class="clickable-area" fill="#FF6B6B" x-eoc-price="75" x-eoc-price-type="Catégorie 3"></polygon>
+              <polygon id="698406963" points="1101,662,1055,649,1038,681,1022,701,1000,724,977,742,1009,780,1036,758,1059,734,1076,710,1091,685" class="clickable-area" fill="#FF6B6B" x-eoc-price="75" x-eoc-price-type="Catégorie 3"></polygon>
+              <polygon id="698406964" points="977,742,1009,780,989,794,955,812,926,824,891,833,858,839,851,781,886,778,917,771,945,761" class="clickable-area" fill="#4ECDC4" x-eoc-price="85" x-eoc-price-type="Catégorie 2"></polygon>
+              <polygon id="698406965" points="851,781,858,839,823,841,776,842,711,838,718,785,710,784,712,771,745,775,790,779,823,781" class="clickable-area" fill="#4ECDC4" x-eoc-price="85" x-eoc-price-type="Catégorie 2"></polygon>
+              <polygon id="698406966" points="711,838,677,835,685,788,685,781,587,765,576,819,540,811,557,760,567,762,571,749,606,756,677,767,712,771,710,784,718,785" class="clickable-area" fill="#45B7D1" x-eoc-price="100" x-eoc-price-type="Catégorie 1"></polygon>
+              <polygon id="698406967" points="571,749,567,762,557,760,540,811,492,798,444,782,404,767,437,717,469,726,502,735,538,742" class="clickable-area" fill="#45B7D1" x-eoc-price="100" x-eoc-price-type="Catégorie 1"></polygon>
+              <polygon id="698406968" points="437,717,404,767,366,745,338,723,380,688,406,704" class="clickable-area" fill="#FF6B6B" x-eoc-price="75" x-eoc-price-type="Catégorie 3"></polygon>
+              <polygon id="PELOUSE_1" points="660,596,694,405,553,385,513,574" class="clickable-area" fill="#FFEAA7" x-eoc-price="250" x-eoc-price-type="VIP"></polygon>
+              <polygon id="PELOUSE_2" points="861,430,694,405,660,596,836,624" class="clickable-area" fill="#9141ac" x-eoc-price="120" x-eoc-price-type="Pelouse"></polygon>
+          </g>
+      </svg>`,
+            name: "Stade de France Map SVG",
+          },
         },
-        place: "Groupama Stadium",
-        address: "10 Avenue Simone Veil",
-        city: "Décines-Charpieu",
-        postalCode: "69150",
+        place: "Stade de France",
+        address: "Stade de France, 93216 Saint-Denis",
+        city: "Saint-Denis",
+        postalCode: "93216",
         description:
-          'Le groupe légendaire Linkin Park revient sur la scène française pour un concert au Groupama Stadium le 16 juin 2026 lors de leur tournée From Zero World Tour. Le groupe, qui a récemment fait son retour avec un nouvel album percutant, promet un show qui va marquer les esprits. Entre leurs classiques comme "Numb", "In the End" et les nouveaux comme "The Emptiness Machine" ou bien encore "Heavy is the Crown" , préparez-vous à une soirée mémorable.',
+          'Le groupe légendaire Linkin Park revient sur la scène française pour un concert au Stade de France le 11 juillet 2025 lors de leur tournée From Zero World Tour. Le groupe, qui a récemment fait son retour avec un nouvel album percutant, promet un show qui va marquer les esprits. Entre leurs classiques comme "Numb", "In the End" et les nouveaux comme "The Emptiness Machine" ou bien encore "Heavy is the Crown" , préparez-vous à une soirée mémorable.',
         images: await Promise.all([
           FileToBase64Node(
             path.join(__dirname, "images-seed", "lp-1.jpg"),
@@ -243,19 +249,17 @@ async function main() {
           ),
           FileToBase64Node(
             path.join(__dirname, "images-seed", "lp-2.jpg"),
-            "lp-2"
+            "lp2"
           ),
         ]),
         categories: ["Musique", "Concert", "Rock"],
         isPaid: true,
         prices: [
-          { type: "VIP", price: 250.0 },
-          { type: "Pelouse Or", price: 150.0 },
-          { type: "Pelouse", price: 120.0 },
-          { type: "Catégorie 1", price: 100.0 },
-          { type: "Catégorie 2", price: 85.0 },
-          { type: "Catégorie 3", price: 75.0 },
-          { type: "Catégorie 4", price: 65.0 },
+          { type: "VIP", price: 250.0, count: 100 },
+          { type: "Pelouse", price: 120.0, count: 2000 },
+          { type: "Catégorie 1", price: 100.0, count: 1000 },
+          { type: "Catégorie 2", price: 85.0, count: 2000 },
+          { type: "Catégorie 3", price: 75.0, count: 3000 },
         ],
         organizerWebsite: "https://linkinpark.com",
         organizerPhone: "",
@@ -279,6 +283,10 @@ async function main() {
         startTime: "20:00",
         endDate: "2024-07-15",
         endTime: "23:30",
+        map: {
+          image: undefined,
+          svg: undefined,
+        },
         place: "Parc de la Villette",
         address: "211 Avenue Jean Jaurès",
         city: "Paris",
@@ -292,9 +300,9 @@ async function main() {
         categories: ["Musique", "Jazz", "Festival"],
         isPaid: true,
         prices: [
-          { type: "Étudiant", price: 25.0 },
-          { type: "Adulte", price: 45.0 },
-          { type: "VIP", price: 85.0 },
+          { type: "Étudiant", price: 25.0, count: 500 },
+          { type: "Adulte", price: 45.0, count: 800 },
+          { type: "VIP", price: 85.0, count: 300 },
         ],
         organizerWebsite: "https://jazzfestival-paris.fr",
         organizerPhone: "01 42 36 78 90",
@@ -312,6 +320,10 @@ async function main() {
         startTime: "08:00",
         endDate: "2024-09-22",
         endTime: "14:00",
+        map: {
+          image: undefined,
+          svg: undefined,
+        },
         place: "Vieux-Port de Marseille",
         address: "Quai du Port",
         city: "Marseille",
@@ -325,8 +337,8 @@ async function main() {
         categories: ["Sport", "Course", "Marathon"],
         isPaid: true,
         prices: [
-          { type: "Inscription Standard", price: 65.0 },
-          { type: "Inscription + Pack", price: 85.0 },
+          { type: "Inscription Standard", price: 65.0, count: 1000 },
+          { type: "Inscription + Pack", price: 85.0, count: 500 },
         ],
         organizerWebsite: "https://marathon-marseille.com",
         organizerPhone: "04 91 24 67 89",
@@ -344,6 +356,10 @@ async function main() {
         startTime: "14:00",
         endDate: "2024-06-20",
         endTime: "17:00",
+        map: {
+          image: undefined,
+          svg: undefined,
+        },
         place: "École de Cuisine Gourmande",
         address: "45 Rue de la Gastronomie",
         city: "Nice",
@@ -355,7 +371,7 @@ async function main() {
         ],
         categories: ["Cuisine", "Atelier", "Gastronomie"],
         isPaid: true,
-        prices: [{ type: "Adulte", price: 120.0 }],
+        prices: [{ type: "Adulte", price: 120.0, count: 20 }],
         organizerWebsite: "https://ecole-cuisine-nice.fr",
         organizerPhone: "04 93 87 65 43",
         createdBy: users[1].id,
@@ -372,6 +388,10 @@ async function main() {
         startTime: "20:30",
         endDate: "2024-08-10",
         endTime: "22:30",
+        map: {
+          image: undefined,
+          svg: undefined,
+        },
         place: "Opéra de Bordeaux",
         address: "Place de la Comédie",
         city: "Bordeaux",
@@ -384,9 +404,9 @@ async function main() {
         categories: ["Musique", "Classique", "Concert"],
         isPaid: true,
         prices: [
-          { type: "Catégorie 3", price: 35.0 },
-          { type: "Catégorie 2", price: 55.0 },
-          { type: "Catégorie 1", price: 75.0 },
+          { type: "Catégorie 3", price: 35.0, count: 200 },
+          { type: "Catégorie 2", price: 55.0, count: 150 },
+          { type: "Catégorie 1", price: 75.0, count: 100 },
         ],
         organizerWebsite: "https://opera-bordeaux.com",
         organizerPhone: "05 56 00 85 95",

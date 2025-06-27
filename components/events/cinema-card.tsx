@@ -24,15 +24,18 @@ export default function CinemaCard({ movies, room }: CinemaCardProps) {
 
       {room.currentMovie ? (
         <div className="space-y-4">
+          {/* @ts-expect-error json */}
           {movies.find(m => m.id === room.currentMovie?.id) && (
             <>
               <Image
                 src={getImageUrl(
+                  // @ts-expect-error json
                   movies.find(m => m.id === room.currentMovie?.id)
                     ?.poster_path ?? null,
                   "w500"
                 )}
                 alt={
+                  // @ts-expect-error json
                   movies.find(m => m.id === room.currentMovie?.id)?.title || ""
                 }
                 className="rounded-lg shadow-lg w-full h-48 object-cover"
@@ -41,10 +44,12 @@ export default function CinemaCard({ movies, room }: CinemaCardProps) {
               />
               <div className="space-y-2">
                 <p className="font-semibold">
+                  {/* @ts-expect-error json */}
                   {movies.find(m => m.id === room.currentMovie?.id)?.title}
                 </p>
                 <div className="flex items-center text-sm text-muted-foreground">
                   <Clock className="w-4 h-4 mr-1" />
+                  {/* @ts-expect-error json */}
                   <span>{room.currentMovie.showtime}</span>
                 </div>
                 <div className="flex items-center text-sm text-muted-foreground">

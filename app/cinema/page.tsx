@@ -1,9 +1,6 @@
 import { getMovieDetails } from "@/lib/tmdb";
 import { getCinemaRooms } from "@/lib/db/cinema";
 import CinemaCard from "@/components/events/cinema-card";
-import { auth } from "@/lib/auth/auth";
-import { headers } from "next/headers";
-import { getUser } from "@/server/util/getUser";
 
 /**
  * @brief Cinema booking component
@@ -40,12 +37,12 @@ export default async function Cinema() {
    * @note The component uses the TMDb API to fetch movie details and images
    *
    */
-  const user = await getUser();
 
   // const [error, setError] = useState("");
 
   const rooms = await getCinemaRooms();
   const movieIds = rooms
+    // @ts-expect-error tkt json
     .map(room => room.currentMovie?.id)
     .filter((id): id is number => id !== undefined);
   const moviePromises = movieIds.map(id => getMovieDetails(id));

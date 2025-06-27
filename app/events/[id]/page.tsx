@@ -356,11 +356,6 @@ export default async function EventPage({
             </div>
           </div>
         </div>
-
-        {/* debug */}
-        <pre className="text-wrap break-words">
-          {JSON.stringify({ ...event, images: [] }, null, 2)}
-        </pre>
       </div>
     </div>
   );

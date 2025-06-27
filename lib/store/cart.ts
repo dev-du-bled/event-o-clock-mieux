@@ -27,12 +27,12 @@ export const useCartStore = create<CartStore>()(
        *
        * @param item - The CartItem object to add to the cart.
        */
-      addItem: (item) => {
-        set((state) => {
+      addItem: item => {
+        set(state => {
           const exists = state.items.some(
-            (existingItem) =>
+            existingItem =>
               existingItem.seatId === item.seatId &&
-              existingItem.roomId === item.roomId,
+              existingItem.roomId === item.roomId
           );
 
           if (!exists) {
@@ -48,9 +48,9 @@ export const useCartStore = create<CartStore>()(
        * @param roomId - The unique identifier of the room where the seat belongs.
        */
       removeItem: (seatId, roomId) => {
-        set((state) => ({
+        set(state => ({
           items: state.items.filter(
-            (item) => !(item.seatId === seatId && item.roomId === roomId),
+            item => !(item.seatId === seatId && item.roomId === roomId)
           ),
         }));
       },
@@ -90,7 +90,7 @@ export const useCartStore = create<CartStore>()(
          * @param name - The name of the storage key to retrieve.
          * @returns The parsed cart data or null if not found.
          */
-        getItem: (name) => {
+        getItem: name => {
           const str = localStorage.getItem(name);
           if (!str) return null;
           try {
@@ -119,8 +119,8 @@ export const useCartStore = create<CartStore>()(
          *
          * @param name - The name of the storage key to remove.
          */
-        removeItem: (name) => localStorage.removeItem(name),
+        removeItem: name => localStorage.removeItem(name),
       },
-    },
-  ),
+    }
+  )
 );
