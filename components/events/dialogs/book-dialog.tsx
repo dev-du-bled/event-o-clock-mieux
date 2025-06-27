@@ -124,7 +124,7 @@ export default function BookDialog({ map, prices }: BookDialogProps) {
       </DialogTrigger>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Affectation des places</DialogTitle>
+          <DialogTitle>Choix des Places</DialogTitle>
           <DialogDescription className="text-sm text-muted-foreground">
             Sélectionnez les places à réserver.
           </DialogDescription>
@@ -230,18 +230,31 @@ export default function BookDialog({ map, prices }: BookDialogProps) {
           </div>
         </div>
 
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button variant="outline" className="mr-2">
-              Annuler
+        <DialogFooter className="flex flex-col sm:flex-row mt-4">
+          <div className="flex items-center w-full">
+            <span className="text-sm text-muted-foreground">
+              Prix Total :{" "}
+              {selectedPrices.reduce(
+                (total, item) => total + item.price.price * item.count,
+                0
+              )}{" "}
+              €
+            </span>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <DialogClose asChild>
+              <Button variant="outline" className="mr-2">
+                Annuler
+              </Button>
+            </DialogClose>
+            <Button
+              disabled={selectedPrices.length === 0}
+              onClick={handleConfirm}
+            >
+              Valider
             </Button>
-          </DialogClose>
-          <Button
-            disabled={selectedPrices.length === 0}
-            onClick={handleConfirm}
-          >
-            Valider
-          </Button>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>
