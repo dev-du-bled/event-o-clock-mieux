@@ -15,40 +15,6 @@ import { headers } from "next/headers";
 
 export async function Navbar() {
   const session = await auth.api.getSession({ headers: await headers() });
-  // const [cartItemsCount, setCartItemsCount] = useState(0);
-
-  // useEffect(() => {
-  //   const updateCartCount = () => {
-  //     try {
-  //       const cart = localStorage.getItem("cinemaCart");
-  //       if (cart) {
-  //         const items = JSON.parse(cart) as CartItem[];
-  //         setCartItemsCount(items.length);
-  //       } else {
-  //         setCartItemsCount(0);
-  //       }
-  //     } catch (error) {
-  //       console.error("Erreur lors de la lecture du panier:", error);
-  //       setCartItemsCount(0);
-  //     }
-  //   };
-
-  //   updateCartCount();
-
-  //   const interval = setInterval(updateCartCount, 1000);
-
-  //   const handleStorageChange = (e: StorageEvent) => {
-  //     if (e.key === "cinemaCart") {
-  //       updateCartCount();
-  //     }
-  //   };
-  //   window.addEventListener("storage", handleStorageChange);
-
-  //   return () => {
-  //     clearInterval(interval);
-  //     window.removeEventListener("storage", handleStorageChange);
-  //   };
-  // }, []);
 
   return (
     <header className="fixed z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">

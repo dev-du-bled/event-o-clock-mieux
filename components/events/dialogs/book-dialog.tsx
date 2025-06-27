@@ -11,18 +11,28 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Price } from "@/schemas/createEvent";
+import { addToCartAction } from "@/server/actions/cart";
 import { mapType } from "@/types/types";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { Plus, Ticket, X } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 interface BookDialogProps {
+  eventId: string;
+  eventName: string;
   map: mapType;
   prices: Price[];
 }
 
-export default function BookDialog({ map, prices }: BookDialogProps) {
+export default function BookDialog({
+  eventId,
+  eventName,
+  map,
+  prices,
+}: BookDialogProps) {
+  const [open, setOpen] = useState(false);
   const [validPrices, setValidPrices] = useState<
     Array<Price & { color?: string }>
   >([]);
@@ -110,12 +120,28 @@ export default function BookDialog({ map, prices }: BookDialogProps) {
     );
   };
 
-  const handleConfirm = () => {
-    // add to cart and remove sleected prices count to db
+  const handleConfirm = async () => {
+    const response = await addToCartAction(
+      selectedPrices.map(item => ({
+        eventId: eventId,
+        eventName: eventName,
+        type: item.price.type,
+        price: item.price.price * item.count,
+        quantity: item.count,
+      }))
+    );
+
+    if (response.success) {
+      setSelectedPrices([]);
+      toast.success("Réservation réussie !");
+    } else {
+      toast.error("Erreur lors de la réservation" + response.message);
+    }
+    setOpen(false);
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" className="w-full sm:w-auto">
           <Ticket className="h-4 w-4" />

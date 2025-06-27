@@ -9,6 +9,7 @@ import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 import { useNavigationMenu } from "./hooks/useNavigationMenu";
 import { auth } from "@/lib/auth/auth";
+import { getCartAction } from "@/server/actions/cart";
 
 type NavigationMenuProps = {
   initialSession: Awaited<ReturnType<typeof auth.api.getSession>>;
@@ -23,6 +24,7 @@ export default function NavigationMenu({
   const router = useRouter();
   const [isDesktopOpen, setIsDesktopOpen] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
   const desktopMenuRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
 
@@ -46,6 +48,17 @@ export default function NavigationMenu({
     document.addEventListener("mousedown", menuHandler);
     return () => document.removeEventListener("mousedown", menuHandler);
   });
+
+  useEffect(() => {
+    const getCartCount = async () => {
+      const { cart } = await getCartAction();
+      if (cart) {
+        setCartCount(cart.items.length);
+      }
+    };
+
+    getCartCount();
+  }, []);
 
   const logout = async () => {
     await authClient.signOut({
@@ -76,12 +89,14 @@ export default function NavigationMenu({
 
     return (
       <div className="relative items-center flex" ref={desktopMenuRef}>
-        <Link
-          href="/cinema/cart"
-          className="relative flex items-center px-4 py-2"
-        >
+        <Link href="/cart" className="relative flex items-center px-4 py-2">
           <ShoppingCart className="mr-1 h-5 w-5" />
           Panier
+          {cartCount > 0 && (
+            <span className="absolute top-0 right-0 bg-red-500 text-white rounded-full px-1 text-xs">
+              {cartCount}
+            </span>
+          )}
         </Link>
         <button
           className="group flex hover:cursor-pointer"

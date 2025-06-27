@@ -111,6 +111,8 @@ export default async function EventPage({
                 )}
                 {event.isPaid && (
                   <BookDialog
+                    eventId={event.id}
+                    eventName={event.title}
                     map={event.map as mapType}
                     prices={event.prices as Price[]}
                   />

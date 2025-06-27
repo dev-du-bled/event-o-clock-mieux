@@ -89,6 +89,7 @@ model User {
   banReason     String?
   banExpires    DateTime?
   image         String?
+  Cart          Cart?
 
   @@map("user")
 }
@@ -190,6 +191,19 @@ model Booking {
   user  User          @relation(fields: [userId], references: [id])
   room  CinemaRoom    @relation(fields: [roomId], references: [id])
   seats BookingSeat[]
+}
+
+model Cart {
+  id          String   @id @default(uuid())
+  userId      String
+  items       Json[]   @default([])
+  totalAmount Float    @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId])
 }
 
 model BookingSeat {
