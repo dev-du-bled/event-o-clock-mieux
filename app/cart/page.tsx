@@ -14,7 +14,6 @@ import Link from "next/link";
 import { authClient } from "@/lib/auth/auth-client";
 import { searchAddress } from "@/lib/utils";
 import { AddressData } from "@/types/types";
-import { redirect } from "next/navigation";
 import {
   CartItem,
   clearCartAction,
@@ -86,11 +85,9 @@ export default function Cart() {
     return numbers;
   };
 
-  // Helper functions for cart operations
   const removeItem = async (itemId: string) => {
     const success = await clearCartItemAction(itemId);
     if (success) {
-      // Refetch cart data after successful deletion
       const { cart: updatedCart } = await getCartAction();
       if (updatedCart) {
         setCart(updatedCart.items);
@@ -145,10 +142,6 @@ export default function Cart() {
       setLoading(false);
     }
   };
-
-  if (!user) {
-    redirect("/forbidden");
-  }
 
   if (success) {
     return (
