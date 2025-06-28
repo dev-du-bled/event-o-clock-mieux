@@ -1,5 +1,5 @@
 services:
-  website: 
+  website:
     container_name: event_o_clock
     build: .
     ports:
