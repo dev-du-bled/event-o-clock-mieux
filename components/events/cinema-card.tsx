@@ -1,5 +1,5 @@
-import { getImageUrl, Movie } from "@/lib/tmdb";
-import { DEFAULT_PRICES } from "@/types/types";
+import { getImageUrl } from "@/lib/tmdb";
+import { DEFAULT_PRICES, Movie } from "@/types/types";
 import { CinemaRoom } from "@prisma/client";
 import { Clock, Ticket, Film } from "lucide-react";
 import { Card } from "../ui/card";
@@ -7,7 +7,7 @@ import SeatsCinemaDialog from "./dialogs/seats-cinema-dialog";
 import Image from "next/image";
 
 interface CinemaCardProps {
-  movies: Array<Movie>;
+  movies: Array<Movie >;
   room: CinemaRoom;
 }
 

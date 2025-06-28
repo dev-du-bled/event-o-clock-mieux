@@ -37,7 +37,7 @@ export default async function Profile() {
   const bookings = await Promise.all(
     userBookings.map(async booking => {
       try {
-        const movie = await getMovieDetails(booking.movieId);
+        const movie = await getMovieDetails(booking.movieId.toString());
         return { ...booking, movie };
       } catch (error) {
         console.error(

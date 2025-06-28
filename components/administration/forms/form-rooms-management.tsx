@@ -46,9 +46,7 @@ export default async function FormRoomsManagement() {
                 }}
               >
                 <DeleteRoomDialog room={room} />
-                {/* @ts-expect-error tkt */}
                 <EditRoomDialog room={room} />
-                {/* @ts-expect-error tkt */}
                 <AssignMovieRoomDialog room={room} />
               </TableCell>
             </TableRow>
