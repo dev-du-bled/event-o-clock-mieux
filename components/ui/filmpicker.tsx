@@ -3,7 +3,8 @@ import { Button } from "./button";
 import { useState } from "react";
 import { searchFilmsAction } from "@/server/actions/films";
 import { Search } from "lucide-react";
-import { Movie, getImageUrl } from "@/lib/tmdb";
+import { getImageUrl } from "@/lib/tmdb";
+import { Movie } from "@/types/types";
 import Image from "next/image";
 import { toast } from "sonner";
 
@@ -63,11 +64,11 @@ export default function FilmPicker({ onSubmit }: FilmPickerProps) {
           <Image
             alt={"Affiche du film " + f.title}
             src={getImageUrl(f.poster_path)}
-            className="rounded-xl hover:scale-95 transition-transform"
+            className="rounded-xl hover:scale-95 transition-transform hover:cursor-pointer"
             width={150}
             height={150}
             key={f.id}
-            onClick={() => onSubmit({ id: `t${f.id}`, title: f.title })}
+            onClick={() => onSubmit({ id: `${f.id}`, title: f.title })}
           />
         ))}
       </div>

@@ -154,7 +154,7 @@ model CinemaRoom {
   id           String   @id @default(uuid())
   name         String
   capacity     Int
-  currentMovie Json? // Storing movie ID and showtime as JSON
+  currentMovie Json     @default("{}")
   seats        Seat[]
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt

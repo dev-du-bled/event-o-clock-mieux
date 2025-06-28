@@ -15,7 +15,7 @@ import { assignMovieRoomAction } from "@/server/actions/rooms";
 import { toast } from "sonner";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { CinemaRoom } from "@/lib/db/cinema";
+import { CinemaRoom } from "@prisma/client";
 import FilmPicker from "@/components/ui/filmpicker";
 import { Input } from "@/components/ui/input";
 
@@ -71,8 +71,11 @@ export default function AssignMovieDialog({ room: room }: EditRoomDialogProps) {
           <DialogTitle>Assigner un film à &quot;{room.name}&quot;</DialogTitle>
         </DialogHeader>
 
+        <label htmlFor="time-selector">Planifier le film</label>
         <Input
           type="time"
+          id="time-selector"
+          name="Schedule movie"
           onChange={e => {
             setShowtime(e.target.value);
           }}

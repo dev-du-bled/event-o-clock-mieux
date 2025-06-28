@@ -16,7 +16,7 @@ import { toast } from "sonner";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
-import { CinemaRoom } from "@/lib/db/cinema";
+import { CinemaRoom } from "@prisma/client";
 
 interface EditRoomDialogProps {
   room: CinemaRoom;

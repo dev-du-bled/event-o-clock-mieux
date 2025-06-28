@@ -1,6 +1,6 @@
 "use server";
-import { Movie } from "@/lib/tmdb";
-import { searchTMDB } from "@/lib/tmdb";
+import { Movie } from "@/types/types";
+import { searchTMDB, getMovieDetails } from "@/lib/tmdb";
 
 type ServerActionResult = {
   success: boolean;
@@ -22,10 +22,32 @@ export async function searchFilmsAction(
       results: searchResults,
     };
   } catch (error) {
-    console.error("Erreur création salle:", error);
+    console.error("Erreur recherche des films:", error);
     return {
       success: false,
       message: "Impossible de chercher les films",
+    };
+  }
+}
+
+/**
+ * Action pour recuperer les données d'un films
+ */
+export async function getFilmAction(
+  movieid: string
+): Promise<ServerActionResult> {
+  try {
+    const movieDetails = await getMovieDetails(movieid);
+
+    return {
+      success: true,
+      results: [movieDetails],
+    };
+  } catch (error) {
+    console.error("Erreur récupération film:", error);
+    return {
+      success: false,
+      message: "Impossible de récupérer le film",
     };
   }
 }

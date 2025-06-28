@@ -7,6 +7,17 @@ export interface AddressData {
   };
 }
 
+export interface Movie {
+  id: number;
+  title: string;
+  overview: string;
+  poster_path: string;
+  backdrop_path: string;
+  release_date: string;
+  vote_average: number;
+  genres: { id: number; name: string }[];
+}
+
 export interface CityFeature {
   properties: {
     city: string;
@@ -24,6 +35,11 @@ export type mapType = {
     name: string;
     data: string;
   };
+};
+
+export type movieSchedule = {
+  movieId: string;
+  showtime: string;
 };
 
 /**

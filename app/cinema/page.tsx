@@ -1,65 +1,29 @@
-import { getMovieDetails } from "@/lib/tmdb";
 import { getCinemaRooms } from "@/lib/db/cinema";
-import CinemaCard from "@/components/events/cinema-card";
+import MovieCard from "@/components/cinema/movie-card";
 
 /**
  * @brief Cinema booking component
  * @details Handles cinema room display, seat selection and ticket booking
  */
 export default async function Cinema() {
-  /**
-   * @brief Component state
-   * @details Defines component state variables
-   * @param movies List of movies
-   * @param rooms List of cinema rooms
-   * @param loading Loading state
-   * @param error Error message
-   * @param selectedRoom Selected cinema room
-   * @param showSeatMap Seat map display state
-   * @param selectedSeats Selected seats
-   * @param ticketType Selected ticket type
-   * @param user Authenticated user
-   * @param router Next.js router
-   * @param addItem Cart store addItem function
-   * @param setLoading Set loading state
-   * @param setError Set error message
-   * @param setMovies Set movies list
-   * @param setRooms Set cinema rooms list
-   * @param setSelectedRoom Set selected cinema room
-   * @param setShowSeatMap Set seat map display state
-   * @param setSelectedSeats Set selected seats
-   * @param setTicketType Set selected ticket type
-   *
-   * @return Cinema booking component
-   * @retval Component view
-   *
-   * @note This component displays a list of cinema rooms, allows the user to select seats and book tickets
-   * @note The component uses the TMDb API to fetch movie details and images
-   *
-   */
-
-  // const [error, setError] = useState("");
-
   const rooms = await getCinemaRooms();
-  const movieIds = rooms
-    // @ts-expect-error tkt json
-    .map(room => room.currentMovie?.id)
-    .filter((id): id is number => id !== undefined);
-  const moviePromises = movieIds.map(id => getMovieDetails(id));
-  const movieData = await Promise.all(moviePromises);
 
   return (
     <div className="min-h-screen bg-background p-4">
-      <div className="container mx-auto max-w-6xl">
+      <div className="container mx-auto">
         <h1 className="text-3xl font-bold mb-8 text-foreground">
-          Salles de cinéma
+          En salle en ce moment
         </h1>
 
         {/* Movie Room */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {rooms.map(room => (
-            <CinemaCard key={room.id} room={room} movies={movieData} />
-          ))}
+        <div className="flex flex-row flex-wrap gap-6 items-center justify-center">
+          {(rooms.length &&
+            rooms.map(room => (
+              <MovieCard
+                key={room.id}
+                movieSchedule={JSON.parse(room.currentMovie as string)}
+              />
+            ))) || <span>Aucun film en ce moment</span>}
         </div>
       </div>
     </div>

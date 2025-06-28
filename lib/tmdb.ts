@@ -1,30 +1,7 @@
+import { Movie } from "@/types/types";
+
 const BASE_URL = "https://api.themoviedb.org/3";
 const IMAGE_BASE_URL = "https://image.tmdb.org/t/p";
-
-/**
- * Type definition for a Movie object, which describes the details of a movie.
- */
-export interface Movie {
-  id: number;
-  title: string;
-  overview: string;
-  poster_path: string;
-  backdrop_path: string;
-  release_date: string;
-  vote_average: number;
-  genres: { id: number; name: string }[];
-}
-
-/**
- * Type definition for a MovieVideo object, which holds information about a movie video (e.g., trailer).
- */
-export interface MovieVideo {
-  id: string;
-  key: string;
-  name: string;
-  site: string;
-  type: string;
-}
 
 const options = {
   method: "GET",
@@ -41,12 +18,15 @@ const options = {
  * @returns A promise that resolves to a Movie object containing the details of the movie.
  * @throws Error - If there’s an error with the API request or if the movie details cannot be loaded.
  */
-export async function getMovieDetails(movieId: number): Promise<Movie> {
+export async function getMovieDetails(movieId: string): Promise<Movie> {
   try {
     const response = await fetch(
       `${BASE_URL}/movie/${movieId}?language=fr-FR`,
       options
     );
+
+    console.log(response);
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
