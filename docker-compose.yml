@@ -1,13 +1,17 @@
 services:
   website:
     container_name: event_o_clock
-    build: .
+    build:
+      dockerfile: website.Dockerfile
+
     ports:
       - "3000:3000"
     env_file: .env
 
   db:
-    image: postgres:latest
+    build:
+      dockerfile: database.Dockerfile
+
     container_name: database
     restart: always
     ports:
