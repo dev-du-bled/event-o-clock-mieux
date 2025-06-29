@@ -7,6 +7,9 @@ services:
     ports:
       - "3000:3000"
     env_file: .env
+    depends_on:
+      db:
+        condition: service_healthy
 
   db:
     build:
@@ -22,6 +25,11 @@ services:
       POSTGRES_DB: eventoclock
     volumes:
       - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
 
 volumes:
   db_data:

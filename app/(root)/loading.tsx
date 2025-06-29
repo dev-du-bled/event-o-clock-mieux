@@ -1,14 +1,14 @@
 /**
  * @file loading.tsx
  * @brief loading component
- * @details Displays loading while the homepage content is being fetched
+ * @details Displays loading while the page content is being fetched
  */
 import Link from "next/link";
 import InputSearchEvent from "@/components/events/inputs/input-search-event";
 
 /**
  * @brief Loading component
- * @details Main Loading page component featuring:
+ * @details Main Loading  component featuring:
  * @returns React component for Loading
  */
 export default async function Loading() {
