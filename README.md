@@ -7,8 +7,11 @@ Un site web permettant de partager des événements.
 Pour commencer, il faut instancier le fichier .env et [récupérer une clé TMDB](https://developers.themoviedb.org/3/getting-started/introduction) (nécessaire pour récupérer les données des films).
 
 ```bash
-cp .env.example .env
+cp .env.example .env.local
 ```
+
+> [!WARNING]
+> Pour une utilisatoon avec docker compose, utiliser .env.prod
 
 Ensuite, il faut placer la clé API TMDB sous le nom `NEXT_TMDB_API_KEY`
 
@@ -21,7 +24,7 @@ Une fois cela fait, on peut lancer le projet
 docker compose up -d --build
 ```
 
-### Avec bun
+### Avec bun (et docker pour la base de donnée)
 
 Ici, on utilise bun en tant que gestionnaire de dépendances et runtime pour profite de ses performances.
 
@@ -47,8 +50,6 @@ bun run start
 ```
 
 ## Seeding (mise des données par défaut)
-
-⚠️ En utilisant Docker, ceci n'est pas possible puisque la solution générée est une solution dite "de production".
 
 Le seeding permettera de créer les utilisateurs privilégiés ainsi qu'un set de données par défaut à des fins de test.
 
