@@ -62,6 +62,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 
 # fix for sharp not installing
 RUN bun add sharp
+RUN bun pm trust --all
 
 USER nextjs
 
