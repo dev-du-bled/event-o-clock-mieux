@@ -11,7 +11,7 @@ cp .env.example .env.local
 ```
 
 > [!WARNING]
-> Pour une utilisatoon avec docker compose, utiliser .env.prod
+> Pour une utilisation avec docker compose, copiez le `.env` `.env.prod`
 
 Ensuite, il faut placer la clé API TMDB sous le nom `NEXT_TMDB_API_KEY`
 
